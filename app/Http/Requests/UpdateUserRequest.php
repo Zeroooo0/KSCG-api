@@ -14,7 +14,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,7 +28,6 @@ class UpdateUserRequest extends FormRequest
             'name' => ['string', 'max:255'],
             'last_name' => ['string', 'max:255'],
             'email' => ['string', 'max:255', 'unique:users'],
-            'current_password' => ['max:255'],
             'password' => [ 'confirmed', Rules\Password::default()],
             'user_type' => ['integer', 'max:1']
         ];

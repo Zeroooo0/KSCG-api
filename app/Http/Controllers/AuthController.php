@@ -73,5 +73,13 @@ class AuthController extends Controller
             'message' => 'You have logged out Best Regards!'
         ]);
     }
+    public function changePassword()
+    {
+        
+
+        return $this->success([
+            'message' => 'You have logged out Best Regards!'
+        ]);
+    }
 }
     
