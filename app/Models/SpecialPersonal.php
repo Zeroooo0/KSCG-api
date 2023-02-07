@@ -9,13 +9,15 @@ class SpecialPersonal extends Model
 {
     use HasFactory;
 
-    protected $filable = [
+    protected $fillable = [
         'status',
         'name',
         'last_name',
         'email',
         'phone_number',
-        'rolle'
+        'rolle',
+        'country',
+        'gender',
     ];
     
 

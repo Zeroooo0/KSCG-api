@@ -53,6 +53,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     
     //Users control
     Route::resource('/users', UsersController::class);
+    Route::post('/change-password/{user}',[AuthController::class, 'changePassword']);
 
 });
 

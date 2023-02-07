@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreSpecialPersonalRequest;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\SpecialPersonal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SpecialPersonalsController extends Controller
 {
@@ -25,22 +27,34 @@ class SpecialPersonalsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreSpecialPersonalRequest $request)
     {
         if(Auth::user()->user_type == 0) {
-
+            $rolle = 0; 
+        } else{
+            if($request->rolle == null){
+                $rolle = 0; 
+            }
+            $rolle = $request->rolle;
         }
+
         $special_personal = SpecialPersonal::create([
             'name' => $request->name,
             'last_name' => $request->lastName,
             'email' => $request->email,
+            'country' => $request->country,
             'phone_number' => $request->phone,
-            'rolle' => $request->rolle,
-            'status' => $request->status,
+            'rolle' => $rolle,
             'gender' => $request->gender,
-            'image' => $path
-
         ]);
+        if($request->image !== null){
+            $path = Storage::putFile('special-personal-image', $request->image);
+            $special_personal->image()->create([
+                'url' => $path
+            ]);
+        }
+        return new SpecialPersonalsResource($special_personal);
+
     }
 
     /**
@@ -50,17 +64,6 @@ class SpecialPersonalsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }

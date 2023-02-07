@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminUserCreation;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UsersResource;
@@ -73,13 +74,21 @@ class AuthController extends Controller
             'message' => 'You have logged out Best Regards!'
         ]);
     }
-    public function changePassword()
+    public function changePassword(ChangePasswordRequest $request, User $user)
     {
-        
+        $request->validated($request->all());
+        if(Auth::user()->id == $user->id) {
+            if(!Hash::check($request->old_password, Auth::user()->password)){
+                return $this->error('', 'Password does not match!', 200);
+            }
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
+            return $this->success([
+                'user' => $user,
+            ]);
+        }
 
-        return $this->success([
-            'message' => 'You have logged out Best Regards!'
-        ]);
     }
 }
     

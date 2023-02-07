@@ -82,11 +82,11 @@ class UsersController extends Controller
     {
         $request->validated($request->all());
         if(Auth::user()->user_type !== 2 && $user->id !== Auth::user()->id) {
-            return $this->restricted('', 'Not alowed 1!', 403);
+            return $this->restricted('', 'Not alowed!', 403);
         }
-        if(Auth::user()->user_type == 0) {
+        if(Auth::user()->user_type !== 2) {
             if($request->user_type !== null || $request->status !== null) {
-                return $this->restricted('', 'Not alowed 2!', 403);
+                return $this->restricted('', 'Not alowed!', 403);
             }
         }
         $user->update($request->except(['password']));
@@ -95,10 +95,10 @@ class UsersController extends Controller
                 $user->update([
                     'password' => Hash::make($request->password)
                 ]);
-            }
+            } 
+            return $this->restricted('', 'Not alowed!', 403);
         }
         
-        //Must create password resetform
         
         return new UsersResource($user);
     }

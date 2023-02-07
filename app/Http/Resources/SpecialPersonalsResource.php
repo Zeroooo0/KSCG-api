@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class SpecialPersonalsResource extends JsonResource
 {
@@ -35,7 +36,7 @@ class SpecialPersonalsResource extends JsonResource
                 'rolle' => $this->rolle,
                 'status' => (boolean)$this->status,
                 'gender' => $this->gender,
-                'image' => $path
+                'image' => Storage::url($path)
             ]
         ];
     }

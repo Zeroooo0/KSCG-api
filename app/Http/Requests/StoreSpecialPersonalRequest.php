@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCompatitorRequest extends FormRequest
+class StoreSpecialPersonalRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,18 +24,13 @@ class StoreCompatitorRequest extends FormRequest
     public function rules()
     {
         return [
-            'kscgId' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'lastName' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'string', 'max:255'],
-            'jmbg' => ['required', 'integer'],
-            'belt' => ['required', 'string', 'max:255'],
-            'dateOfBirth' => ['required', 'date'],
-            'weight' => ['required', 'decimal:2'],
-            'image' => ['image', 'mimes:jpg,jpeg,svg,gif.png', 'max:2048'],
-            'clubId' => ['integer'],
-            'status' => ['boolean']
-            
+            'country' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:255'],
+            'gender' => ['required', 'string', 'max:1'],
+            'image' => ['image', 'mimes:,jpeg,svg,gif.png', 'max:2048']
         ];
     }
 }
