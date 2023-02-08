@@ -19,7 +19,7 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::get('/clubs', [ClubsController::class, 'public']);  
-    Route::get('/clubs/{club}', [ClubsController::class, 'update']);  
+    Route::get('/clubs/{club}', [ClubsController::class, 'show_public']);  
     Route::get('/compatitors', [CompatitorsController::class, 'public']);
     Route::get('/compatitors/{compatitor}', [CompatitorsController::class, 'show_public']);
 
