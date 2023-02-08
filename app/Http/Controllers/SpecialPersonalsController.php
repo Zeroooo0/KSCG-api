@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSpecialPersonalRequest;
+use App\Http\Requests\UpdateSpecialPersonalRequest;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\SpecialPersonal;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class SpecialPersonalsController extends Controller
      */
     public function store(StoreSpecialPersonalRequest $request)
     {
+        $request->validated($request->all());
         if(Auth::user()->user_type == 0) {
             $rolle = 0; 
         } else{
@@ -63,9 +65,9 @@ class SpecialPersonalsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(SpecialPersonal $special_personal)
     {
-        //
+        return new SpecialPersonalsResource($special_personal);
     }
 
     /**
@@ -75,9 +77,36 @@ class SpecialPersonalsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateSpecialPersonalRequest $request, SpecialPersonal $special_personal)
     {
-        //
+        $request->validated($request->all());
+        if($request->rolle !== null && Auth::user()->user_type == 0) {
+            $rolle = $special_personal->rolle; 
+        } else{
+            $rolle = $request->rolle;
+
+            
+        }
+        $special_personal->update($request->except('lastName', 'rolle', 'status'));
+        if($request->has('lastName')){ 
+            $special_personal->update([
+                'last_name' => $request->lastName
+            ]);
+        }
+        if($request->has('rolle')){ 
+            $special_personal->update([
+                'rolle' => $rolle
+            ]);
+        }
+        if($request->has('status')){ 
+            if(Auth::user()->user_type !== 0){
+                $special_personal->update([
+                    'status' => $request->status
+                ]);
+            }
+        }
+
+        return new SpecialPersonalsResource($special_personal);
     }
 
     /**
@@ -86,8 +115,12 @@ class SpecialPersonalsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(SpecialPersonal $personal)
     {
-        //
+        if(Auth::user()->user_type !== 2){
+            return $this->restricted('', 'Not alowed!', 403);
+        }
+        $personal->delete();
+        return $this->success('', 'Compatitor is delten!', 200);
     }
 }

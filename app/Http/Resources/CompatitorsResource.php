@@ -15,17 +15,22 @@ class CompatitorsResource extends JsonResource
      */
     public function toArray($request)
     {
-        $image_url = env('APP_URL') . 'api/image/';
+        $storage_url = env('APP_URL') . 'api/file/';
         $jmbg = Auth::user() !== null ? (string)$this->jmbg : 'Protected';
         
         if($this->image !== null) {
-            $path =  $image_url . $this->image->url;
+            $path =  $storage_url . $this->image->url;
         } else {
             if($this->gender == 'M') {
-                $path = $image_url . 'default/default-m-user.jpg';
+                $path = $storage_url . 'default/default-m-user.jpg';
             } else{
-                $path = $image_url . 'default/default-f-user.jpg';
+                $path = $storage_url . 'default/default-f-user.jpg';
             }
+        }
+        if($this->document->first() !== null) {
+            $documents = DocumentsResource::collection($this->document);
+        } else {
+            $documents =  'Nema dokumenta';
         }
         
         return [
@@ -50,7 +55,8 @@ class CompatitorsResource extends JsonResource
                 'id' => (string)$this->club->id,
                 'clubName' => $this->club->name,
                 'clubShortName' => $this->club->short_name,
-            ]
+            ],
+            'documents' => $documents
         ];
     }
 }

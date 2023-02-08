@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSpecialPersonalRequest extends FormRequest
+class UpdateSpecialPersonalRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,13 +23,13 @@ class StoreSpecialPersonalRequest extends FormRequest
      */
     public function rules()
     {
-            return [
-            'name' => ['required', 'string', 'max:255'],
-            'lastName' => ['required', 'string', 'max:255'],
-            'country' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'string', 'max:1'],
+        return [
+            'name' => ['string', 'max:255'],
+            'lastName' => ['string', 'max:255'],
+            'country' => ['string', 'max:255'],
+            'email' => ['string', 'max:255'],
+            'phone' => ['string', 'max:255'],
+            'gender' => ['string', 'max:1'],
             'image' => ['image', 'mimes:,jpeg,svg,gif.png', 'max:2048']
         ];
     }

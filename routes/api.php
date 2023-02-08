@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('image/{path}', [FileController::class, 'getImage'])->where('path', '.*');
+Route::get('file/{path}', [FileController::class, 'getFile'])->where('path', '.*');
+
 
 
 Route::group(['prefix' => 'v1/public'], function () {
@@ -27,13 +28,27 @@ Route::group(['prefix' => 'v1/public'], function () {
 
 
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
+    
+    //All auth users
     Route::post('/logout', [AuthController::class, 'logout']); 
+    Route::post('/change-password/{user}',[AuthController::class, 'changePassword']);
 
     //File managing
     //Images
     Route::post('/compatitor-image/{compatitor}', [FileController::class, 'setCompatitorImage']);
     Route::post('/club-image/{club}', [FileController::class, 'setClubImage']);
     Route::post('/special-personal-image/{personal}', [FileController::class, 'setSpecPersonImage']);
+
+    //Documents
+    //Get
+    Route::get('/compatitor-documents/{compatitor}', [FileController::class, 'getCompatitorDocuments']);
+    Route::get('/special-personal-documents/{special_personal}', [FileController::class, 'getSpecialPersonalDocuments']);
+    //Set
+    Route::post('/compatitor-documents/{compatitor}', [FileController::class, 'addDocumentCompatitor']);
+    Route::post('/special-personal-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
+    //Delete
+    Route::post('/compatitor-documents-delete/{compatitor}', [FileController::class, 'deleteDocumentCompatitor']);
+    Route::post('/special-personal-documents-delete/{special_personal}', [FileController::class, 'deleteDocumentSpecialPersonal']);
 
     //Special personal
     Route::resource('/special-personal', SpecialPersonalsController::class);
@@ -53,7 +68,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     
     //Users control
     Route::resource('/users', UsersController::class);
-    Route::post('/change-password/{user}',[AuthController::class, 'changePassword']);
+
 
 });
 

@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('kscg_compatitor_id');
             $table->string('name');
             $table->string('last_name');
-            //Male=M Femail=Ž
-            $table->string('gender');
-            $table->float('jmbg', 8, 0);
+            //Male=0 Femail=1 
+            $table->tinyInteger('gender');
+            $table->string('jmbg');
             $table->string('belt');
             $table->date('date_of_birth');
             $table->decimal('weight', 4, 2);

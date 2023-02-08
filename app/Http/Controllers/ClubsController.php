@@ -19,17 +19,17 @@ class ClubsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function public()
+    public function public(Request $request)
     {
-        $pages_per_page = 5;
+        $per_page = $request->perPage;
  
-        return ClubsResource::collection(Club::paginate($pages_per_page));
+        return ClubsResource::collection(Club::paginate($per_page));
         
     }
 
-    public function protected()
+    public function protected(Request $request)
     {
-        $pages_per_page = 5;
+        $per_page = $request->perPage;
 
         if(Auth::user()->user_type == 0) {
             return ClubsResource::collection(
@@ -37,7 +37,7 @@ class ClubsController extends Controller
             );
         } else {
             return ClubsResource::collection(
-                Club::paginate($pages_per_page)
+                Club::paginate($per_page)
             );
         }
         

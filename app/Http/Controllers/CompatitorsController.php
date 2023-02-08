@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCompatitorRequest;
 use App\Http\Resources\CompatitorsResource;
 use App\Models\Club;
 use App\Models\Compatitor;
+use App\Filters\CompatitorsFilter;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,12 +21,16 @@ class CompatitorsController extends Controller
      * @return \Illuminate\Http\Response
      */
     
-    public function public()
+    public function public(Request $request)
     {
-        $per_page = 5;
-        return CompatitorsResource::collection(
-            Compatitor::paginate($per_page)
-        );
+        $filter = new CompatitorsFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+        if(count($queryItems) == 0) {
+            return CompatitorsResource::collection(Compatitor::paginate($per_page));
+        } else{
+            return CompatitorsResource::collection(Compatitor::where($queryItems)->paginate($per_page));
+        } 
     }
 
     public function protected()

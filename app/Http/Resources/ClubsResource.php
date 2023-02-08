@@ -17,12 +17,12 @@ class ClubsResource extends JsonResource
     public function toArray($request)
     {
         $pib = Auth::user() !== null ? $this->pib : 'Protected';
-        $image_url = env('APP_URL') . 'api/image/';
+        $storage_url = env('APP_URL') . 'api/file/';
         
         if($this->image !== null) {
-            $path =  $image_url . $this->image->url;
+            $path =  $storage_url . $this->image->url;
         } else{
-            $path = $image_url . 'default/default-club.jpg';
+            $path = $storage_url . 'default/default-club.jpg';
         }
 
         return [

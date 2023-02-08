@@ -15,15 +15,20 @@ class SpecialPersonalsResource extends JsonResource
      */
     public function toArray($request)
     {
-        $image_url = env('APP_URL') . 'api/image/';
+        $storage_url = env('APP_URL') . 'api/file/';
         if($this->image !== null) {
-            $path =  $image_url . $this->image->url;
+            $path =  $storage_url . $this->image->url;
         } else {
             if($this->gender == 'M') {
-                $path = $image_url . 'default/default-m-user.jpg';
+                $path = $storage_url . 'default/default-m-user.jpg';
             } else{
-                $path = $image_url . 'default/default-f-user.jpg';
+                $path = $storage_url . 'default/default-f-user.jpg';
             }
+        }
+        if($this->document->first() !== null) {
+            $documents = DocumentsResource::collection($this->document);
+        } else {
+            $documents =  'Nema dokumenta';
         }
         return [
             'id' => $this->id,
@@ -36,8 +41,9 @@ class SpecialPersonalsResource extends JsonResource
                 'rolle' => $this->rolle,
                 'status' => (boolean)$this->status,
                 'gender' => $this->gender,
-                'image' => Storage::url($path)
-            ]
+                'image' => $path
+            ],
+            'documents' => $documents
         ];
     }
 }
