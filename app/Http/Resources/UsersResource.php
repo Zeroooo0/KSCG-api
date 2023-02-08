@@ -16,12 +16,14 @@ class UsersResource extends JsonResource
     public function toArray($request)
     {
         if($this->user_type == 0) {
-            $data_name = 'clubData';
-            $data = [
-                'id' => $this->club->id,
-                'name' => $this->club->name,
-                'shortName' => $this->club->short_name,
-            ];
+            if($this->club_id !== null) {
+                $data_name = 'clubData';
+                $data = [
+                    'id' => $this->club->id,
+                    'name' => $this->club->name,
+                    'shortName' => $this->club->short_name,
+                ];
+            }
         } else {
             $data_name = 'adminType';
             $data = 'Admin Type ' . $this->user_type;
