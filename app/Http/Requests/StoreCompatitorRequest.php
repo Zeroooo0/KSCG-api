@@ -27,7 +27,7 @@ class StoreCompatitorRequest extends FormRequest
             'kscgId' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'lastName' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'string', 'max:255'],
+            'gender' => ['required', 'integer', 'max:3'],
             'jmbg' => ['required', 'integer'],
             'belt' => ['required', 'string', 'max:255'],
             'dateOfBirth' => ['required', 'date'],

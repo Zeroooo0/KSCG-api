@@ -21,7 +21,7 @@ class CompatitorsResource extends JsonResource
         if($this->image !== null) {
             $path =  $storage_url . $this->image->url;
         } else {
-            if($this->gender == 'M') {
+            if($this->gender == 1) {
                 $path = $storage_url . 'default/default-m-user.jpg';
             } else{
                 $path = $storage_url . 'default/default-f-user.jpg';

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('kscg_compatitor_id');
             $table->string('name');
             $table->string('last_name');
-            //Male=0 Femail=1 
+            //Male=1 Femail=2 
             $table->tinyInteger('gender');
             $table->string('jmbg');
             $table->string('belt');

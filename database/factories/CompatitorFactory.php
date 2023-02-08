@@ -17,8 +17,8 @@ class CompatitorFactory extends Factory
      */
     public function definition()
     {
-        $gender = $this->faker->randomElement(['M', 'Ž']);
-        $name =  $gender == 'M' ? $this->faker->firstNameMale() : $this->faker->firstNameFemale();
+        $gender = $this->faker->randomElement([1, 2]);
+        $name =  $gender == 1 ? $this->faker->firstNameMale() : $this->faker->firstNameFemale();
         $compatitor_id = 'MNE' . $this->faker->numberBetween(100000, 999999);
         return [
             'club_id' => Club::all()->random()->id,

@@ -16,6 +16,10 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            //Kata Kumite
+            $table->string('kata_or_kumite');
+            $table->tiny('gender');
+
             $table->boolean('status');
             $table->timestamps();
         });
