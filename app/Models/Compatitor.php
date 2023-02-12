@@ -17,7 +17,7 @@ class Compatitor extends Model
         'last_name',
         'gender',
         'jmbg',
-        'belt',
+        'belt_id',
         'date_of_birth',
         'weight',
         'status'
@@ -35,4 +35,9 @@ class Compatitor extends Model
     {
         return $this->morphMany(Document::class, 'documentable');
     }
+    public function belt()
+    {
+        return $this->belongsTo(Belt::class);
+    }
+    
 }

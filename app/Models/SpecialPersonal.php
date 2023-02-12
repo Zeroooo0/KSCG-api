@@ -29,8 +29,5 @@ class SpecialPersonal extends Model
     {
         return $this->morphMany(Document::class, 'documentable');
     }
-    public function clubs()
-    {
-        return $this->morphByMany(Club::class, 'rolleable');
-    }
+
 }

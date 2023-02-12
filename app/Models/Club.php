@@ -34,9 +34,9 @@ class Club extends Model
     {
         return $this->morphOne(Image::class, 'imageable');
     }
-    public function specialPersonals() 
+    public function roles() 
     {
-        return $this->morphToMany(Image::class, 'imageable');
+        return $this->morphMany(Roles::class, 'rolleable');
     }
 
 }

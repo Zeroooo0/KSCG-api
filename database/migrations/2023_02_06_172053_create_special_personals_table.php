@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('country');
             $table->string('phone_number');
             //0=Nema zvanje 1=Sudija 2=Trener 3=S+T
-            $table->tinyInteger('rolle');
+            $table->tinyInteger('role');
             $table->timestamps();
         });
     }

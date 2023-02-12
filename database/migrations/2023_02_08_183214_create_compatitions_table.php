@@ -21,10 +21,10 @@ return new class extends Migration
             $table->string('address');
             $table->dateTime('start_time_date');
             $table->dateTime('registration_deadline');
-            $table->decimal('price_single');
-            $table->decimal('price_team');
-            $table->boolean('status');
-            $table->bigInteger('host_club');
+            $table->decimal('price_single')->nullable();
+            $table->decimal('price_team')->nullable();
+            $table->boolean('status')->default(0);
+            $table->string('host_club');
             $table->timestamps();
         });
     }

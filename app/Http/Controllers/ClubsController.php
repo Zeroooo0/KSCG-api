@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClubRequest;
 use App\Http\Resources\ClubsResource;
 use App\Models\Club;
+use App\Models\Compatitor;
+use App\Models\SpecialPersonal;
 use App\Models\User;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -16,14 +18,15 @@ class ClubsController extends Controller
     use HttpResponses;
     /**
      * Display a listing of the resource.
-     *
+     * 
      * @return \Illuminate\Http\Response
      */
     public function public(Request $request)
     {
         $per_page = $request->perPage;
- 
+               
         return ClubsResource::collection(Club::paginate($per_page));
+
         
     }
 
@@ -57,7 +60,6 @@ class ClubsController extends Controller
         }
         $request->validated($request->all());
 
-        $path = Storage::putFile('club-image', $request->image);
 
     
         $club = Club::create([
@@ -71,9 +73,14 @@ class ClubsController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phoneNumber
         ]);
-        $club->image()->create([
-            'url' => $path
-        ]);
+        if($request->image !== null) {
+            $path = Storage::putFile('club-image', $request->image);
+            $club->image()->create([
+                'url' => $path
+            ]);
+        }
+        
+
 
         return new ClubsResource($club);
     
@@ -148,13 +155,36 @@ class ClubsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Club $club)
+
+    public function destroy(Request $request, Club $club)
     {
         if(Auth::user()->user_type !== 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
+        if($club->compatitors()->count() > 0) {
+            if($request->newClubId == null) {
+                return $this->error('', 'Molimo vas da odaberete klub u koji zelite prebaciti takmicare!', 200);
+            } else {
+                $club->compatitors()->update([
+                    'club_id' => $request->newClubId,
+                ]);
+            }
+        }
         $club->delete();
 
         return $this->success('', 'Club has been deleted successfully!');
+    }
+
+    public function clubsAdministration(Request $request)
+    {
+        $club = Club::find($request->clubId);
+        $spec_personal = SpecialPersonal::find($request->specialPersonalId);
+
+        $club->roles()->create([
+            'special_personals_id' => $request->specialPersonalId,
+            'title' => $request->title,
+            'rolle' => $spec_personal->rolle
+        ]);
+
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Belt;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,9 +48,9 @@ class CompatitorsResource extends JsonResource
             'validation' => [
                 'status' => (boolean)$this->status,
                 'gender' => $this->gender,
-                'belt' => $this->belt,
                 'brthDay' => $this->date_of_birth,
-                'weight' => $this->weight
+                'weight' => $this->weight,
+                'belt' => new BeltResource($this->belt),
             ],
             'relationships' => [
                 'id' => (string)$this->club->id,
@@ -57,6 +58,7 @@ class CompatitorsResource extends JsonResource
                 'clubShortName' => $this->club->short_name,
             ],
             'documents' => $documents
+
         ];
     }
 }

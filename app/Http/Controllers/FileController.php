@@ -95,20 +95,17 @@ class FileController extends Controller
     }
     public function deleteDocumentCompatitor(Request $request, Compatitor $compatitor)
     {
-        Storage::delete($compatitor->document()->where('id', $request->documentId)->get('doc_link'));
+        $url = $compatitor->document()->where('id', '=', $request->documentId)->get()->first()->doc_link;
+        Storage::delete($url);
         $compatitor->document()->where('id', $request->documentId)->delete();
 
         return new CompatitorsResource($compatitor);
 
     }
-    public function getCompatitorDocuments(Compatitor $compatitor) 
-    {
-        return DocumentsResource::collection($compatitor->document->all());
-    }
     public function addDocumentSpecialPersonal(Request $request, SpecialPersonal $special_personal)
     {
         
-        $path = Storage::putFile('spec-personal-docs', $request->document);
+        $path = Storage::putFile('special-persons-docs', $request->document);
         $special_personal->document()->create([
             'name' => $request->name,
             'doc_link' => $path
@@ -119,15 +116,14 @@ class FileController extends Controller
     }
     public function deleteDocumentSpecialPersonal(Request $request, SpecialPersonal $special_personal)
     {
-        Storage::delete($special_personal->document()->where('id', $request->documentId)->get('doc_link'));
+        $url = $special_personal->document()->where('id', '=', $request->documentId)->get()->first()->doc_link;
+        Storage::delete($url);
         $special_personal->document()->where('id', $request->documentId)->delete();
 
-        return new SpecialPersonalsResource($special_personal);
+        //return new SpecialPersonalsResource($special_personal);
+        return response()->json($url);
     }
-    public function getSpecialPersonalDocuments(SpecialPersonal $special_personal) 
-    {
-        return DocumentsResource::collection($special_personal->document->all());
-    }
+
 
 
 

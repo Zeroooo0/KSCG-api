@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Belt;
 use App\Models\Club;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -29,7 +30,7 @@ class CompatitorFactory extends Factory
             'status' => $this->faker->randomElement([true, false]),
             'date_of_birth' => $this->faker->dateTimeBetween($startDate = '-13 years', $endsDate = '-7 years'),
             'kscg_compatitor_id' => $compatitor_id,
-            'belt' => $this->faker->randomElement(['Bijeli', 'Žuti', 'Oranž', 'Zeleni', 'Plavi', 'Braon', 'Crni' ]),
+            'belt_id' => Belt::all()->random()->id,
             'weight' => $this->faker->numberBetween(20, 99)
         ];
     }

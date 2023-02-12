@@ -45,7 +45,7 @@ class AuthController extends Controller
         }
         
         return $this->success([
-            'user' => $user,
+            'user' => new UsersResource($user),
             'token' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
         ]);
     }
@@ -62,7 +62,7 @@ class AuthController extends Controller
         ]);
         
         return $this->success([
-            'user' => $user,
+            'user' => new UsersResource($user)
         ]);
     }
 
@@ -85,7 +85,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password)
             ]);
             return $this->success([
-                'user' => $user,
+                'user' => new UsersResource($user),
             ]);
         }
 

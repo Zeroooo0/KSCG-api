@@ -26,16 +26,15 @@ class CompatitorsController extends Controller
         $filter = new CompatitorsFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
-        if(count($queryItems) == 0) {
-            return CompatitorsResource::collection(Compatitor::paginate($per_page));
-        } else{
-            return CompatitorsResource::collection(Compatitor::where($queryItems)->paginate($per_page));
-        } 
+
+        return CompatitorsResource::collection(Compatitor::where($queryItems)->paginate($per_page));
+       
     }
 
     public function protected()
     {
         $per_page = 5;
+        
     
         if(Auth::user()->user_type == 0) {
             return CompatitorsResource::collection(
@@ -70,7 +69,7 @@ class CompatitorsController extends Controller
             'last_name' => $request->lastName,
             'gender' => $request->gender,
             'jmbg' => $request->jmbg,
-            'belt' => $request->belt,
+            'belt_id' => $request->belt,
             'date_of_birth' => $request->dateOfBirth,
             'weight' => $request->weight,
             'status' => Auth::user()->user_type == 0 ? 0 : 1
@@ -80,7 +79,7 @@ class CompatitorsController extends Controller
             $compatitor->image()->create([
                 'url' => $path
             ]);
-        }
+        };
 
 
         return new CompatitorsResource($compatitor);

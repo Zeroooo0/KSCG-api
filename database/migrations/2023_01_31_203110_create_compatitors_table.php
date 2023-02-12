@@ -22,7 +22,7 @@ return new class extends Migration
             //Male=1 Femail=2 
             $table->tinyInteger('gender');
             $table->string('jmbg');
-            $table->string('belt');
+            $table->unsignedBigInteger('belt_id');
             $table->date('date_of_birth');
             $table->decimal('weight', 4, 2);
             $table->boolean('status')->default(false);
@@ -30,6 +30,9 @@ return new class extends Migration
                 ->nullable()
                 ->references('id')
                 ->on('clubs');
+            $table->foreign('belt_id')
+                ->references('id')
+                ->on('belts');
             $table->timestamps();
         });
     }

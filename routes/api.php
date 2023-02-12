@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ClubsController;
 use App\Http\Controllers\CompatitorsController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\ReusableDataController;
 use App\Http\Controllers\SpecialPersonalsController;
 use App\Http\Controllers\UsersController;
 
@@ -50,9 +52,18 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     Route::post('/compatitor-documents-delete/{compatitor}', [FileController::class, 'deleteDocumentCompatitor']);
     Route::post('/special-personal-documents-delete/{special_personal}', [FileController::class, 'deleteDocumentSpecialPersonal']);
 
+    //Categories
+    Route::resource('/categories', CategoriesController::class);
+
+    //Reusabe data get
+    //Belts
+    Route::post('/belts/store', [ReusableDataController::class, 'store']);
+    Route::get('/belts', [ReusableDataController::class, 'index']);
+
     //Special personal
     Route::resource('/special-personal', SpecialPersonalsController::class);
-
+    //Special Persona in club
+    Route::post('/club-administration', [ClubsController::class, 'clubsAdministration']);
 
     Route::get('/clubs', [ClubsController::class, 'protected']);   
     Route::post('/clubs', [ClubsController::class, 'store']);

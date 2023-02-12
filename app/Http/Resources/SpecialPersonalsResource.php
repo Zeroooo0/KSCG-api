@@ -25,11 +25,25 @@ class SpecialPersonalsResource extends JsonResource
                 $path = $storage_url . 'default/default-f-user.jpg';
             }
         }
-        if($this->document->first() !== null) {
-            $documents = DocumentsResource::collection($this->document);
-        } else {
-            $documents =  'Nema dokumenta';
+        if($request->embed == true) {
+            if($this->document->first() !== null) {
+                $document_title = 'documents';
+                $documents = DocumentsResource::collection($this->document);
+            } else {
+                $document_title = 'documents';
+                $documents =  0;
+            }
+        } else{
+            if($this->document->first() !== null) {
+                $document_title = 'documents';
+                $documents = count($this->document);
+            } else {
+                $document_title = 'documents';
+                $documents =  0;
+            }
         }
+      
+
         return [
             'id' => $this->id,
             'basicInfo' => [
@@ -38,12 +52,12 @@ class SpecialPersonalsResource extends JsonResource
                 'country' => $this->country,
                 'email' => $this->email,
                 'phone' => $this->phone_number,
-                'rolle' => $this->rolle,
+                'role' => $this->rolle,
                 'status' => (boolean)$this->status,
                 'gender' => $this->gender,
                 'image' => $path
             ],
-            'documents' => $documents
+            $document_title => $documents
         ];
     }
 }

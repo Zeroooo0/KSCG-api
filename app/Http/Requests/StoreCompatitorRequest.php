@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCompatitorRequest extends FormRequest
@@ -27,9 +28,9 @@ class StoreCompatitorRequest extends FormRequest
             'kscgId' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'lastName' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'integer', 'max:3'],
+            'gender' => ['required', 'integer', 'max:3'], Rule::in([1, 2]),
             'jmbg' => ['required', 'integer'],
-            'belt' => ['required', 'string', 'max:255'],
+            'belt' => ['required', 'integer'],
             'dateOfBirth' => ['required', 'date'],
             'weight' => ['required', 'decimal:2'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif.png', 'max:2048'],
