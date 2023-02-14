@@ -27,7 +27,7 @@ class CompatitionFactory extends Factory
             'price_single' => $this->faker->randomElement([20, 30]),
             'price_team' => $this->faker->randomElement([30, 40]),
             'status' => 1,
-            'host_club' => $this->faker->name(),
+            'host_name' => $this->faker->name(),
         ];
     }
 }

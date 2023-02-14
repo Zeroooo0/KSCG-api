@@ -6,6 +6,7 @@ use App\Http\Requests\StoreClubRequest;
 use App\Http\Resources\ClubsResource;
 use App\Models\Club;
 use App\Models\Compatitor;
+use App\Models\Roles;
 use App\Models\SpecialPersonal;
 use App\Models\User;
 use App\Traits\HttpResponses;
@@ -125,18 +126,13 @@ class ClubsController extends Controller
         }
         $club->update($request->except(['shortName', 'phoneNumber', 'userId']));
 
-        if ($request->has('shortName')) {
-            $club->update([
-                'short_name' => $request->shortName
-            ]);
-        }
-        if ($request->has('phoneNumber')) {
-            $club->update([
-                'phone_number' => $request->phoneNumber
-            ]);
-        }
+        $club->update([
+            $request->has('shortName') ?? 'short_name' => $request->shortName,
+            $request->has('phoneNumber') ?? 'phone_number' => $request->phoneNumber,
+        ]);
+
         if ($request->has('userId')) {
-            if(Auth::user()->user_type == 2) {
+            if(Auth::user()->user_type !== 0) {
                 $club->update([
                     'user_id' => $request->userId
                 ]);
@@ -180,11 +176,38 @@ class ClubsController extends Controller
         $club = Club::find($request->clubId);
         $spec_personal = SpecialPersonal::find($request->specialPersonalId);
 
-        $club->roles()->create([
-            'special_personals_id' => $request->specialPersonalId,
-            'title' => $request->title,
-            'rolle' => $spec_personal->rolle
-        ]);
+        
+
+
+        $rolesExistance = Roles::where([['special_personals_id',  $request->specialPersonalId], ['roleable_type', 'App\Models\Club']])->count() >= 1 ? true : false;
+
+        if($rolesExistance) {
+            $roleIdOfClub = Roles::where([['special_personals_id',  $request->specialPersonalId], ['roleable_type', 'App\Models\Club']])->get()->first()->roleable_id;
+            $roleInClub = Club::find($roleIdOfClub)->name;
+            if($club->roles->where('special_personals_id', $request->specialPersonalId)->count() >= 1) {
+                return $this->error('', 'Već je prijavljen u vašem klubu!', 400);
+            }
+            if((string)$roleIdOfClub !== (string)$request->clubId) {
+                return $this->error('', 'Trener je već angažovan u KK ' . $roleInClub, 400);
+            }
+        } else {
+            $club->roles()->create([
+                'special_personals_id' => $request->specialPersonalId,
+                'title' => $request->title,
+                'role' => $spec_personal->role
+            ]);
+            return new ClubsResource($club);
+        }
+
+
+
+        
+
+       
+            
+     
+
+        
 
     }
 }

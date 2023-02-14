@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoriesResource;
 use App\Models\Category;
 use App\Traits\HttpResponses;
@@ -31,16 +33,17 @@ class CategoriesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
         if(Auth::user()->user_type !== 2) {
             return $this->restricted('', 'Not alowed!', 403);
         }
-        
+        $request->validated($request->all());
         
         $category = Category::create([
             'name' => $request->name,
             'kata_or_kumite' => $request->kataOrKumite,
+            'category_name' => $request->categoryName,
             'gender' => $request->gender, //1=Male 2=Femail 3=M+F
             'date_from' => $request->dateFrom,
             'date_to' => $request->dateTo,
@@ -78,22 +81,24 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
         if(Auth::user()->user_type !== 2) {
             return $this->restricted('', 'Not alowed!', 403);
         }
+        $request->validated($request->all());
+        $belts = array_filter(explode(',', $request->belts));
         $category->update($request->except(['kateOrKumite', 'dateFrom', 'dateTo', 'weightFrom', 'weightTo']));
+        $request->has('kataOrKumite') ? $category->update(['kata_or_kumite' => $request->kataOrKumite]) : null;
+        $request->has('dateFrom') ? $category->update(['date_from' => $request->dateFrom])  : null;
+        $request->has('dateTo') ? $category->update(['date_to' => $request->dateTo])  : null;
+        $request->has('weightFrom') ? $category->update(['weight_from' => $request->weightFrom])  : null;
+        $request->has('weightTo') ? $category->update(['weight_to' => $request->weightTo])  : null;
+        $request->has('soloOrTeam') ? $category->update(['solo_or_team' => $request->soloOrTeam])  : null;
+        $request->has('matchLenght') ? $category->update(['match_lenght' => $request->matchLenght])  : null;
+        $request->has('belts') ? $category->belts()->attach($belts)  : null;
 
-        $category->update([
-            $request->has('kateOrKumite') ?? 'kata_or_kumite' =>  $request->kateOrKumite, //0=Kata 1=Kumita
-            $request->has('dateFrom') ?? 'date_from' => $request->dateFrom,
-            $request->has('dateTo') ?? 'date_to' => $request->dateTo,
-            $request->has('weightFrom') ?? 'weight_from' => $request->weightFrom,
-            $request->has('weightTo') ?? 'weight_to' => $request->weightTo,
-            $request->has('soloOrTeam') ?? 'solo_or_team' => $request->soloOrTeam, //0=solo 1=team
-            $request->has('matchLenght') ?? 'match_lenght' => $request->matchLenght,       
-        ]);
+        
 
         return new CategoriesResource($category);
     }
@@ -106,6 +111,6 @@ class CategoriesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //Mora da se kreira nakon kreiranja takmicenja
     }
 }

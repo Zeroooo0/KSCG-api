@@ -18,12 +18,13 @@ return new class extends Migration
             $table->string('name');
             //0=Kata 1=Kumite
             $table->tinyInteger('kata_or_kumite');
+            $table->string('category_name')->nullable();
             //Male=1 Femail=2 Bouth=3
             $table->tinyInteger('gender');
             $table->date('date_from');
             $table->date('date_to');
-            $table->decimal('weight_from', 4, 2);
-            $table->decimal('weight_to', 4, 2);
+            $table->decimal('weight_from', 5, 2);
+            $table->decimal('weight_to', 5, 2);
             // 0=Solo 1=Team
             $table->boolean('solo_or_team');
             $table->integer('match_lenght');

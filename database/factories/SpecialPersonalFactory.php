@@ -23,7 +23,7 @@ class SpecialPersonalFactory extends Factory
             'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'phone_number' => $this->faker->phoneNumber(),
-            'rolle' => $this->faker->randomElement([0, 1, 2, 3]),
+            'role' => $this->faker->randomElement([0, 1, 2, 3]),
             'status' => true,
             'gender' => $gender,
             'country' => $this->faker->state()

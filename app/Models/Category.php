@@ -12,6 +12,7 @@ class Category extends Model
     protected $fillable = [
         'name',
         'kata_or_kumite',
+        'category_name',
         'gender',
         'date_from',
         'date_to',

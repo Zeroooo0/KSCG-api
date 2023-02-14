@@ -18,13 +18,13 @@ return new class extends Migration
             $table->unsignedBigInteger('special_personals_id');
             $table->string('title');
             //Special personal Rolle Trener / Sudija
-            $table->tinyInteger('rolle');
+            $table->tinyInteger('role');
             //Prestanak funkcije trenera
             $table->timestamp('active_untill')->nullable();
             $table->foreign('special_personals_id')
                 ->references('id')
                 ->on('special_personals');
-            $table->morphs('rolleable');
+            $table->morphs('roleable');
             $table->timestamps();
         });
     }

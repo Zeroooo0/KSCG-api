@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ClubsController;
+use App\Http\Controllers\CompatitionsController;
 use App\Http\Controllers\CompatitorsController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ReusableDataController;
@@ -65,6 +66,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     //Special Persona in club
     Route::post('/club-administration', [ClubsController::class, 'clubsAdministration']);
 
+    //COMPATITION
+    Route::resource('/compatitions', CompatitionsController::class);
+
+    //CLUB
     Route::get('/clubs', [ClubsController::class, 'protected']);   
     Route::post('/clubs', [ClubsController::class, 'store']);
     Route::get('/clubs/{club}', [ClubsController::class, 'show_protected']);

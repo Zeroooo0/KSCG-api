@@ -114,6 +114,9 @@ class UsersController extends Controller
         if(Auth::user()->user_type !== 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
+        if($user->user_type == 2) {
+            return $this->restricted('', 'Not alowed to delete main administrators!', 403);
+        }
         $user->delete();
 
         return $this->success('', 'User is delten', 200);

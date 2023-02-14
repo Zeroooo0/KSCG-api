@@ -17,11 +17,14 @@ class CategoriesResource extends JsonResource
         $kata_or_kumite = $this->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $this->gender == 1 ? 'M' : ($this->gender == 2 ? 'Ž' : 'M + Ž');
         $soloOrTeam = $this->solo_or_team == 0 ? 'Pojedinačno' : 'Ekipno';
+        $ekipno = $this->solo_or_team == 0 ? ' | Ekipno' : null;
         return [
             'id' => $this->id,
+            'combinedName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->name . ' ' . $this->category_name  . $ekipno,
             'name' => $this->name,
             'kataOrKumite' => $kata_or_kumite,
-            'gender' => $gender,
+            'categoryName' => $this->category_name,
+            'gender' => $gender, 
             'soloOrTeam' => $soloOrTeam,
             'validationData' => [
                 'dateFrom' => $this->date_from,

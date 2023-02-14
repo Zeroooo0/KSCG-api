@@ -11,7 +11,7 @@ class Roles extends Model
     protected $fillable = [
         'special_personals_id',
         'title',
-        'rolle',
+        'role',
 
     ];
 

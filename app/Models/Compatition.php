@@ -19,7 +19,8 @@ class Compatition extends Model
         'price_single',
         'price_team',
         'status',
-        'host_club'
+        'host_name',
+        'registration_status'
     ];
     public function categories() 
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Roles;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,7 +43,6 @@ class SpecialPersonalsResource extends JsonResource
                 $documents =  0;
             }
         }
-      
 
         return [
             'id' => $this->id,
@@ -52,12 +52,13 @@ class SpecialPersonalsResource extends JsonResource
                 'country' => $this->country,
                 'email' => $this->email,
                 'phone' => $this->phone_number,
-                'role' => $this->rolle,
+                'role' => $this->role,
                 'status' => (boolean)$this->status,
                 'gender' => $this->gender,
                 'image' => $path
             ],
-            $document_title => $documents
+            $document_title => $documents,
+
         ];
     }
 }

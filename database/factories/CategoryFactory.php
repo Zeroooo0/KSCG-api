@@ -20,9 +20,12 @@ class CategoryFactory extends Factory
         $date_from = $this->faker->dateTimeInInterval($date_to, '- 1 year');
         $weight_from = $this->faker->numberBetween(30, 89);
         $weight_to = $weight_from + 10;
+        $kateOrKumite = $this->faker->randomElement([0, 1]);
+        $categoryName = $kateOrKumite == 1 ? $this->faker->randomElement(['Apsolutni nivo', 'I nivo', 'II nivo', 'III nivo']) : '-' . $weight_to;
         return [
             'name' => $this->faker->randomElement(['Juniori', 'Kadeti', 'Seniori', 'U21', 'Nade', 'Poletarci']),
-            'kata_or_kumite' => $this->faker->randomElement([0, 1]),
+            'kata_or_kumite' => $kateOrKumite,
+            'category_name' => $categoryName,
             'gender' => $this->faker->randomElement([1, 2, 3]),
             'date_from' => $date_from,
             'date_to' => $date_to,

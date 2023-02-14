@@ -26,12 +26,13 @@ class StoreCategoryRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'kataOrKumite' => ['required', 'boolean'],
+            'categoryName' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'integer', 'min:1', 'max:3'],
             'dateFrom' => ['required', 'date_format:Y-m-d'],
             'dateTo' => ['required', 'date_format:Y-m-d'],
             'weightFrom' => ['required', 'numeric'],
             'weightTo' => ['required', 'numeric'],
-            'matchLenght' => ['required', 'numeric'],
+            'matchLenght' => ['required', 'numeric'], 
             'soloOrTeam' => ['required', 'boolean']
         ];
     }
