@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\CategoriesInCompatitionController;
 use App\Http\Controllers\ClubsController;
 use App\Http\Controllers\CompatitionsController;
 use App\Http\Controllers\CompatitorsController;
@@ -84,6 +85,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     
     //Users control
     Route::resource('/users', UsersController::class);
+
+    //TESTING SOMETHING
+    Route::get('/validated-cat', [CategoriesInCompatitionController::class, 'index']);
 
 
 });

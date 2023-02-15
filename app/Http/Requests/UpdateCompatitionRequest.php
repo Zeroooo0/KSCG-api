@@ -33,8 +33,9 @@ class UpdateCompatitionRequest extends FormRequest
             'country' => ['string', 'max:255'],
             'city' => ['string', 'max:255'],
             'address' => ['string', 'max:255'],
-            'status' => ['boolean', 'max:255'],
-            'registrationStatus' => ['boolean', 'max:255'],
+            'status' => ['boolean'],
+            'registrationStatus' => ['boolean'],
+            'categories' => ['string', 'max:255'],
         ];
     }
 }

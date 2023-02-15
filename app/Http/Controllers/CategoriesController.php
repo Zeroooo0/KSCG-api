@@ -21,7 +21,7 @@ class CategoriesController extends Controller
     public function index(Request $request)
     {   
         $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
         $paginate = $request->perPage;
         $category = Category::orderBy($sort, $sortDirection);
         return CategoriesResource::collection($category->paginate($paginate));
@@ -87,7 +87,7 @@ class CategoriesController extends Controller
             return $this->restricted('', 'Not alowed!', 403);
         }
         $request->validated($request->all());
-        $belts = array_filter(explode(',', $request->belts));
+        
         $category->update($request->except(['kateOrKumite', 'dateFrom', 'dateTo', 'weightFrom', 'weightTo']));
         $request->has('kataOrKumite') ? $category->update(['kata_or_kumite' => $request->kataOrKumite]) : null;
         $request->has('dateFrom') ? $category->update(['date_from' => $request->dateFrom])  : null;
@@ -96,8 +96,11 @@ class CategoriesController extends Controller
         $request->has('weightTo') ? $category->update(['weight_to' => $request->weightTo])  : null;
         $request->has('soloOrTeam') ? $category->update(['solo_or_team' => $request->soloOrTeam])  : null;
         $request->has('matchLenght') ? $category->update(['match_lenght' => $request->matchLenght])  : null;
-        $request->has('belts') ? $category->belts()->attach($belts)  : null;
 
+        $belts = array_filter(explode(',', $request->belts));
+
+        $request->has('belts') ? $category->belts()->sync($belts)  : null;
+        
         
 
         return new CategoriesResource($category);

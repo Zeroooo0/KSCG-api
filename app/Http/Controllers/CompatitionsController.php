@@ -20,7 +20,7 @@ class CompatitionsController extends Controller
     {
         return CompatitionsResource::collection(Compatition::paginate($request->perPage));
     }
-    
+
     public function public(Request $request)
     {
         return CompatitionsResource::collection(Compatition::where('status', 1)->paginate($request->perPage));
@@ -59,6 +59,9 @@ class CompatitionsController extends Controller
             'registration_status' => $registrationStatus
         ]);
 
+        $categories = array_filter(explode(',', $request->categories));
+        $compatition->categories()->sync($categories);
+
         return new CompatitionsResource($compatition);
     }
 
@@ -91,6 +94,11 @@ class CompatitionsController extends Controller
         $request->has('priceTeam') ? $compatition->update(['price_team' => $request->priceTeam]) : null;
         $request->has('registrationStatus') ? $compatition->update(['registration_status' => $request->registrationStatus]) : null;
         $request->has('status') && Auth::user()->user_type !== 0 ? $compatition->update(['status' => $request->status]) : null;
+
+        if($request->has('categories')) {
+            $categories = array_filter(explode(',', $request->categories));
+            $compatition->categories()->sync($categories);
+        }
 
         return new CompatitionsResource($compatition);
     }

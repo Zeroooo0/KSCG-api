@@ -33,7 +33,8 @@ class StoreCompatitionRequest extends FormRequest
             'country' => ['required', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
-            'status' => ['boolean', 'max:255']
+            'status' => ['boolean', 'max:255'],
+            'categories' =>['required', 'string']
         ];
     }
 }

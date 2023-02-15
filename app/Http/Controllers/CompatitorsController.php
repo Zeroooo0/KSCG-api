@@ -27,14 +27,15 @@ class CompatitorsController extends Controller
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
 
-        return CompatitorsResource::collection(Compatitor::where($queryItems)->paginate($per_page));
+        return CompatitorsResource::collection(Compatitor::where($queryItems)->paginate());
        
     }
 
-    public function protected()
+    public function protected(Request $request)
     {
-        $per_page = 5;
-        
+        $per_page = $request->perPage;
+        $filter = new CompatitorsFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
     
         if(Auth::user()->user_type == 0) {
             return CompatitorsResource::collection(

@@ -29,6 +29,7 @@ return new class extends Migration
             $table->boolean('solo_or_team');
             $table->integer('match_lenght');
             $table->boolean('status');
+            $table->boolean('repesaz')->default(0);
             $table->timestamps();
         });
     }

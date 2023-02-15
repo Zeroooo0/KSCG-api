@@ -18,6 +18,10 @@ class CategoriesResource extends JsonResource
         $gender = $this->gender == 1 ? 'M' : ($this->gender == 2 ? 'Ž' : 'M + Ž');
         $soloOrTeam = $this->solo_or_team == 0 ? 'Pojedinačno' : 'Ekipno';
         $ekipno = $this->solo_or_team == 0 ? ' | Ekipno' : null;
+        $belts = [];
+        foreach ($this->belts as $belt) {
+            $belts[] = $belt->id;
+        }
         return [
             'id' => $this->id,
             'combinedName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->name . ' ' . $this->category_name  . $ekipno,
@@ -34,7 +38,7 @@ class CategoriesResource extends JsonResource
                 'soloOrTeam' => $this->solo_or_team,
                 'lenghtOfMatch' => $this->match_lenght,
                 'status' => $this->status,
-                'belts' => BeltResource::collection($this->belts)
+                'belts' => $belts
             ]
         ];
     }

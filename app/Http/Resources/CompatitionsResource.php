@@ -14,6 +14,13 @@ class CompatitionsResource extends JsonResource
      */
     public function toArray($request)
     {
+        
+        
+        $arr = [];
+        foreach ($this->categories as $category) {
+            $categoryList = $category->pivot->category_id; 
+            $arr[] = (string)$categoryList;
+        }
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -29,6 +36,7 @@ class CompatitionsResource extends JsonResource
             ],
             'status' => (boolean)$this->status,
             'registrationStatus' => (boolean)$this->registration_status,
+            'categories' => $arr  //CategoriesResource::collection($this->categories)
         ];
     }
 }
