@@ -25,11 +25,12 @@ return new class extends Migration
             $table->date('date_to');
             $table->decimal('weight_from', 5, 2);
             $table->decimal('weight_to', 5, 2);
-            // 0=Solo 1=Team
+            // 0=Solo 1=Team 
             $table->boolean('solo_or_team');
             $table->integer('match_lenght');
             $table->boolean('status');
             $table->boolean('repesaz')->default(0);
+            $table->integer('points_multiplier')->nullable();
             $table->timestamps();
         });
     }

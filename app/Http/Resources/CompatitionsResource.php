@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Club;
+use App\Models\Compatition;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CompatitionsResource extends JsonResource
@@ -14,13 +16,17 @@ class CompatitionsResource extends JsonResource
      */
     public function toArray($request)
     {
-        
-        
+        $registration = $this->club_id;
         $arr = [];
         foreach ($this->categories as $category) {
             $categoryList = $category->pivot->category_id; 
             $arr[] = (string)$categoryList;
         }
+        $clubs = [];
+        foreach ($this->registrations->countBy('club_id') as $club=>$val) {   
+            $clubs[] = $club;            
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -29,14 +35,24 @@ class CompatitionsResource extends JsonResource
             'priceTeam' => $this->price_team,
             'startTimeDate' => $this->start_time_date,
             'registrationDeadline' => date($this->registration_deadline),
-            'eventLocation' => [
+            'location' => [
                 'country' => $this->country,
                 'city' => $this->city,
                 'address' => $this->address,
             ],
             'status' => (boolean)$this->status,
             'registrationStatus' => (boolean)$this->registration_status,
-            'categories' => $arr  //CategoriesResource::collection($this->categories)
+            'categories' => $arr,  //CategoriesResource::collection($this->categories)
+            'registrations' => [
+                'clubs' => $this->registrations->countBy('club_id')->count(),
+                'compatitor' => $this->registrations->countBy('compatitor_id')->count(),
+                'categories' => $this->registrations->countBy('category_id')->count(),
+                'total' => $this->registrations->count(),
+                'countries' => Club::whereIn('id', $clubs)->get()->countBy('country')->count(),
+                'clubsData' => ClubsOnCompatitionResource::collection(Club::whereIn('id', $clubs)->get())
+            ]
+
+           
         ];
     }
 }

@@ -118,6 +118,7 @@ class CompatitorsController extends Controller
      */
     public function update(Request $request, Compatitor $compatitor)
     {
+        
         if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Not alowed!', 403);
         }

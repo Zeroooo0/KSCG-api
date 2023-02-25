@@ -27,7 +27,7 @@ class CategoriesFilter {
         'dateTo' => 'date_to',
         'weightFrom' => 'weight_from',
         'weightTo' => 'weight_to',
-        'soloOrTeam' => 'solo_or_team',
+        'soloOrTeam' => 'solo_or_team', 
     ];
 
     protected $operatorMap = [

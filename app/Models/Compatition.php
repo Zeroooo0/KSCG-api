@@ -24,10 +24,23 @@ class Compatition extends Model
     ];
     public function categories() 
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class)
+            ->withPivot('tatami');
     }
     public function roles() 
     {
         return $this->morphMany(Roles::class, 'roleable');
+    }
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
+    public function pools()
+    {
+        return $this->hasMany(Pool::class);
+    }
+    public function timeTable()
+    {
+        return $this->hasMany(TimeTable::class);
     }
 }

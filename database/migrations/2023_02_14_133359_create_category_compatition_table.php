@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('compatition_id');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('compatition_id')->references('id')->on('compatitions')->onDelete('cascade');
+            $table->string('tatami')->nullable();
         });
     }
 

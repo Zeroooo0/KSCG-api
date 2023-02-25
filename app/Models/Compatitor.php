@@ -39,5 +39,8 @@ class Compatitor extends Model
     {
         return $this->belongsTo(Belt::class);
     }
-    
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
 }

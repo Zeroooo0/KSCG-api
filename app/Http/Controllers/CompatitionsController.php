@@ -18,6 +18,7 @@ class CompatitionsController extends Controller
      */
     public function index(Request $request)
     {
+        
         return CompatitionsResource::collection(Compatition::paginate($request->perPage));
     }
 
@@ -109,7 +110,7 @@ class CompatitionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Compatition $compatition)
     {
         //
     }

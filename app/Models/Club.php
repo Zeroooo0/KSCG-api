@@ -38,5 +38,8 @@ class Club extends Model
     {
         return $this->morphMany(Roles::class, 'roleable');
     }
-
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
 }

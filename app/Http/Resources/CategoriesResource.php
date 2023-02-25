@@ -16,8 +16,8 @@ class CategoriesResource extends JsonResource
     {
         $kata_or_kumite = $this->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $this->gender == 1 ? 'M' : ($this->gender == 2 ? 'Ž' : 'M + Ž');
-        $soloOrTeam = $this->solo_or_team == 0 ? 'Pojedinačno' : 'Ekipno';
-        $ekipno = $this->solo_or_team == 0 ? ' | Ekipno' : null;
+        $soloOrTeam = $this->solo_or_team ? 'Pojedinačno' : 'Ekipno';
+        $ekipno = $this->solo_or_team  ? null : ' | Ekipno';
         $belts = [];
         foreach ($this->belts as $belt) {
             $belts[] = $belt->id;

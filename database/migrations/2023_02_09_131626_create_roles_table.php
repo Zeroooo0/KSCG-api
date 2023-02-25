@@ -15,15 +15,15 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('special_personals_id');
+            $table->foreignId('special_personals_id')
+                ->references('id')
+                ->on('special_personals')
+                ->onDelete('cascade');
             $table->string('title');
             //Special personal Rolle Trener / Sudija
             $table->tinyInteger('role');
             //Prestanak funkcije trenera
             $table->timestamp('active_untill')->nullable();
-            $table->foreign('special_personals_id')
-                ->references('id')
-                ->on('special_personals');
             $table->morphs('roleable');
             $table->timestamps();
         });

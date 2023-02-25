@@ -7,8 +7,11 @@ use App\Http\Controllers\ClubsController;
 use App\Http\Controllers\CompatitionsController;
 use App\Http\Controllers\CompatitorsController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\PoolsController;
+use App\Http\Controllers\RegistrationsController;
 use App\Http\Controllers\ReusableDataController;
 use App\Http\Controllers\SpecialPersonalsController;
+use App\Http\Controllers\TimeTablesController;
 use App\Http\Controllers\UsersController;
 
 use Illuminate\Support\Facades\Route;
@@ -86,9 +89,16 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     //Users control
     Route::resource('/users', UsersController::class);
 
-    //TESTING SOMETHING
-    Route::get('/validated-cat', [CategoriesInCompatitionController::class, 'index']);
+    //Registration 
+    Route::resource('/registrations', RegistrationsController::class);
 
+    //Pull table 
+    Route::resource('/pools', PoolsController::class);
+    Route::put('/pools/{compatition}', [PoolsController::class, 'updateBatch']);
+
+
+    //Timetable
+    Route::resource('/time-table', TimeTablesController::class);
 
 });
 

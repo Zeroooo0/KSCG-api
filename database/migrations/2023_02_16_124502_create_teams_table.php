@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('belts', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('compatition_id')
+                ->references('id')
+                ->on('compatitions')
+                ->onDelete('cascade');
             $table->string('name');
-            $table->string('hash_color')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('belts');
+        Schema::dropIfExists('teams');
     }
 };

@@ -173,8 +173,8 @@ class ClubsController extends Controller
 
     public function clubsAdministration(Request $request)
     {
-        $club = Club::find($request->clubId);
-        $spec_personal = SpecialPersonal::find($request->specialPersonalId);
+        $club = Club::where('id', $request->clubId);
+        $spec_personal = SpecialPersonal::where('id', $request->specialPersonalId);
 
         
 

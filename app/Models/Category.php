@@ -24,10 +24,23 @@ class Category extends Model
     ];
     public function compatitions()
     {
-        return $this->belongsToMany(Compatition::class);
+        return $this->belongsToMany(Compatition::class)
+            ->withPivot('tatami');
     }
     public function belts()
     {
         return $this->belongsToMany(Belt::class, 'belts_categories');
+    }
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
+    public function pools()
+    {
+        return $this->hasMany(Pool::class);
+    }
+    public function timeTable()
+    {
+        return $this->hasMany(TimeTable::class);
     }
 }
