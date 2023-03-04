@@ -25,7 +25,7 @@ class UsersResource extends JsonResource
         }
         $data_name = 'userType';
         $data = $userType;
-        if($this->user_type == 0) {
+        if($this->user_type == 0 && $this->club !== null) {
             $data_name = 'club';
             $data = [
                 'id' => (string)$this->club->id,

@@ -61,7 +61,9 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ]);
         
-        return $this->success('', $user);
+        return $this->success([
+            'user' => new UsersResource($user)
+        ]);
     }
 
     public function logout()
