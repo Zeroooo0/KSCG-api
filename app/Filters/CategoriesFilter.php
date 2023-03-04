@@ -9,7 +9,7 @@ class CategoriesFilter {
     protected $safeParms = [
         'name' => ['eq', 'like'],
         'kataOrKumite' => ['eq'],
-        'categoryName' => ['eq'],
+        'categoryName' => ['eq', 'like'],
         'gender' => ['eq'],
         'dateFrom' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'dateTo' => ['eq', 'gt', 'gte', 'lt', 'lte'],
@@ -37,7 +37,7 @@ class CategoriesFilter {
         'gt' => '>',
         'gte' => '>=',
         'lorg' => '<>',
-        'like' => 'LIKE'
+        'like' => 'like'
     ];
 
     public function transform(Request $request) {
@@ -53,7 +53,7 @@ class CategoriesFilter {
 
             foreach ($operators as $operator) {
                 if (isset($query[$operator])) {
-                    $eloQuery[] = [$column, $this->operatorMap[$operator], $query[$operator]];
+                    $eloQuery[] = [$column, $this->operatorMap[$operator], $this->operatorMap[$operator] == 'like' ? "%$query[$operator]%" :$query[$operator]];
                 }
             }
         }

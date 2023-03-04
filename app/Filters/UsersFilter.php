@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 
 class UsersFilter {
     protected $safeParms = [
-        'name' => ['eq'],
-        'lastName' => ['eq'],
+        'name' => ['eq', 'like'],
+        'lastName' => ['eq', 'like'],
         'status' => ['eq'],
-        'email' => ['eq'],
+        'email' => ['eq', 'like'],
         'userType' => ['eq']
     ];
 
@@ -20,7 +20,8 @@ class UsersFilter {
     ];
 
     protected $operatorMap = [
-        'eq' => '='
+        'eq' => '=',
+        'like' => 'like'
     ];
 
     public function transform(Request $request) {
@@ -36,7 +37,7 @@ class UsersFilter {
 
             foreach ($operators as $operator) {
                 if (isset($query[$operator])) {
-                    $eloQuery[] = [$column, $this->operatorMap[$operator], $query[$operator]];
+                    $eloQuery[] = [$column, $this->operatorMap[$operator], $this->operatorMap[$operator] == 'like' ? "%$query[$operator]%" :$query[$operator]];
                 }
             }
         }

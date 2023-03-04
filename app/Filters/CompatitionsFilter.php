@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 class CompatitionsFilter {
     protected $safeParms = [
         'name' => ['eq', 'like'],
-        'country' => ['eq'],
-        'city' => ['eq'],
-        'address' => ['eq'],
+        'country' => ['eq', 'like'],
+        'city' => ['eq', 'like'],
+        'address' => ['eq', 'like'],
         'startTime' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'registrationDeadline' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'status' => ['eq'],
@@ -45,7 +45,7 @@ class CompatitionsFilter {
 
             foreach ($operators as $operator) {
                 if (isset($query[$operator])) {
-                    $eloQuery[] = [$column, $this->operatorMap[$operator], $query[$operator]];
+                    $eloQuery[] = [$column, $this->operatorMap[$operator], $this->operatorMap[$operator] == 'like' ? "%$query[$operator]%" :$query[$operator]];
                 }
             }
         }

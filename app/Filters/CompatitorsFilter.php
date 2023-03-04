@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 
 class CompatitorsFilter {
     protected $safeParms = [
-        'name' => ['eq'],
-        'lastName' => ['eq'],
+        'name' => ['eq', 'like'],
+        'lastName' => ['eq', 'like'],
         'status' => ['eq'],
         'beltId' => ['eq'],
         'birthDay' => ['eq', 'gt', 'gte', 'lt', 'lte'],
@@ -27,6 +27,7 @@ class CompatitorsFilter {
         'lte' => '<=',
         'gt' => '>',
         'gte' => '>=',
+        'like' => 'like'
     ];
 
     public function transform(Request $request) {
@@ -42,7 +43,7 @@ class CompatitorsFilter {
 
             foreach ($operators as $operator) {
                 if (isset($query[$operator])) {
-                    $eloQuery[] = [$column, $this->operatorMap[$operator], $query[$operator]];
+                    $eloQuery[] = [$column, $this->operatorMap[$operator], $this->operatorMap[$operator] == 'like' ? "%$query[$operator]%" :$query[$operator]];
                 }
             }
         }

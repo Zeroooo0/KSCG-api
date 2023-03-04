@@ -7,14 +7,14 @@ use Illuminate\Http\Request;
 
 class ClubsFilter {
     protected $safeParms = [
-        'name' => ['eq'],
-        'shortName' => ['eq'],
-        'country' => ['eq'],
-        'town' => ['eq'],
-        'address' => ['eq'],
+        'name' => ['eq', 'like'],
+        'shortName' => ['eq', 'like'],
+        'country' => ['eq', 'like'],
+        'town' => ['eq', 'like'],
+        'address' => ['eq', 'like'],
         'pib' => ['eq'],
-        'email' => ['eq'],
-        'phoneNumber' => ['eq'],
+        'email' => ['eq', 'like'],
+        'phoneNumber' => ['eq', 'like'],
         'userId' => ['eq']
     ];
 
@@ -26,7 +26,7 @@ class ClubsFilter {
 
     protected $operatorMap = [
         'eq' => '=',
-        'like' => 'LIKE'
+        'like' => 'like'
     ];
 
     public function transform(Request $request) {
@@ -42,7 +42,7 @@ class ClubsFilter {
 
             foreach ($operators as $operator) {
                 if (isset($query[$operator])) {
-                    $eloQuery[] = [$column, $this->operatorMap[$operator], $query[$operator]];
+                    $eloQuery[] = [$column, $this->operatorMap[$operator], $this->operatorMap[$operator] == 'like' ? "%$query[$operator]%" :$query[$operator]];
                 }
             }
         }
