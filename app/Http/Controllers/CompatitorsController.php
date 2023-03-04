@@ -71,7 +71,7 @@ class CompatitorsController extends Controller
      */
     public function store(StoreCompatitorRequest $request)
     {
-        if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Not alowed!', 403);
         }
         $request->validated($request->all());
@@ -88,7 +88,7 @@ class CompatitorsController extends Controller
             'weight' => $request->weight,
             'status' => Auth::user()->user_type == 0 ? 0 : 1
         ]);
-        if($request->image !== null) {
+        if($request->image != null) {
             $path = Storage::putFile('compatitor-image', $request->image);
             $compatitor->image()->create([
                 'url' => $path
@@ -114,7 +114,7 @@ class CompatitorsController extends Controller
     public function show(Compatitor $compatitor)
     {
 
-        if(Auth::user()->user_type == 0 && Auth::user()->club->id !== $compatitor->club_id) {
+        if(Auth::user()->user_type == 0 && Auth::user()->club->id != $compatitor->club_id) {
             return $this->restricted('', 'You are not authorized to make the request!', 403);
         } else {
             return new CompatitorsResource($compatitor);
@@ -132,10 +132,10 @@ class CompatitorsController extends Controller
     public function update(Request $request, Compatitor $compatitor)
     {
         
-        if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Suspendovani ste molimo vas da kontaktirate KSCG!', 403);
         }
-        if(Auth::user()->user_type == 0 && $compatitor->club_id !== Auth::user()->club->id) {
+        if(Auth::user()->user_type == 0 && $compatitor->club_id != Auth::user()->club->id) {
             return $this->restricted('', 'Možete vršiti izmjene samo članova Vašeg kluba!', 403);
         }
         $compatitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status']));
@@ -153,7 +153,7 @@ class CompatitorsController extends Controller
         }
         if ($request->has('clubId')) {
 
-            if(Auth::user()->user_type !== 2 || Auth::user()->user_type == 0) {
+            if(Auth::user()->user_type != 2 || Auth::user()->user_type == 0) {
                 return $this->error('', 'Takmičara mogu premjestiti samo aktivni administratori ove platforme!', 403);
             } 
 
@@ -163,7 +163,7 @@ class CompatitorsController extends Controller
         }
         if ($request->has('status')) {
 
-            if(Auth::user()->user_type !== 2 || Auth::user()->user_type == 0) {
+            if(Auth::user()->user_type != 2 || Auth::user()->user_type == 0) {
                 return $this->error('', 'Status mogu promijeniti aktivni administratori ove platforme!', 403);
             } 
 
@@ -189,7 +189,7 @@ class CompatitorsController extends Controller
      */
     public function destroy(Compatitor $compatitor)
     {
-        if(Auth::user()->user_type !== 2){
+        if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Brisanje nije dozvoljeno!', 403);
         }
         foreach($compatitor->image()->get() as $image) {

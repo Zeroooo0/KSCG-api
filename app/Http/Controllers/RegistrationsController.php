@@ -25,7 +25,7 @@ class RegistrationsController extends Controller
     public function index(Request $request)
     {
         $per_page = $request->perPage;
-        if(Auth::user()->user_type !== 0 || Auth::user()->user_type == 1 && Auth::user()->status == 1){
+        if(Auth::user()->user_type != 0 || Auth::user()->user_type == 1 && Auth::user()->status == 1){
             return RegistrationsResource::collection(Registration::paginate($per_page));
         }
         if(Auth::user()->user_type == 0 && Auth::user()->status == 1) {
@@ -41,7 +41,7 @@ class RegistrationsController extends Controller
      */
     public function store(StoreRegistrationRequest $request)
     {
-        if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Not alowed!', 403);
         }
         
@@ -67,7 +67,7 @@ class RegistrationsController extends Controller
             if($team_or_solo == 0 && $data['teamId'] == null){
                 return $this->error('', 'Ekipne kategorije moraju da posjeduju id tima!', 403);
             }
-            if($team_or_solo == 1 && $data['teamId'] !== null){
+            if($team_or_solo == 1 && $data['teamId'] != null){
                 $data['teamId'] == null;
             }
 

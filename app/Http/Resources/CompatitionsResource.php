@@ -28,7 +28,7 @@ class CompatitionsResource extends JsonResource
             $clubs[] = $club;            
         }
         $imageUrl = null;
-        if($this->image !== null) {
+        if($this->image != null) {
             $imageUrl = $storage_url . $this->image->url;
         }
         

@@ -38,12 +38,12 @@ class CompatitionsController extends Controller
      */
     public function store(StoreCompatitionRequest $request)
     {
-        if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Not alowed!', 403);
         }
         $request->validated($request->all());
 
-        if(Auth::user()->user_type !== 0 && $request->status !== null) {
+        if(Auth::user()->user_type != 0 && $request->status != null) {
             $status = $request->status;
         } else {
             $status = false;
@@ -63,7 +63,7 @@ class CompatitionsController extends Controller
             'status'=> $status,
             'registration_status' => $registrationStatus
         ]);
-        if($request->image !== null) {
+        if($request->image != null) {
             $path = Storage::putFile('compatition-image', $request->image);
             $compatition->image()->create([
                 'url' => $path
@@ -104,7 +104,7 @@ class CompatitionsController extends Controller
         $request->has('priceSingle') ? $compatition->update(['price_single' => $request->priceSingle]) : null;
         $request->has('priceTeam') ? $compatition->update(['price_team' => $request->priceTeam]) : null;
         $request->has('registrationStatus') ? $compatition->update(['registration_status' => $request->registrationStatus]) : null;
-        $request->has('status') && Auth::user()->user_type !== 0 ? $compatition->update(['status' => $request->status]) : null;
+        $request->has('status') && Auth::user()->user_type != 0 ? $compatition->update(['status' => $request->status]) : null;
 
         if($request->has('categories')) {
             $categories = array_filter(explode(',', $request->categories));

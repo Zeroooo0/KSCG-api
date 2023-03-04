@@ -16,7 +16,7 @@ class PagesResource extends JsonResource
     {
         date_default_timezone_set('Europe/Amsterdam');
         $userData = $this->user_id;
-        if($this->user_id !== null) {
+        if($this->user_id != null) {
             $userData = [
                 'id' => (string)$this->user->id,
                 'name' => $this->user->name,
@@ -24,11 +24,11 @@ class PagesResource extends JsonResource
             ];
         }
         $image = null;
-        if($this->images !== []) {
+        if($this->images != []) {
            $image = ImageResource::collection($this->images);
         }
         $cover_image = $this->cover_image;
-        if($this->cover_image !== null) {
+        if($this->cover_image != null) {
             $cover_image = new ImageResource($this->images->where('id', $this->cover_image)->first());
         }
         return [

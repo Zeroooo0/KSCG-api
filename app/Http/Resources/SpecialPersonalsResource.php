@@ -21,7 +21,7 @@ class SpecialPersonalsResource extends JsonResource
         $documents = 'embeddable';
         $rolesCollection = 'embeddable';
 
-        if($this->image !== null) {
+        if($this->image != null) {
             $path =  $storage_url . $this->image->url;
         } else {
             if($this->gender == 'M') {
@@ -31,14 +31,14 @@ class SpecialPersonalsResource extends JsonResource
             }
         }
         if(str_contains($request->embed, 'documents')) {
-            if($this->document->first() !== null) {
+            if($this->document->first() != null) {
                 $documents = DocumentsResource::collection($this->document);
             } else {
                 $documents =  'Nema dokumenta';
             }
         }
         if(str_contains($request->embed, 'roles')) {
-            if($roles->first() !== null) {
+            if($roles->first() != null) {
                 $rolesCollection = RolesResource::collection($roles);
             } else {
                 $rolesCollection =  (string)$roles->count();

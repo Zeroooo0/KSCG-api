@@ -18,7 +18,7 @@ class RegistratedCompatitorsResource extends JsonResource
         $gender = $this->category->gender == 1 ? 'M' : ($this->category->gender == 2 ? 'Ž' : 'M + Ž');
         $ekipno = $this->category->solo_or_team == 0 ? ' | Ekipno' : null;
         $price = $this->category->solo_or_team == 0 ? $this->compatition->price_single : $this->compatition->price_team;
-        if($this->category->solo_or_team == 0 && $this->team_id !== null){
+        if($this->category->solo_or_team == 0 && $this->team_id != null){
             $name = 'team';
             $data = [
                 'id' => $this->team->id,

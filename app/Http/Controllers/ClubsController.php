@@ -70,7 +70,7 @@ class ClubsController extends Controller
      */
     public function store(StoreClubRequest $request)
     {
-        if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Not alowed!', 403);
         }
         $request->validated($request->all());
@@ -86,7 +86,7 @@ class ClubsController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phoneNumber
         ]);
-        if($request->image !== null) {
+        if($request->image != null) {
             $path = Storage::putFile('club-image', $request->image);
             $club->image()->create([
                 'url' => $path
@@ -130,10 +130,10 @@ class ClubsController extends Controller
     public function update(Request $request, Club $club)
     {
         
-        if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Not alowed!', 403);
         }
-        if(Auth::user()->user_type == 0 && Auth::user()->club->id !== $club->id) {
+        if(Auth::user()->user_type == 0 && Auth::user()->club->id != $club->id) {
             return $this->restricted('', 'U are only allowed to change ur own club!', 403);
         }
         $club->update($request->except(['shortName', 'phoneNumber', 'userId']));
@@ -141,7 +141,7 @@ class ClubsController extends Controller
         $request->has('shortName') ? $club->update(['short_name' => $request->shortName]) : null;
         $request->has('phoneNumber') ? $club->update(['phone_number' => $request->phoneNumber]) : null;
         if ($request->has('userId')) {
-            if(Auth::user()->user_type !== 0) {
+            if(Auth::user()->user_type != 0) {
                 $club->update([
                     'user_id' => $request->userId
                 ]);
@@ -163,7 +163,7 @@ class ClubsController extends Controller
 
     public function destroy(Request $request, Club $club)
     {
-        if(Auth::user()->user_type !== 2){
+        if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
         if($club->compatitors()->count() > 0) {

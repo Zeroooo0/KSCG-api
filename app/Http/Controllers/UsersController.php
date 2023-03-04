@@ -32,7 +32,7 @@ class UsersController extends Controller
 
         $search = '%'. $request->search . '%';
 
-        if(Auth::user()->user_type !== 2){
+        if(Auth::user()->user_type != 2){
             return UsersResource::collection(
                 $user->where('id', Auth::user()->id)->get()
             );
@@ -51,7 +51,7 @@ class UsersController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        if(Auth::user()->user_type !== 2){
+        if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
         $user_type = Auth::user()->user_type == 2 ? $request->user_type : 0;
@@ -77,7 +77,7 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        if(Auth::user()->user_type !== 2){
+        if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
         return new UsersResource($user);
@@ -93,11 +93,11 @@ class UsersController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $request->validated($request->all());
-        if(Auth::user()->user_type !== 2 && $user->id !== Auth::user()->id) {
+        if(Auth::user()->user_type != 2 && $user->id != Auth::user()->id) {
             return $this->restricted('', 'Not alowed!', 403);
         }
-        if(Auth::user()->user_type !== 2) {
-            if($request->user_type !== null || $request->status !== 0) {
+        if(Auth::user()->user_type != 2) {
+            if($request->user_type != null || $request->status != 0) {
                 return $this->restricted('', 'Not alowed!', 403);
             }
         }
@@ -123,7 +123,7 @@ class UsersController extends Controller
      */
     public function destroy(User $user)
     {
-        if(Auth::user()->user_type !== 2){
+        if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
         if($user->user_type == 2) {

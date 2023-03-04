@@ -17,9 +17,9 @@ class CompatitorsResource extends JsonResource
     public function toArray($request)
     {
         $storage_url = env('APP_URL') . 'api/file/';
-        $jmbg = Auth::user() !== null ? (string)$this->jmbg : 'Protected';
+        $jmbg = Auth::user() != null ? (string)$this->jmbg : 'Protected';
         
-        if($this->image !== null) {
+        if($this->image != null) {
             $path =  $storage_url . $this->image->url;
         } else {
             if($this->gender == 1) {
@@ -32,14 +32,14 @@ class CompatitorsResource extends JsonResource
         $results = 'embeddable';
 
         if(str_contains($request->embed, 'documents')) {
-            if($this->document->first() !== null) {
+            if($this->document->first() != null) {
                 $documents = DocumentsResource::collection($this->document);
             } else {
                 $documents =  'Nema dokumenta';
             }
         }
         if(str_contains($request->embed, 'results')) {
-            if($this->registrations->first() !== null) {
+            if($this->registrations->first() != null) {
                 $results = ResultsResource::collection($this->registrations->sortByDesc('id'));
             } else {
                 $results =  'Ne postoje prijave!';

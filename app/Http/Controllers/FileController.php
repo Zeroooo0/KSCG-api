@@ -34,17 +34,17 @@ class FileController extends Controller
 
     public function setCompatitorImage(StoreImageRequest $request, Compatitor $compatitor) {
 
-        if(Auth::user()->user_type !== 2 && Auth::user()->status === 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status === 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
-        if(Auth::user()->user_type === 0 && Auth::user()->club->id !== $compatitor->club_id) {
+        if(Auth::user()->user_type === 0 && Auth::user()->club->id != $compatitor->club_id) {
             return $this->error('', 'Mozete da promijenite sliku samo članovima kluba!', 403);
         }
         $image = $compatitor->image()->get()->first();
 
         $path = Storage::putFile('compatitor-image', $request->image);
 
-        if($image !== null) {
+        if($image != null) {
             $url = $compatitor->image()->get()->first()->url;
             Storage::delete($url);
             $compatitor->image()->delete();
@@ -61,7 +61,7 @@ class FileController extends Controller
         if(Auth::user()->user_type !== 2 && Auth::user()->status === 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
-        if(Auth::user()->user_type === 0 && Auth::user()->club->id !== $club->id) {
+        if(Auth::user()->user_type === 0 && Auth::user()->club->id != $club->id) {
             return $this->error('', 'Mozete da promijenite sliku samo svog kluba!', 403);
         }
         $image = $club->image()->get()->first();
@@ -69,7 +69,7 @@ class FileController extends Controller
         $path = Storage::putFile('club-image', $request->image);
 
         
-        if($image !== null) {
+        if($image != null) {
             $url = $club->image()->get()->first()->url;
             Storage::delete($url);
             $club->image()->delete();
@@ -83,7 +83,7 @@ class FileController extends Controller
 
     public function setSpecPersonImage(StoreImageRequest $request, SpecialPersonal $personal) 
     {
-        if(Auth::user()->user_type !== 2 && Auth::user()->status === 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status === 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
         $image = $personal->image()->get()->first();
@@ -91,7 +91,7 @@ class FileController extends Controller
         $path = Storage::putFile('special-personal-image', $request->image);
         
         
-        if($image !== null) {
+        if($image != null) {
             $url = $personal->image()->get()->first()->url;
             Storage::delete($url);
             $personal->image()->delete();

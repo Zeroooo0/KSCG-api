@@ -47,7 +47,7 @@ class ReusableDataController extends Controller
         if($spec_personal->role == 2 && Auth::user()->user_type == 0) {
             return $this->error('', 'Trener moze dodati samo administrator!', 403);
         }
-        if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Nalog je suspendovan!', 403);
         }
 
@@ -59,7 +59,7 @@ class ReusableDataController extends Controller
             if($club->roles()->where('special_personals_id', $request->specialPersonalId)->count() >= 1) {
                 return $this->error('', 'Već je prijavljen u vašem klubu!', 406);
             }
-            if((string)$roleIdOfClub !== (string)$request->clubId) {
+            if((string)$roleIdOfClub != (string)$request->clubId) {
                 return $this->error('', 'Trener je već angažovan u KK ' . $roleInClub, 406);
             }
         } else {
@@ -76,10 +76,10 @@ class ReusableDataController extends Controller
     {
         $specialPersonal = SpecialPersonal::where('id', $roles->special_personal_id)->first();
         //return response(Auth::user()->user_type == 0);
-        if(Auth::user()->user_type == 0 && Auth::user()->state == 0 && ($roles->role !== 0 || $roles->role !== 3)) {
+        if(Auth::user()->user_type == 0 && Auth::user()->state == 0 && ($roles->role != 0 || $roles->role != 3)) {
             return $this->error('', 'Mozete sami da uklonit upravu kluba za ostalo je potrebnod da kontaktirate Administratora!', 406);
         }
-        if(Auth::user()->user_type !== 2 && Auth::user()->state == 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->state == 0) {
             return $this->error('', 'Vas nalog je suspendovan!', 406);
         }
         $roles->delete();

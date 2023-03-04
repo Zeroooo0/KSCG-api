@@ -39,7 +39,7 @@ class CategoriesController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        if(Auth::user()->user_type !== 2) {
+        if(Auth::user()->user_type != 2) {
             return $this->restricted('', 'Not alowed!', 403);
         }
         $request->validated($request->all());
@@ -87,7 +87,7 @@ class CategoriesController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        if(Auth::user()->user_type !== 2) {
+        if(Auth::user()->user_type != 2) {
             return $this->restricted('', 'Not alowed!', 403);
         }
         $request->validated($request->all());
@@ -118,7 +118,7 @@ class CategoriesController extends Controller
      */
     public function destroy(Category $category)
     {
-        if($category->compatitions !== null ? $category->compatitions->count() : 0 > 0) {
+        if($category->compatitions != null ? $category->compatitions->count() : 0 > 0) {
             return $this->error('', 'Deaktivirajte kategorije koje više ne koristite!', 403);
         }
         $category->delete();

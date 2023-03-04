@@ -60,7 +60,7 @@ class SpecialPersonalsController extends Controller
             'rolle' => $rolle,
             'gender' => $request->gender,
         ]);
-        if($request->image !== null){
+        if($request->image != null){
             $path = Storage::putFile('special-personal-image', $request->image);
             $special_personal->image()->create([
                 'url' => $path
@@ -91,7 +91,7 @@ class SpecialPersonalsController extends Controller
     public function update(UpdateSpecialPersonalRequest $request, SpecialPersonal $special_personal)
     {
         $request->validated($request->all());
-        if($request->rolle !== null && Auth::user()->user_type == 0) {
+        if($request->rolle != null && Auth::user()->user_type == 0) {
             $rolle = $special_personal->rolle; 
         } else{
             $rolle = $request->rolle;
@@ -110,7 +110,7 @@ class SpecialPersonalsController extends Controller
             ]);
         }
         if($request->has('status')){ 
-            if(Auth::user()->user_type !== 0){
+            if(Auth::user()->user_type != 0){
                 $special_personal->update([
                     'status' => $request->status
                 ]);
@@ -128,7 +128,7 @@ class SpecialPersonalsController extends Controller
      */
     public function destroy(SpecialPersonal $personal)
     {
-        if(Auth::user()->user_type !== 2){
+        if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
         foreach($personal->image()->get() as $image) {

@@ -15,10 +15,10 @@ class ClubsResource extends JsonResource
      */
     public function toArray($request)
     {
-        $pib = Auth::user() !== null ? $this->pib : 'Protected';
+        $pib = Auth::user() != null ? $this->pib : 'Protected';
         $storage_url = env('APP_URL') . 'api/file/';
         
-        if($this->image !== null) {
+        if($this->image != null) {
             $path =  $storage_url . $this->image->url;
         } else{
             $path = $storage_url . 'default/default-club.jpg';
@@ -35,14 +35,14 @@ class ClubsResource extends JsonResource
             ];
         }        
 
-        if($request->embed !== null) {
+        if($request->embed != null) {
             if(str_contains($request->embed, 'compatitors')) {
                 $compatitors = ClubsCompatiorsResource::collection($this->compatitors);
             } else {
                 $compatitors = count($this->compatitors);
             }
             if(str_contains($request->embed, 'administration')) {
-                if($this->roles->first() !== null) {
+                if($this->roles->first() != null) {
                     $administration = RolesResource::collection($this->roles);
                 } else {
                     $administration = count($this->roles);
