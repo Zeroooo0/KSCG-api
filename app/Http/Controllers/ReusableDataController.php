@@ -18,7 +18,7 @@ class ReusableDataController extends Controller
     public function bulkStoreBelts(BulkBeltsStoreRequest $request)
     {
 
-        if(Auth::user()->user_type !== 2) {
+        if(Auth::user()->user_type != 2) {
             return $this->error('', 'Dodavanje pojaseva je dozvoljeno samo super administratoru!', 406);
         }
 
