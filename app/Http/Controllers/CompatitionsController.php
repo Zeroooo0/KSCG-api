@@ -31,7 +31,7 @@ class CompatitionsController extends Controller
 
         $search = '%'. $request->search . '%';
         
-        return CompatitionsResource::collection($compatition->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page));
+        return CompatitionsResource::collection($compatition->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search)->paginate($per_page));
     }
 
     public function public(Request $request)
@@ -46,7 +46,7 @@ class CompatitionsController extends Controller
 
         $search = '%'. $request->search . '%';
         
-        return CompatitionsResource::collection($compatition->where('status', 1)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page));
+        return CompatitionsResource::collection($compatition->where('status', 1)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search)->paginate($per_page));
     }
 
     /**
