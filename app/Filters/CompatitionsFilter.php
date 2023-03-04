@@ -5,7 +5,7 @@ namespace App\Filters;
 use Illuminate\Http\Request;
 
 
-class CompatitionFilter {
+class CompatitionsFilter {
     protected $safeParms = [
         'name' => ['eq', 'like'],
         'country' => ['eq'],
@@ -28,7 +28,8 @@ class CompatitionFilter {
         'lt' => '<',
         'lte' => '<=',
         'gt' => '>',
-        'gte' => '>='
+        'gte' => '>=',
+        'like' => 'like'
     ];
 
     public function transform(Request $request) {

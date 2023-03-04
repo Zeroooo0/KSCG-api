@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Filters\CompatitionFilter;
+use App\Filters\CompatitionsFilter;
 use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CompatitionsResource;
@@ -22,7 +22,7 @@ class CompatitionsController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = new CompatitionFilter();
+        $filter = new CompatitionsFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
         $sort = $request->sort == null ? 'start_time_date' : $request->sort;
@@ -36,7 +36,7 @@ class CompatitionsController extends Controller
 
     public function public(Request $request)
     {
-        $filter = new CompatitionFilter();
+        $filter = new CompatitionsFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
 
