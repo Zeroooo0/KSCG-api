@@ -16,12 +16,10 @@ class CompatitionsResource extends JsonResource
      */
     public function toArray($request)
     {
-        $registration = $this->club_id;
-        $arr = [];
+        $categoryList = [];
         $storage_url = env('APP_URL') . 'api/file/';
         foreach ($this->categories as $category) {
-            $categoryList = $category->pivot->category_id; 
-            $arr[] = (string)$categoryList;
+            $categoryList[] = (string)$category->pivot->category_id;
         }
         $clubs = [];
         foreach ($this->registrations->countBy('club_id') as $club=>$val) {   
@@ -31,7 +29,22 @@ class CompatitionsResource extends JsonResource
         if($this->image != null) {
             $imageUrl = $storage_url . $this->image->url;
         }
-        
+        $documents = 'embeddable';
+        $clubsData = 'embeddable';
+        if(str_contains($request->embed, 'documents')) {
+            if($this->document->first() != null) {
+                $documents = DocumentsResource::collection($this->document);
+            } else {
+                $documents =  'Nema dokumenta';
+            }
+        }
+        if(str_contains($request->embed, 'clubsData')) {
+            if($this->document->first() != null) {
+                $clubsData = ClubsOnCompatitionResource::collection(Club::whereIn('id', $clubs)->get());
+            } else {
+                $clubsData =  'Trenutno nema prijavljenih!';
+            }
+        }
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
@@ -46,17 +59,19 @@ class CompatitionsResource extends JsonResource
                 'city' => $this->city,
                 'address' => $this->address,
             ],
+            'documents' => $documents,
             'status' => (boolean)$this->status,
             'registrationStatus' => (boolean)$this->registration_status,
-            'categories' => $arr,  //CategoriesResource::collection($this->categories)
+            'categories' => $categoryList,  
             'registrations' => [
                 'clubs' => $this->registrations->countBy('club_id')->count(),
                 'compatitor' => $this->registrations->countBy('compatitor_id')->count(),
                 'categories' => $this->registrations->countBy('category_id')->count(),
                 'total' => $this->registrations->count(),
                 'countries' => Club::whereIn('id', $clubs)->get()->countBy('country')->count(),
-                'clubsData' => ClubsOnCompatitionResource::collection(Club::whereIn('id', $clubs)->get())
-            ]
+                'clubsData' => $clubsData
+            ],
+            
 
            
         ];

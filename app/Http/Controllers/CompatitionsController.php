@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\CompatitionFilter;
 use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CompatitionsResource;
-use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\SpecialPersonal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CompatitionsController extends Controller
@@ -21,13 +22,31 @@ class CompatitionsController extends Controller
      */
     public function index(Request $request)
     {
+        $filter = new CompatitionFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+        $sort = $request->sort == null ? 'start_time_date' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+        $compatition = Compatition::orderBy($sort, $sortDirection);
+
+        $search = '%'. $request->search . '%';
         
-        return CompatitionsResource::collection(Compatition::paginate($request->perPage));
+        return CompatitionsResource::collection($compatition->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page));
     }
 
     public function public(Request $request)
     {
-        return CompatitionsResource::collection(Compatition::where('status', 1)->paginate($request->perPage));
+        $filter = new CompatitionFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+
+        $sort = $request->sort == null ? 'start_time_date' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+        $compatition = Compatition::orderBy($sort, $sortDirection);
+
+        $search = '%'. $request->search . '%';
+        
+        return CompatitionsResource::collection($compatition->where('status', 1)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page));
     }
 
     /**

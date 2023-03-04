@@ -58,7 +58,7 @@ class FileController extends Controller
 
     public function setClubImage(StoreImageRequest $request, Club $club) {
 
-        if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
         if(Auth::user()->user_type == 0 && Auth::user()->club->id != $club->id) {
@@ -79,6 +79,27 @@ class FileController extends Controller
             'url' => $path
         ]);
         return new ClubsResource($club);
+    }
+    public function setCompatitionImage(StoreImageRequest $request, Compatition $compatition) {
+
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
+            return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
+        }
+        $image = $compatition->image()->get()->first();
+
+        $path = Storage::putFile('club-image', $request->image);
+
+        
+        if($image != null) {
+            $url = $compatition->image()->get()->first()->url;
+            Storage::delete($url);
+            $compatition->image()->delete();
+        }
+
+        $compatition->image()->create([
+            'url' => $path
+        ]);
+        return new CompatitionsResource($compatition);
     }
 
     public function setSpecPersonImage(StoreImageRequest $request, SpecialPersonal $personal) 

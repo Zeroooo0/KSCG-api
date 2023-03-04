@@ -41,6 +41,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     Route::post('/compatitor-image/{compatitor}', [FileController::class, 'setCompatitorImage']);
     Route::post('/club-image/{club}', [FileController::class, 'setClubImage']);
     Route::post('/special-personal-image/{personal}', [FileController::class, 'setSpecPersonImage']);
+    Route::post('/compatition-image/{compatition}', [FileController::class, 'setCompatitionImage']);
     //Image add
     Route::post('/add-post-images/{post}', [FileController::class, 'addPostImage']);
     Route::post('/add-page-images/{page}', [FileController::class, 'addPageImage']);
