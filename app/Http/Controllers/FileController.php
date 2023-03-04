@@ -133,7 +133,7 @@ class FileController extends Controller
         } 
         return new PagesResource($page);
     }
-
+ 
     public function deleteImage(Image $image) 
     {
         Storage::delete($image->url);
