@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ClubsFilter;
 use App\Http\Requests\StoreClubRequest;
 use App\Http\Resources\ClubsResource;
 use App\Models\Club;
-use App\Models\Compatitor;
-use App\Models\Roles;
-use App\Models\SpecialPersonal;
-use App\Models\User;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ClubsController extends Controller
@@ -24,16 +22,32 @@ class ClubsController extends Controller
      */
     public function public(Request $request)
     {
+        $filter = new ClubsFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+        $club = Club::orderBy($sort, $sortDirection);
+
+        $search = '%'. $request->search . '%';
                
-        return ClubsResource::collection(Club::paginate($per_page));
+        return ClubsResource::collection(
+            $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name, email)'), 'like', $search)->paginate($per_page)
+        );
 
         
     }
 
-    public function protected(Request $request)
+    public function index(Request $request)
     {
+        $filter = new ClubsFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+        $club = Club::orderBy($sort, $sortDirection);
+
+        $search = '%'. $request->search . '%';
 
         if(Auth::user()->user_type == 0) {
             return ClubsResource::collection(
@@ -41,7 +55,7 @@ class ClubsController extends Controller
             );
         } else {
             return ClubsResource::collection(
-                Club::paginate($per_page)
+                $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name, email)'), 'like', $search)->paginate($per_page)
             );
         }
         
@@ -61,8 +75,6 @@ class ClubsController extends Controller
         }
         $request->validated($request->all());
 
-
-    
         $club = Club::create([
             'user_id' => Auth::user()->user_type == 0 ? Auth::user()->id : $request->userId,
             'name' => $request->name,
@@ -80,11 +92,8 @@ class ClubsController extends Controller
                 'url' => $path
             ]);
         }
-        
-
 
         return new ClubsResource($club);
-    
     }
 
     /**
@@ -98,9 +107,12 @@ class ClubsController extends Controller
         return new ClubsResource($club);
     }
 
-    public function show_protected(Club $club)
+    public function show(Club $club)
     {
         if(Auth::user()->user_type == 0) {
+            if(Auth::user()->club->id == null){
+                return $this->error('', 'Potrebnoje da kreirate klub ili da vam administrator dodijeli jedan!', 403);
+            }
             $user_club = Club::where('user_id', Auth::user()->id)->first();
             return new ClubsResource($user_club);
         } else {
@@ -126,11 +138,8 @@ class ClubsController extends Controller
         }
         $club->update($request->except(['shortName', 'phoneNumber', 'userId']));
 
-        $club->update([
-            $request->has('shortName') ?? 'short_name' => $request->shortName,
-            $request->has('phoneNumber') ?? 'phone_number' => $request->phoneNumber,
-        ]);
-
+        $request->has('shortName') ? $club->update(['short_name' => $request->shortName]) : null;
+        $request->has('phoneNumber') ? $club->update(['phone_number' => $request->phoneNumber]) : null;
         if ($request->has('userId')) {
             if(Auth::user()->user_type !== 0) {
                 $club->update([
@@ -166,48 +175,12 @@ class ClubsController extends Controller
                 ]);
             }
         }
+        foreach($club->images()->get() as $image) {
+            Storage::delete($image->url);
+        }
+        $club->image()->delete();
         $club->delete();
 
         return $this->success('', 'Club has been deleted successfully!');
-    }
-
-    public function clubsAdministration(Request $request)
-    {
-        $club = Club::where('id', $request->clubId);
-        $spec_personal = SpecialPersonal::where('id', $request->specialPersonalId);
-
-        
-
-
-        $rolesExistance = Roles::where([['special_personals_id',  $request->specialPersonalId], ['roleable_type', 'App\Models\Club']])->count() >= 1 ? true : false;
-
-        if($rolesExistance) {
-            $roleIdOfClub = Roles::where([['special_personals_id',  $request->specialPersonalId], ['roleable_type', 'App\Models\Club']])->get()->first()->roleable_id;
-            $roleInClub = Club::find($roleIdOfClub)->name;
-            if($club->roles->where('special_personals_id', $request->specialPersonalId)->count() >= 1) {
-                return $this->error('', 'Već je prijavljen u vašem klubu!', 400);
-            }
-            if((string)$roleIdOfClub !== (string)$request->clubId) {
-                return $this->error('', 'Trener je već angažovan u KK ' . $roleInClub, 400);
-            }
-        } else {
-            $club->roles()->create([
-                'special_personals_id' => $request->specialPersonalId,
-                'title' => $request->title,
-                'role' => $spec_personal->role
-            ]);
-            return new ClubsResource($club);
-        }
-
-
-
-        
-
-       
-            
-     
-
-        
-
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BeltResource extends JsonResource
+class ImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,10 +14,12 @@ class BeltResource extends JsonResource
      */
     public function toArray($request)
     {
+        $storage_url = env('APP_URL') . 'api/file/';
+        $delete_url = env('APP_URL') . 'api/v1/delete-image/';
         return [
             'id' => (string)$this->id,
-            'name' => $this->name,
-            'hashColor' => $this->hash_color,
+            'url' => $storage_url . $this->url,
+            'deleteUrl' =>  $delete_url . $this->id
         ];
     }
 }

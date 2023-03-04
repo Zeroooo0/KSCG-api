@@ -28,12 +28,24 @@ class CompatitorsResource extends JsonResource
                 $path = $storage_url . 'default/default-f-user.jpg';
             }
         }
-        if($this->document->first() !== null) {
-            $documents = DocumentsResource::collection($this->document);
-        } else {
-            $documents =  'Nema dokumenta';
+        $documents = 'embeddable';
+        $results = 'embeddable';
+
+        if(str_contains($request->embed, 'documents')) {
+            if($this->document->first() !== null) {
+                $documents = DocumentsResource::collection($this->document);
+            } else {
+                $documents =  'Nema dokumenta';
+            }
         }
-        
+        if(str_contains($request->embed, 'results')) {
+            if($this->registrations->first() !== null) {
+                $results = ResultsResource::collection($this->registrations->sortByDesc('id'));
+            } else {
+                $results =  'Ne postoje prijave!';
+            }
+        }
+        $updateImage = env('APP_URL') . 'api/v1/compatitor-image/' . $this->id;
         return [
             'id' => (string)$this->id,
             'kscgId' => $this->kscg_compatitor_id,
@@ -57,8 +69,9 @@ class CompatitorsResource extends JsonResource
                 'clubName' => $this->club->name,
                 'clubShortName' => $this->club->short_name,
             ],
-            'documents' => $documents
-
+            'documents' => $documents,
+            'resaults' => $results
+            
         ];
     }
 }

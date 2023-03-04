@@ -20,7 +20,7 @@ class ClubsCompatiorsResource extends JsonResource
             'lastName' => $this->last_name,        
             'status' => (boolean)$this->status,
             'belt' => $this->belt,
-            'brthDay' => $this->date_of_birth,
+            'brthDay' => date($this->date_of_birth),
             'weight' => $this->weight
         ];
     }

@@ -23,7 +23,7 @@ class CategoriesResource extends JsonResource
             $belts[] = $belt->id;
         }
         return [
-            'id' => $this->id,
+            'id' => (string)$this->id,
             'combinedName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->name . ' ' . $this->category_name  . $ekipno,
             'name' => $this->name,
             'kataOrKumite' => $kata_or_kumite,
@@ -31,13 +31,13 @@ class CategoriesResource extends JsonResource
             'gender' => $gender, 
             'soloOrTeam' => $soloOrTeam,
             'validationData' => [
-                'dateFrom' => $this->date_from,
-                'dateTo' => $this->date_to,
+                'dateFrom' => date($this->date_from),
+                'dateTo' => date($this->date_to),
                 'weightFrom' => $this->weight_from,
                 'weightTo' => $this->weight_to,
                 'soloOrTeam' => $this->solo_or_team,
                 'lenghtOfMatch' => $this->match_lenght,
-                'status' => $this->status,
+                'status' => (boolean)$this->status,
                 'belts' => $belts
             ]
         ];

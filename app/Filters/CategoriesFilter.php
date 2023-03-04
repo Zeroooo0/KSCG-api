@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class CategoriesFilter {
     protected $safeParms = [
-        'name' => ['eq'],
+        'name' => ['eq', 'like'],
         'kataOrKumite' => ['eq'],
         'categoryName' => ['eq'],
         'gender' => ['eq'],
@@ -36,7 +36,8 @@ class CategoriesFilter {
         'lte' => '<=',
         'gt' => '>',
         'gte' => '>=',
-        'lorg' => '<>'
+        'lorg' => '<>',
+        'like' => 'LIKE'
     ];
 
     public function transform(Request $request) {

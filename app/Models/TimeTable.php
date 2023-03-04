@@ -9,6 +9,17 @@ class TimeTable extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'compatition_id',
+        'categoty_id',
+        'tatami_no',
+        'order_no',
+        'eto_start',
+        'eto_finish',
+        'status',
+        'pairs'
+    ];
+
     public function compatition()
     {
         return $this->belongsTo(Compatition::class);

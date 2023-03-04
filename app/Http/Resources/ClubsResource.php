@@ -2,10 +2,8 @@
 
 namespace App\Http\Resources;
 
-use App\Models\SpecialPersonal;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class ClubsResource extends JsonResource
 {
@@ -45,7 +43,7 @@ class ClubsResource extends JsonResource
             }
             if(str_contains($request->embed, 'administration')) {
                 if($this->roles->first() !== null) {
-                    $administration = ClubsAdministrationResource::collection($this->roles);
+                    $administration = RolesResource::collection($this->roles);
                 } else {
                     $administration = count($this->roles);
                 }
@@ -62,7 +60,7 @@ class ClubsResource extends JsonResource
             'attributes' => [
                 'name' => $this->name,
                 'shortName' => $this->short_name,
-                'pib' => $pib ,
+                'pib' => $pib,
                 'email' => $this->email,
                 'phone' => $this->phone_number,
                 'image' =>  $path 
@@ -72,9 +70,9 @@ class ClubsResource extends JsonResource
                 'city' => $this->town,
                 'address' => $this->address,
             ],
-            'userData' => $user_info,
-            'clubAdministration' => $administration,
-            'compatitorsInClub' => $compatitors
+            'user' => $user_info,
+            'administration' => $administration,
+            'compatitors' => $compatitors
         ];
     }
 }

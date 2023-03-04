@@ -25,7 +25,7 @@ class ClubsOnCompatitionResource extends JsonResource
         $registration_single = $this->registrations->where('team_or_single', 1)->count();
         $registration_team = $this->registrations->where('team_or_single', 0)->countBy('team_id')->count();
         return [
-            'id' => $this->id,
+            'id' => (string)$this->id,
             'name' => $this->name,
             'totalRegistrationNo' => $reg_compatitors->count(),
             'singleRegistrationNo' => $registration_single,

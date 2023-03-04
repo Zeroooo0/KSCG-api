@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\CategoriesFilter;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoriesResource;
@@ -18,13 +19,16 @@ class CategoriesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
     public function index(Request $request)
     {   
+        $filter = new CategoriesFilter();
+        $queryItems = $filter->transform($request);
         $sort = $request->sort == null ? 'id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
         $paginate = $request->perPage;
         $category = Category::orderBy($sort, $sortDirection);
-        return CategoriesResource::collection($category->paginate($paginate));
+        return CategoriesResource::collection($category->where($queryItems)->paginate($paginate));
     }
 
     /**
@@ -114,6 +118,12 @@ class CategoriesController extends Controller
      */
     public function destroy(Category $category)
     {
-        //Mora da se kreira nakon kreiranja takmicenja
+        if($category->compatitions !== null ? $category->compatitions->count() : 0 > 0) {
+            return $this->error('', 'Deaktivirajte kategorije koje više ne koristite!', 403);
+        }
+        $category->delete();
+        return $this->success('', 'Kategorija je uspjesno obrisana!');
+
+
     }
 }

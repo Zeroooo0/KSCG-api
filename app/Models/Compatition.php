@@ -20,7 +20,8 @@ class Compatition extends Model
         'price_team',
         'status',
         'host_name',
-        'registration_status'
+        'registration_status',
+        'tatami_no'
     ];
     public function categories() 
     {
@@ -42,5 +43,13 @@ class Compatition extends Model
     public function timeTable()
     {
         return $this->hasMany(TimeTable::class);
+    }
+    public function image() 
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
+    public function document()
+    {
+        return $this->morphMany(Document::class, 'documentable');
     }
 }

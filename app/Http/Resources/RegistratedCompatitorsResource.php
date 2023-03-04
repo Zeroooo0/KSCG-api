@@ -29,14 +29,14 @@ class RegistratedCompatitorsResource extends JsonResource
             $data = true;
         }
         return [
-            'registrationId' => $this->id,
+            'registrationId' => (string)$this->id,
             'compatitor' => [
-                'id' => $this->compatitor->id,
+                'id' => (string)$this->compatitor->id,
                 'kscgId' => $this->compatitor->kscg_compatitor_id,
                 'name' => $this->compatitor->name,
                 'lastName' => $this->compatitor->last_name,
             ],
-            'status' => $this->status,
+            'status' => (boolean)$this->status,
             'price' => $price,
             'category' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
             $name => $data

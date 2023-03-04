@@ -13,15 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('special_personals_id');
             $table->string('title');
-            //Special personal Rolle Trener / Sudija
-            $table->tinyInteger('role');
-            //Prestanak funkcije trenera
-            $table->timestamp('active_untill')->nullable();
-            $table->morphs('roleable');
+            $table->mediumText('content');
+            $table->text('excerpt');
+            $table->unsignedBigInteger('cover_image')->nullable();
+            $table->foreignId('user_id')->nullable()->references('id')->on('users')->nullOnDelete();
             $table->timestamps();
         });
     }
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('posts');
     }
 };

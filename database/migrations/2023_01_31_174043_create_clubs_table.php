@@ -25,7 +25,8 @@ return new class extends Migration
             $table->string('phone_number');
             $table->foreignId('user_id')
                 ->nullable()
-                ->constrained();
+                ->constrained()
+                ->nullOnDelete();
             $table->timestamps();
         });
     }

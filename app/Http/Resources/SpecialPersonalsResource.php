@@ -17,6 +17,10 @@ class SpecialPersonalsResource extends JsonResource
     public function toArray($request)
     {
         $storage_url = env('APP_URL') . 'api/file/';
+        $roles = Roles::where('special_personals_id', $this->id)->get();
+        $documents = 'embeddable';
+        $rolesCollection = 'embeddable';
+
         if($this->image !== null) {
             $path =  $storage_url . $this->image->url;
         } else {
@@ -26,39 +30,49 @@ class SpecialPersonalsResource extends JsonResource
                 $path = $storage_url . 'default/default-f-user.jpg';
             }
         }
-        if($request->embed == true) {
+        if(str_contains($request->embed, 'documents')) {
             if($this->document->first() !== null) {
-                $document_title = 'documents';
                 $documents = DocumentsResource::collection($this->document);
             } else {
-                $document_title = 'documents';
-                $documents =  0;
-            }
-        } else{
-            if($this->document->first() !== null) {
-                $document_title = 'documents';
-                $documents = count($this->document);
-            } else {
-                $document_title = 'documents';
-                $documents =  0;
+                $documents =  'Nema dokumenta';
             }
         }
+        if(str_contains($request->embed, 'roles')) {
+            if($roles->first() !== null) {
+                $rolesCollection = RolesResource::collection($roles);
+            } else {
+                $rolesCollection =  (string)$roles->count();
+            }
+        }
+        if($this->role == 1) {
+            $role = 'Sudija';
+         
+        } 
+        if($this->role == 2) {
+            $role = 'Trener';
+        } 
+        if($this->role == 0) {
+            $role = 'Uprava Kluba';
+        } 
+        if($this->role == 3) {
+            $role = 'Uprava Kluba';
+        } 
 
         return [
-            'id' => $this->id,
+            'id' => (string)$this->id,
             'basicInfo' => [
                 'name' => $this->name,
                 'lastName' => $this->last_name,
                 'country' => $this->country,
                 'email' => $this->email,
                 'phone' => $this->phone_number,
-                'role' => $this->role,
+                'role' => $role,
                 'status' => (boolean)$this->status,
                 'gender' => $this->gender,
                 'image' => $path
             ],
-            $document_title => $documents,
-
+            'documents' => $documents,
+            'roles' => $rolesCollection
         ];
     }
 }

@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CompatitionsResource;
+use App\Models\Club;
 use App\Models\Compatition;
+use App\Models\SpecialPersonal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class CompatitionsController extends Controller
 {
@@ -56,9 +59,16 @@ class CompatitionsController extends Controller
             'country' => $request->country,
             'city' => $request->city,
             'address' => $request->address,
+            'tatami_no' => $request->tatamiNo,
             'status'=> $status,
             'registration_status' => $registrationStatus
         ]);
+        if($request->image !== null) {
+            $path = Storage::putFile('compatition-image', $request->image);
+            $compatition->image()->create([
+                'url' => $path
+            ]);
+        };
 
         $categories = array_filter(explode(',', $request->categories));
         $compatition->categories()->sync($categories);
@@ -113,5 +123,14 @@ class CompatitionsController extends Controller
     public function destroy(Compatition $compatition)
     {
         //
+    }
+
+    public function specialPersonalOnCompatition(Compatition $compatition, Request $request) {
+
+        $specialPersonal = SpecialPersonal::where('id', $request->specPersonId)->first();
+        if($specialPersonal->role === 2 && Auth::user()->user_type === 0) {
+            $club = '';
+        }
+        return response("Takmicenje $compatition->name" );
     }
 }

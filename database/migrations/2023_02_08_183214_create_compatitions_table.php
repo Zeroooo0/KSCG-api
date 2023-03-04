@@ -24,6 +24,7 @@ return new class extends Migration
             $table->decimal('price_single')->nullable();
             $table->decimal('price_team')->nullable();
             $table->boolean('status')->default(0);
+            $table->tinyInteger('tatami_no');
             $table->boolean('registration_status')->default(1);
             $table->string('host_name');
             $table->timestamps();

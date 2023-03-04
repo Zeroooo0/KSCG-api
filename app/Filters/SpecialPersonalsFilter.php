@@ -5,28 +5,24 @@ namespace App\Filters;
 use Illuminate\Http\Request;
 
 
-class CompatitorsFilter {
+class SpecialPersonalsFilter {
     protected $safeParms = [
-        'name' => ['eq'],
-        'lastName' => ['eq'],
         'status' => ['eq'],
-        'beltId' => ['eq'],
-        'birthDay' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'weight' => ['eq', 'gt', 'gte', 'lt', 'lte']
+        'name' => ['eq', 'like'],
+        'lastName' => ['eq', 'like'],
+        'email' => ['eq', 'like'],
+        'gender' => ['eq'],
+        'country' => ['eq', 'like'],
+        'role' => ['eq']
     ];
 
     protected $columnsMap = [
-        'lastName' => 'last_name',
-        'birthDay' => 'date_of_birth',
-        'beltId' => 'belt_id'
+        'lastName' => 'last_name'
     ];
 
     protected $operatorMap = [
         'eq' => '=',
-        'lt' => '<',
-        'lte' => '<=',
-        'gt' => '>',
-        'gte' => '>=',
+        'like' => 'like'
     ];
 
     public function transform(Request $request) {

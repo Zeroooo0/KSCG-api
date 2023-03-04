@@ -18,6 +18,7 @@ class CompatitionsResource extends JsonResource
     {
         $registration = $this->club_id;
         $arr = [];
+        $storage_url = env('APP_URL') . 'api/file/';
         foreach ($this->categories as $category) {
             $categoryList = $category->pivot->category_id; 
             $arr[] = (string)$categoryList;
@@ -26,15 +27,20 @@ class CompatitionsResource extends JsonResource
         foreach ($this->registrations->countBy('club_id') as $club=>$val) {   
             $clubs[] = $club;            
         }
-
+        $imageUrl = null;
+        if($this->image !== null) {
+            $imageUrl = $storage_url . $this->image->url;
+        }
+        
         return [
-            'id' => $this->id,
+            'id' => (string)$this->id,
             'name' => $this->name,
             'hostName' => $this->host_name,
             'priceSingle' => $this->price_single,
             'priceTeam' => $this->price_team,
-            'startTimeDate' => $this->start_time_date,
+            'startTimeDate' => date($this->start_time_date),
             'registrationDeadline' => date($this->registration_deadline),
+            'posterImage' => $imageUrl,
             'location' => [
                 'country' => $this->country,
                 'city' => $this->city,

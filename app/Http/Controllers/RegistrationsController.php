@@ -78,8 +78,8 @@ class RegistrationsController extends Controller
             $input['team_id'] = $data['teamId'] == null ? null : $data['teamId'];
             $input['team_or_single'] = $team_or_solo;
             $input['kata_or_kumite'] = $kata_or_kumite;
-            $input['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
-            $input['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+            $input['created_at'] = date("Y:m:d H:i:s");
+            $input['updated_at'] = date("Y:m:d H:i:s");
             $input['status'] = 1;
             $arr[] = $input;
 
@@ -116,8 +116,8 @@ class RegistrationsController extends Controller
             $input['team_id'] = $data['teamId'] == null ? null : $data['teamId'];
             $input['team_or_single'] = $team_or_solo;
             $input['kata_or_kumite'] = $kata_or_kumite;
-            $input['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
-            $input['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+            $input['created_at'] = date("Y:m:d H:i:s");
+            $input['updated_at'] = date("Y:m:d H:i:s");
             $input['status'] = 1;
             $input['count'] = $some_count + $counter_request->count();
             $finish_arr[] = $input;

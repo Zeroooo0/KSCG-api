@@ -15,24 +15,24 @@ class UsersResource extends JsonResource
      */
     public function toArray($request)
     {
-        if($this->user_type == 0) {
-            if($this->club!== null) {
-                $data_name = 'clubData';
-                $data = [
-                    'id' => $this->club->id,
-                    'name' => $this->club->name,
-                    'shortName' => $this->club->short_name,
-                ];
-            } else {
-                $data_name = 'clubData';
-                $data = 'Nije odredjen Klub!';
-            }
-        } else {
-            $data_name = 'adminType';
-            $data = 'Admin ' . $this->user_type == 1 ? 'Global' : 'Comission';
+
+        $userType = 'Club Administrator';
+        if($this->user_type == 1) {
+            $userType = 'Commision Administrator';
         }
-
-
+        if($this->user_type == 2) {
+            $userType = 'Administrator';
+        }
+        $data_name = 'userType';
+        $data = $userType;
+        if($this->user_type == 0) {
+            $data_name = 'club';
+            $data = [
+                'id' => (string)$this->club->id,
+                'name' => $this->club->name,
+                'shortName' => $this->club->short_name,
+            ];
+        }
         return [
             'id' => (string)$this->id,
             'user' => [
@@ -40,11 +40,8 @@ class UsersResource extends JsonResource
                 'lastName' => $this->last_name,
                 'email' => $this->email
             ],
-            'userAbility' => [
-                'userType' => $this->user_type,
-                'status' => (boolean)$this->status,
-            ],
-            $data_name => $data,
+            'status' => (boolean)$this->status,
+            $data_name =>  $data
 
         ];
     }

@@ -24,25 +24,25 @@ class RegistrationsResource extends JsonResource
         $price = $this->category->solo_or_team == 0 ? $this->compatition->price_single : $this->compatition->price_team;
 
         return [
-            'id' => $this->id,
+            'id' => (string)$this->id,
             'status' => $this->status,
             'compatition' => [
-                'id' => $this->compatition->id,
+                'id' => (string)$this->compatition->id,
                 'name' => $this->compatition->name,
                 'date' => $this->compatition->start_time_date,
                 'price' => $price
             ],
             'club' => [
-                'id' => $this->club->id,
+                'id' => (string)$this->club->id,
                 'name' => $this->club->name,
                 'shortName' => $this->club->short_name,
             ],
             'category' => [
-                'id' => $this->category->id,
+                'id' => (string)$this->category->id,
                 'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
             ],
             'compatitor' => [
-                'id' => $this->compatitor->id,
+                'id' => (string)$this->compatitor->id,
                 'kscgId' => $this->compatitor->kscg_compatitor_id,
                 'name' => $this->compatitor->name,
                 'lastName' => $this->compatitor->last_name,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\UsersFilter;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UsersResource;
@@ -9,6 +10,7 @@ use App\Models\User;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
@@ -19,14 +21,24 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        
+        $filter = new UsersFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+        $user = User::orderBy($sort, $sortDirection);
+
+        $search = '%'. $request->search . '%';
+
         if(Auth::user()->user_type !== 2){
-            return $this->restricted('', 'Not alowed!', 403);
+            return UsersResource::collection(
+                $user->where('id', Auth::user()->id)->get()
+            );
         }
         return UsersResource::collection(
-            User::paginate(5)
+            $user->where('id', Auth::user()->id)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->paginate($per_page)
         );
     }
 
@@ -85,7 +97,7 @@ class UsersController extends Controller
             return $this->restricted('', 'Not alowed!', 403);
         }
         if(Auth::user()->user_type !== 2) {
-            if($request->user_type !== null || $request->status !== null) {
+            if($request->user_type !== null || $request->status !== 0) {
                 return $this->restricted('', 'Not alowed!', 403);
             }
         }

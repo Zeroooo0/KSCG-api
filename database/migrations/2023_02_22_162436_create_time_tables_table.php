@@ -20,11 +20,12 @@ return new class extends Migration
             $table->tinyInteger('tatami_no');
             $table->integer('order_no');
             $table->time('eto_start');
-            $table->time('eto-finish');
-            $table->tinyInteger('status')->default(0)->update();
+            $table->time('eto_finish');
+            //0=null 1=started 2=finished
+            $table->tinyInteger('status')->default(0);
+            $table->time('started_time')->nullable();
             $table->time('finish_time')->nullable();
             $table->integer('pairs');
-            $table->integer('finished_pairs')->nullable();
         });
     }
 

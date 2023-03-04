@@ -2,12 +2,13 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
-use App\Http\Controllers\CategoriesInCompatitionController;
 use App\Http\Controllers\ClubsController;
 use App\Http\Controllers\CompatitionsController;
 use App\Http\Controllers\CompatitorsController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PoolsController;
+use App\Http\Controllers\PostsController;
 use App\Http\Controllers\RegistrationsController;
 use App\Http\Controllers\ReusableDataController;
 use App\Http\Controllers\SpecialPersonalsController;
@@ -20,8 +21,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('file/{path}', [FileController::class, 'getFile'])->where('path', '.*');
 
-
-
 Route::group(['prefix' => 'v1/public'], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
@@ -29,77 +28,67 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/clubs/{club}', [ClubsController::class, 'show_public']);  
     Route::get('/compatitors', [CompatitorsController::class, 'public']);
     Route::get('/compatitors/{compatitor}', [CompatitorsController::class, 'show_public']);
-
-
+    Route::get('/posts', [PostsController::class, 'public']);
+    Route::get('/pages', [PagesController::class, 'public']);
 });
 
-
-Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
-    
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {    
     //All auth users
     Route::post('/logout', [AuthController::class, 'logout']); 
     Route::post('/change-password/{user}',[AuthController::class, 'changePassword']);
-
     //File managing
-    //Images
+    //Images update
     Route::post('/compatitor-image/{compatitor}', [FileController::class, 'setCompatitorImage']);
     Route::post('/club-image/{club}', [FileController::class, 'setClubImage']);
     Route::post('/special-personal-image/{personal}', [FileController::class, 'setSpecPersonImage']);
-
+    //Image add
+    Route::post('/add-post-images/{post}', [FileController::class, 'addPostImage']);
+    Route::post('/add-page-images/{page}', [FileController::class, 'addPageImage']);
+    //Image delete
+    Route::delete('/delete-image/{image}', [FileController::class, 'deleteImage']);
     //Documents
-    //Get
-    Route::get('/compatitor-documents/{compatitor}', [FileController::class, 'getCompatitorDocuments']);
-    Route::get('/special-personal-documents/{special_personal}', [FileController::class, 'getSpecialPersonalDocuments']);
     //Set
     Route::post('/compatitor-documents/{compatitor}', [FileController::class, 'addDocumentCompatitor']);
     Route::post('/special-personal-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
+    Route::post('/compatition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
     //Delete
-    Route::post('/compatitor-documents-delete/{compatitor}', [FileController::class, 'deleteDocumentCompatitor']);
-    Route::post('/special-personal-documents-delete/{special_personal}', [FileController::class, 'deleteDocumentSpecialPersonal']);
+    Route::post('/document-delete/{document}', [FileController::class, 'deleteDocument']);
+
 
     //Categories
     Route::resource('/categories', CategoriesController::class);
-
-    //Reusabe data get
     //Belts
-    Route::post('/belts/store', [ReusableDataController::class, 'store']);
-    Route::get('/belts', [ReusableDataController::class, 'index']);
-
+    Route::post('/belts/store', [ReusableDataController::class, 'bulkStoreBelts']);
+    //Route::get('/belts', [ReusableDataController::class, 'index']);
     //Special personal
     Route::resource('/special-personal', SpecialPersonalsController::class);
     //Special Persona in club
-    Route::post('/club-administration', [ClubsController::class, 'clubsAdministration']);
-
+    Route::post('/club-administration', [ReusableDataController::class, 'clubsAdministration']);
     //COMPATITION
     Route::resource('/compatitions', CompatitionsController::class);
-
-    //CLUB
-    Route::get('/clubs', [ClubsController::class, 'protected']);   
-    Route::post('/clubs', [ClubsController::class, 'store']);
-    Route::get('/clubs/{club}', [ClubsController::class, 'show_protected']);
-    Route::patch('/clubs/{club}', [ClubsController::class, 'update']);
-    Route::delete('/clubs/{club}', [ClubsController::class, 'destroy']);
-
-    Route::get('/compatitors', [CompatitorsController::class, 'protected']);  
-    Route::post('/compatitors', [CompatitorsController::class, 'store']);
-    Route::get('/compatitors/{compatitor}', [CompatitorsController::class, 'show_protected']);  
-    Route::patch('/compatitors/{compatitor}', [CompatitorsController::class, 'update']);
-    Route::delete('/compatitors/{compatitor}', [CompatitorsController::class, 'destroy']);
-    
+    //Clubs
+    Route::resource('/clubs', ClubsController::class);   
+    //Compatitiors
+    Route::resource('/compatitors', CompatitorsController::class);  
     //Users control
     Route::resource('/users', UsersController::class);
-
-    //Registration 
+    //Registration of compatitiors on compatition
     Route::resource('/registrations', RegistrationsController::class);
-
     //Pull table 
     Route::resource('/pools', PoolsController::class);
     Route::put('/pools/{compatition}', [PoolsController::class, 'updateBatch']);
-
-
     //Timetable
     Route::resource('/time-table', TimeTablesController::class);
 
+    //Roles delete
+    Route::delete('/role/{roles}', [ReusableDataController::class, 'deleteRole']);
+    //Compatition
+    Route::post('/compatition-personal/{compatition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
+    //Posts
+    Route::resource('/posts', PostsController::class);
+    //Pages
+    Route::resource('/pages', PagesController::class);
+ 
 });
 
 

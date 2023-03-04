@@ -37,11 +37,9 @@ class PoolsController extends Controller
             return $this->error('', 'Not allowed!', 403);
         }
         $compatition = Compatition::where('id', $request->compatitionId)->get()->first();
-        $categories = $compatition->categories;
         $registrations = $compatition->registrations;
         $reg_count = $registrations->countBy('category_id');
         $pools = $compatition->pools;
-        //return response()->json($pools->where('category_id', 49));
         $nn_single_cat = [];
         $nn_team_cat = [];
 
@@ -49,11 +47,7 @@ class PoolsController extends Controller
             $nn_single_cat[] = $registrations->sortBy('club_id')->where('category_id', $key)->where('team_or_single', 1)->values();
             $nn_team_cat[] = $registrations->where('category_id', $key)->where('team_or_single', 0)->sortBy('club_id')->values();
         }
-        /*
-        if($pools->count() > 0) {
-            return $this->error('', 'Žrijebanje je već odrađeno!', 403);
-        }
-        */
+
         $arr = [];
         if(isset($request->categoryId)) {
             $pool = $pools->where('category_id', $request->categoryId);

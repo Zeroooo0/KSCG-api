@@ -4,17 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCompatitorRequest;
 use App\Http\Resources\CompatitorsResource;
-use App\Models\Club;
 use App\Models\Compatitor;
 use App\Filters\CompatitorsFilter;
+use App\Http\Resources\CompatitorsCollectionResource;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CompatitorsController extends Controller
 {
     use HttpResponses;
+
     /**
      * Display a listing of the resource.
      *
@@ -26,24 +28,35 @@ class CompatitorsController extends Controller
         $filter = new CompatitorsFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $compatitior = Compatitor::orderBy($sort, $sortDirection);
 
-        return CompatitorsResource::collection(Compatitor::where($queryItems)->paginate());
+        $search = '%'. $request->search . '%';
+
+        return CompatitorsResource::collection($compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page));
        
     }
 
-    public function protected(Request $request)
+    public function index(Request $request)
     {
-        $per_page = $request->perPage;
+        
+        $per_page = $request->perPage; 
         $filter = new CompatitorsFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-    
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $compatitior = Compatitor::orderBy($sort, $sortDirection);
+
+        $search = '%'. $request->search . '%';
+
         if(Auth::user()->user_type == 0) {
             return CompatitorsResource::collection(
-                Compatitor::where('club_id',  Auth::user()->club->id )->paginate($per_page)
+                $compatitior->where('club_id',  Auth::user()->club->id)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page)
             );
         } else {
             return CompatitorsResource::collection(
-                Compatitor::paginate($per_page)
+                $compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page)
             );
         }
   
@@ -98,7 +111,7 @@ class CompatitorsController extends Controller
         return new CompatitorsResource($compatitor);
     }
 
-    public function show_protected(Compatitor $compatitor)
+    public function show(Compatitor $compatitor)
     {
 
         if(Auth::user()->user_type == 0 && Auth::user()->club->id !== $compatitor->club_id) {
@@ -120,10 +133,10 @@ class CompatitorsController extends Controller
     {
         
         if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
-            return $this->restricted('', 'Not alowed!', 403);
+            return $this->restricted('', 'Suspendovani ste molimo vas da kontaktirate KSCG!', 403);
         }
         if(Auth::user()->user_type == 0 && $compatitor->club_id !== Auth::user()->club->id) {
-            return $this->restricted('', 'Not alowed to change this compatitor!', 403);
+            return $this->restricted('', 'Možete vršiti izmjene samo članova Vašeg kluba!', 403);
         }
         $compatitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status']));
 
@@ -141,7 +154,7 @@ class CompatitorsController extends Controller
         if ($request->has('clubId')) {
 
             if(Auth::user()->user_type !== 2 || Auth::user()->user_type == 0) {
-                return $this->error('', 'Not promited to change compatitors club id!', 403);
+                return $this->error('', 'Takmičara mogu premjestiti samo aktivni administratori ove platforme!', 403);
             } 
 
             $compatitor->update([
@@ -151,7 +164,7 @@ class CompatitorsController extends Controller
         if ($request->has('status')) {
 
             if(Auth::user()->user_type !== 2 || Auth::user()->user_type == 0) {
-                return $this->error('', 'Not promited to change compatitors status!', 403);
+                return $this->error('', 'Status mogu promijeniti aktivni administratori ove platforme!', 403);
             } 
 
             $compatitor->update([
@@ -177,10 +190,18 @@ class CompatitorsController extends Controller
     public function destroy(Compatitor $compatitor)
     {
         if(Auth::user()->user_type !== 2){
-            return $this->restricted('', 'Not alowed!', 403);
+            return $this->restricted('', 'Brisanje nije dozvoljeno!', 403);
         }
+        foreach($compatitor->image()->get() as $image) {
+            Storage::delete($image->url);
+        }
+        foreach($compatitor->document()->get() as $document) {
+            Storage::delete($document->url);
+        }
+        $compatitor->image()->delete();
+        $compatitor->document()->delete();
         $compatitor->delete();
-        return $this->success('', 'Compatitor is delten', 200);
+        return $this->success('', 'Takmičar je uspješno obrisan!', 200);
     }
 
 
