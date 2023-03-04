@@ -34,10 +34,10 @@ class FileController extends Controller
 
     public function setCompatitorImage(StoreImageRequest $request, Compatitor $compatitor) {
 
-        if(Auth::user()->user_type != 2 && Auth::user()->status === 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
-        if(Auth::user()->user_type === 0 && Auth::user()->club->id != $compatitor->club_id) {
+        if(Auth::user()->user_type == 0 && Auth::user()->club->id != $compatitor->club_id) {
             return $this->error('', 'Mozete da promijenite sliku samo članovima kluba!', 403);
         }
         $image = $compatitor->image()->get()->first();
@@ -58,10 +58,10 @@ class FileController extends Controller
 
     public function setClubImage(StoreImageRequest $request, Club $club) {
 
-        if(Auth::user()->user_type !== 2 && Auth::user()->status === 0) {
+        if(Auth::user()->user_type !== 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
-        if(Auth::user()->user_type === 0 && Auth::user()->club->id != $club->id) {
+        if(Auth::user()->user_type == 0 && Auth::user()->club->id != $club->id) {
             return $this->error('', 'Mozete da promijenite sliku samo svog kluba!', 403);
         }
         $image = $club->image()->get()->first();
@@ -83,7 +83,7 @@ class FileController extends Controller
 
     public function setSpecPersonImage(StoreImageRequest $request, SpecialPersonal $personal) 
     {
-        if(Auth::user()->user_type != 2 && Auth::user()->status === 0) {
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
         $image = $personal->image()->get()->first();

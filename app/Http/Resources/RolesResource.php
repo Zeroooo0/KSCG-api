@@ -21,11 +21,11 @@ class RolesResource extends JsonResource
         $specialPersonal = SpecialPersonal::where('id', $this->special_personals_id)->first();
         $role = 'Uprava kluba';
         $val = 'clubName';
-        if($this->role === 1) {
+        if($this->role == 1) {
             $role = 'Sudija';
             $val = 'compatitionName';
         }
-        if($this->role === 2) {
+        if($this->role == 2) {
             $role = 'Trener';
         }
         $role_delete = env('APP_URL') . 'api/v1/role/';

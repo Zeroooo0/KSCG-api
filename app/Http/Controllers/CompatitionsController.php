@@ -128,7 +128,7 @@ class CompatitionsController extends Controller
     public function specialPersonalOnCompatition(Compatition $compatition, Request $request) {
 
         $specialPersonal = SpecialPersonal::where('id', $request->specPersonId)->first();
-        if($specialPersonal->role === 2 && Auth::user()->user_type === 0) {
+        if($specialPersonal->role == 2 && Auth::user()->user_type == 0) {
             $club = '';
         }
         return response("Takmicenje $compatition->name" );

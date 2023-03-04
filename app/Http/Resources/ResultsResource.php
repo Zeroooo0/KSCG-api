@@ -22,16 +22,16 @@ class ResultsResource extends JsonResource
         if(is_null($position)) {
             $medal = 'Registrovan na takmičenje';
         }
-        if($position === 0) {
+        if($position == 0) {
             $medal = 'Učešće';
         }
-        if($position === 1) {
+        if($position == 1) {
             $medal = 'Bronza';
         }
-        if($position === 2) {
+        if($position == 2) {
             $medal = 'Srebro';
         }
-        if($position === 3) {
+        if($position == 3) {
             $medal = 'Zlato';
         }
         return [
