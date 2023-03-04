@@ -17,14 +17,14 @@ class ReusableDataController extends Controller
     use HttpResponses;
     public function bulkStoreBelts(BulkBeltsStoreRequest $request)
     {
-        return response(Auth::user()->user_type);
+
         if(Auth::user()->user_type !== 2) {
             return $this->error('', 'Dodavanje pojaseva je dozvoljeno samo super administratoru!', 406);
         }
+
         $data = [];
-        $request->validated($request->all());
+        
         foreach($request->all() as $val) {
-            
             $input['name'] = $val['name'];
             $input['hash_color'] = $val['hashColor'];
             $data[] = $input;

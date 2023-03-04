@@ -58,7 +58,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     //Categories
     Route::resource('/categories', CategoriesController::class);
     //Belts
-    Route::post('/belts/store', [ReusableDataController::class, 'bulkStoreBelts']);
+    Route::post('/belts', [ReusableDataController::class, 'bulkStoreBelts']);
     //Route::get('/belts', [ReusableDataController::class, 'index']);
     //Special personal
     Route::resource('/special-personal', SpecialPersonalsController::class);

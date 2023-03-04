@@ -24,7 +24,7 @@ class BulkBeltsStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            '*.name' => ['required', 'unique:belts,name'],
+            '*.name' => ['required', 'string'],
             '*.hashColor' => ['string']
         ];
     }
@@ -32,7 +32,6 @@ class BulkBeltsStoreRequest extends FormRequest
         $data = [];
         foreach($this->toArray() as $obj) {
             $obj['hashColor'] = $obj['hashColor'] ?? null;
-
             $data[] = $obj;
         }
         
