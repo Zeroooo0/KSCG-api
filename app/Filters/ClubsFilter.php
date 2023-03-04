@@ -10,7 +10,7 @@ class ClubsFilter {
         'name' => ['eq', 'like'],
         'shortName' => ['eq', 'like'],
         'country' => ['eq', 'like'],
-        'town' => ['eq', 'like'],
+        'city' => ['eq', 'like'],
         'address' => ['eq', 'like'],
         'pib' => ['eq'],
         'email' => ['eq', 'like'],
