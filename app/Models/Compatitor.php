@@ -41,6 +41,6 @@ class Compatitor extends Model
     }
     public function registrations()
     {
-        return $this->hasMany(Registration::class);
+        return $this->hasManyThrough(Registration::class, Pool::class);
     }
 }

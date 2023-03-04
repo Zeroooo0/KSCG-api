@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\CategoriesFilter;
 use App\Filters\CompatitionsFilter;
 use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
+use App\Http\Resources\CategoriesResource;
 use App\Http\Resources\CompatitionsResource;
 use App\Models\Compatition;
 use App\Models\SpecialPersonal;
@@ -47,6 +49,17 @@ class CompatitionsController extends Controller
         $search = '%'. $request->search . '%';
         
         return CompatitionsResource::collection($compatition->where('status', 1)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search)->paginate($per_page));
+    }
+
+    public function categories(Request $request, Compatition $compatition)
+    {
+        $filter = new CategoriesFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+
+
+        $search = '%'. $request->search . '%';
+        return CategoriesResource::collection($compatition->categories->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search)->paginate($per_page));
     }
 
     /**

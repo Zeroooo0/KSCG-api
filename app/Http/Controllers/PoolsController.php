@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PoolResource;
 use App\Models\Category;
 use App\Models\Compatition;
 use App\Models\Pool;
@@ -22,7 +23,7 @@ class PoolsController extends Controller
      */
     public function index()
     {
-        return Pool::all();
+        return PoolResource::collection(Pool::all());
     }
     
     /**
