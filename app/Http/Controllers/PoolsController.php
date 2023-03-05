@@ -34,6 +34,38 @@ class PoolsController extends Controller
      */
     public function store(Request $request)
     {
+        $compatition = Compatition::where('id', $request->compatitionId)->get()->first();
+        $pools = $compatition->pools;
+        $arr = [];
+        if(isset($request->categoryId)) {
+            $pool = $pools->where('category_id', $request->categoryId);
+            $data = collect($request)->except(['compatitionId', 'categoryId']);
+                    
+            foreach($data as $new_data) {
+
+                $input['compatition_id'] = $request->compatitionId;
+                $input['category_id'] = $request->categoryId;
+                $input['pool'] = $new_data['pool'];
+                $input['pool_type'] = $new_data['poolType'];
+                $input['group'] = $new_data['group'];
+                $input['status'] = $new_data['status'];
+                $input['registration_one'] = $new_data['registrationOne'];
+                $input['registration_two'] = $new_data['registrationTwo'];
+                $arr[] = $input;
+            }
+            if($pools->where('category_id', $request->categoryId)->count() > 0) {
+                foreach($pool as $trash) {
+                    $trash->delete();
+                }
+            }
+
+            Pool::insert($arr);
+            
+            return $this->success('', $arr);
+        }
+    }
+    public function automatedStore(Request $request)
+    {
         if(Auth::user()->user_type == 0 || Auth::user()->user_type == 1 && Auth::user()->status == 0 ) {
             return $this->error('', 'Not allowed!', 403);
         }
@@ -53,7 +85,7 @@ class PoolsController extends Controller
         if(isset($request->categoryId)) {
             $pool = $pools->where('category_id', $request->categoryId);
             $data = collect($request)->except(['compatitionId', 'categoryId']);
-            if($pools->where('category_id', $request->categoryId)->count() == 0) {
+            if($pool->count() == 0) {
                 return $this->error('', 'Prvo odradite žrijebanje da bi ste mogli da editujete!', 403);
             }
    
@@ -80,6 +112,7 @@ class PoolsController extends Controller
             
             return $this->success('', $arr);
         }
+      
         if($pools->where('compatition_id', $request->compatitionId)->count() > 0) {
             return $this->error('', 'Žrijebanje je već odrađeno za ovo takmičenje', 403);
         }
@@ -87,35 +120,50 @@ class PoolsController extends Controller
             $count = 0;
    
             switch (count($val)){
+                case count($val) <= 2:
+                    $count = 0;
+                    $pool = 0;
+                    break;
                 case count($val) <= 4:
                     $count = 1;
+                    $pool = 1;
                     break;
-                case count($val) > 4 && $count <= 8:
+                case count($val) <= 8:
                     $count = 3;
+                    $pool = 2;
                     break;
-                case count($val) > 8 && $count <= 16:
+                case count($val) <= 16:
                     $count = 7;
+                    $pool = 3;
                     break;
-                case count($val) > 16 && $count <= 32:
+                case count($val) <= 32:
                     $count = 15;
+                    $pool = 4;
                     break;
-                case count($val) > 32 && $count <= 64:
+                case count($val) <= 64:
                     $count = 31;
+                    $pool = 5;
                     break;
             }
-  
+            $cat_ids = $val->groupBy('club_id')->sortDesc();
+            $sorted_cats = [];
+            foreach($cat_ids as $item=>$key) {
+                $sorted_cats[] = $key;
+            }
+            $cleaned = Arr::collapse($sorted_cats);
+            //return response()->json(Arr::get($cleaned, '0.compatition_id'));
             for($i = 0; $i <= $count; $i++) {
                 $first = 0 + $i;
                 $second = ($count * 2 + 1) - $i;
-
-                $input['compatition_id'] = Arr::get($val, '0.compatition_id');
-                $input['category_id'] = Arr::get($val, '0.category_id');
-                $input['pool'] = 1;
+                //return response($first);
+                $input['compatition_id'] = Arr::get($cleaned, '0.compatition_id');
+                $input['category_id'] = Arr::get($cleaned, '0.category_id');
+                $input['pool'] = $pool;
                 $input['pool_type'] = 'P';
                 $input['group'] = $i;
                 $input['status'] = false;
-                $input['registration_one'] = Arr::get($val, $first . '.id');
-                $input['registration_two'] = Arr::get($val, $second .  '.id');
+                $input['registration_one'] = Arr::get($cleaned, $first . '.id');
+                $input['registration_two'] = Arr::get($cleaned, $second .  '.id');
                 $arr[] = $input;
                 
             }

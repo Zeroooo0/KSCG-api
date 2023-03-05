@@ -28,9 +28,4 @@ class Pool extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function registrations()
-    {
-        return $this->belongsTo(Registration::class);
-    }
-
 }

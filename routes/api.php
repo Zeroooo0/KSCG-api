@@ -75,9 +75,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     Route::resource('/users', UsersController::class);
     //Registration of compatitiors on compatition
     Route::resource('/registrations', RegistrationsController::class);
-    //Pull table 
+    //Pool table 
     Route::resource('/pools', PoolsController::class);
     Route::put('/pools/{compatition}', [PoolsController::class, 'updateBatch']);
+    Route::post('/pools-automated', [PoolsController::class, 'automatedStore']);
     //Timetable
     Route::resource('/time-table', TimeTablesController::class);
 
@@ -95,6 +96,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
 
 
     //Compatition filtering data
+    //Category
+    Route::get('/compatition-categories/{compatition}', [CompatitionsController::class, 'categories']);
     //Category
     Route::get('/compatition-categories/{compatition}', [CompatitionsController::class, 'categories']);
  

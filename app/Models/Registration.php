@@ -40,9 +40,6 @@ class Registration extends Model
     {
         return $this->belongsTo(Team::class);
     }
-    public function pools()
-    {
-        return $this->hasMany(Pool::class);
-    }
+
     
 }
