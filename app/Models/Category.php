@@ -24,8 +24,7 @@ class Category extends Model
     ];
     public function compatitions()
     {
-        return $this->belongsToMany(Compatition::class)
-            ->withPivot('tatami');
+        return $this->belongsToMany(Compatition::class);
     }
     public function belts()
     {

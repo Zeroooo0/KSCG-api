@@ -56,10 +56,11 @@ class CompatitionsController extends Controller
         $filter = new CategoriesFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
-
-
+      
         $search = '%'. $request->search . '%';
-        return CategoriesResource::collection($compatition->categories->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search)->paginate($per_page));
+        //return response('alo');
+   
+        return CategoriesResource::collection($compatition->categories->first()->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->paginate($per_page));
     }
 
     /**

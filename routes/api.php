@@ -98,8 +98,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     //Compatition filtering data
     //Category
     Route::get('/compatition-categories/{compatition}', [CompatitionsController::class, 'categories']);
-    //Category
-    Route::get('/compatition-categories/{compatition}', [CompatitionsController::class, 'categories']);
+ 
  
 });
 
