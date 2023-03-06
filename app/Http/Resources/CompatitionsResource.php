@@ -36,8 +36,9 @@ class CompatitionsResource extends JsonResource
                 $documents =  'Nema dokumenta';
             }
         }
+
         if(str_contains($request->embed, 'clubsData')) {
-            if($this->document->first() != null) {
+            if($clubs != null) {
                 $clubsData = ClubsOnCompatitionResource::collection(Club::whereIn('id', $clubs)->get());
             } else {
                 $clubsData =  'Trenutno nema prijavljenih!';

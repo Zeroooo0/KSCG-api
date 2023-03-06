@@ -34,38 +34,6 @@ class PoolsController extends Controller
      */
     public function store(Request $request)
     {
-        $compatition = Compatition::where('id', $request->compatitionId)->get()->first();
-        $pools = $compatition->pools;
-        $arr = [];
-        if(isset($request->categoryId)) {
-            $pool = $pools->where('category_id', $request->categoryId);
-            $data = collect($request)->except(['compatitionId', 'categoryId']);
-                    
-            foreach($data as $new_data) {
-
-                $input['compatition_id'] = $request->compatitionId;
-                $input['category_id'] = $request->categoryId;
-                $input['pool'] = $new_data['pool'];
-                $input['pool_type'] = $new_data['poolType'];
-                $input['group'] = $new_data['group'];
-                $input['status'] = $new_data['status'];
-                $input['registration_one'] = $new_data['registrationOne'];
-                $input['registration_two'] = $new_data['registrationTwo'];
-                $arr[] = $input;
-            }
-            if($pools->where('category_id', $request->categoryId)->count() > 0) {
-                foreach($pool as $trash) {
-                    $trash->delete();
-                }
-            }
-
-            Pool::insert($arr);
-            
-            return $this->success('', $arr);
-        }
-    }
-    public function automatedStore(Request $request)
-    {
         if(Auth::user()->user_type == 0 || Auth::user()->user_type == 1 && Auth::user()->status == 0 ) {
             return $this->error('', 'Not allowed!', 403);
         }

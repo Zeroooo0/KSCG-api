@@ -31,7 +31,7 @@ class ClubsOnCompatitionResource extends JsonResource
             'singleRegistrationNo' => $registration_single,
             'teamRegistrationNo' => $registration_team,
             'totalPrice' => $single_price * $registration_single + $team_price * $registration_team,
-            'compatitors' => $reg_compatitors,
+            'compatitorRegistrations' => $reg_compatitors,
 
         ];
     }
