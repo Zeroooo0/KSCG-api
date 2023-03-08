@@ -54,23 +54,23 @@ class CompatitorsResource extends JsonResource
                 'lastName' => $this->last_name,
                 'jmbg' => $jmbg,
                 'image' => $path,
-                'createAt' => $this->created_at,
-                'updatedAt' => $this->updated_at
+                'createAt' => date($this->created_at),
+                'updatedAt' => date($this->updated_at)
             ],
             'validation' => [
                 'status' => (boolean)$this->status,
                 'gender' => $this->gender,
-                'brthDay' => $this->date_of_birth,
+                'brthDay' => date($this->date_of_birth),
                 'weight' => $this->weight,
                 'belt' => new BeltResource($this->belt),
             ],
-            'relationships' => [
+            'club' => [
                 'id' => (string)$this->club->id,
-                'clubName' => $this->club->name,
-                'clubShortName' => $this->club->short_name,
+                'name' => $this->club->name,
+                'shortName' => $this->club->short_name,
             ],
             'documents' => $documents,
-            'resaults' => $results
+            'results' => $results
             
         ];
     }

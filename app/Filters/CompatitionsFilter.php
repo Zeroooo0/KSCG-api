@@ -11,10 +11,10 @@ class CompatitionsFilter {
         'country' => ['eq', 'like'],
         'city' => ['eq', 'like'],
         'address' => ['eq', 'like'],
-        'startTime' => ['eq', 'gt', 'gte', 'lt', 'lte'],
+        'startTimeDate' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'registrationDeadline' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'status' => ['eq'],
-        'hostName' => ['eq']
+        'hostName' => ['eq', 'like']
     ];
 
     protected $columnsMap = [
