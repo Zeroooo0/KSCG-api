@@ -93,21 +93,31 @@ class RegistrationsController extends Controller
             $compatition = Compatition::where('id', $data['compatitionId'])->get()->first();
             $team_or_solo = $compatition->categories->where('id', $data['categoryId'])->first()->solo_or_team;
             $kata_or_kumite = $compatition->categories->where('id', $data['categoryId'])->first()->kata_or_kumite;
-            $counter_request = $arr_collection->where('compatition_id', $data['compatitionId'])->where('compatitor_id', $data['compatitorId'])->where('team_or_single', $team_or_solo)->where('kata_or_kumite', $kata_or_kumite);
-            $registration_check = $compatition->registrations;
-            //return response()->json($registration_check);
-            $count = $registration_check->where('compatitor_id', $data['compatitorId'])->where('team_or_single', $team_or_solo)->where('kata_or_kumite',  $kata_or_kumite);
-            $some_count = $count->last() == null ? 0 : $count->last()->count;
+
+            //return response()->json($arr_collection);
+            //rekonstruisan objekat dolaznih podataka
+            $incoming_data_counter = $arr_collection->where('compatition_id', $data['compatitionId'])->where('compatitor_id', $data['compatitorId'])->where('team_or_single', $team_or_solo)->where('kata_or_kumite', $kata_or_kumite);
+            //postojeci podaci u DB
+            //return response($data['category_id']);
+            $existing_data_counter = $compatition->registrations->where('compatitor_id', $data['compatitorId'])->where('team_or_single', $team_or_solo)->where('kata_or_kumite',  $kata_or_kumite);
+            //kategorije dolazni podaci
+            $incoming_category_count = $arr_collection->where('compatition_id', $data['compatitionId'])->where('compatitor_id', $data['compatitorId'])->where('category_id', $data['categoryId']);
+            //kategorije postojeci podaci u DB
+            $existing_category_count = $compatition->registrations->where('compatition_id', $data['compatitionId'])->where('category_id', $data['categoryId'])->where('compatitor_id', $data['compatitorId']);
             
-            $category_checker = $arr_collection->where('compatition_id', $data['compatitionId'])->where('compatitor_id', $data['compatitorId'])->where('category_id', $data['categoryId']);
+            $some_count = $existing_data_counter->last() == null ? 0 : $existing_data_counter->count();
             
+        
 
 
-            if($some_count + $counter_request->count() > 2) {
+            if($some_count + $incoming_data_counter->count() > 2) {
                 return $this->error('','Takmičar ' . Compatitor::where('id', $data['compatitorId'])->first()->name . ' ' . Compatitor::where('id', $data['compatitorId'])->first()->last_name . ' ovom prijavom krši takmičarski pravilnik za prijave!', 403);
             }
-            if($category_checker->count() > 1) {
-                return $this->error('', 'Takmičar ' . Compatitor::where('id', $category_checker->first()['compatitor_id'])->first()->name . ' ' . Compatitor::where('id', $category_checker->first()['compatitor_id'])->first()->last_name . ' je već prijavljen u toj Kategoriji!', 403);
+            if($incoming_category_count->count() > 1) {
+                return $this->error('', 'Takmičar ' . Compatitor::where('id', $incoming_category_count->first()['compatitor_id'])->first()->name . ' ' . Compatitor::where('id', $incoming_category_count->first()['compatitor_id'])->first()->last_name . ' pokusavate da ubacite u istu kategoriju!', 403);
+            }
+            if($existing_category_count->count() >= 1 ) {
+                return $this->error('', 'Takmičar ' . Compatitor::where('id', $existing_category_count->first()['compatitor_id'])->first()->name . ' ' . Compatitor::where('id', $existing_category_count->first()['compatitor_id'])->first()->last_name . ' pokusavate da ubacite u istu kategoriju!', 403);
             }
             $input['compatition_id'] = $data['compatitionId'];
             $input['club_id'] = Compatitor::where('id', $data['compatitorId'])->first()->club_id;
@@ -119,7 +129,6 @@ class RegistrationsController extends Controller
             $input['created_at'] = date("Y:m:d H:i:s");
             $input['updated_at'] = date("Y:m:d H:i:s");
             $input['status'] = 1;
-            $input['count'] = $some_count + $counter_request->count();
             $finish_arr[] = $input;
         }    
 

@@ -134,7 +134,7 @@ class ClubsController extends Controller
             return $this->restricted('', 'Not alowed!', 403);
         }
         if(Auth::user()->user_type == 0 && Auth::user()->club->id != $club->id) {
-            return $this->restricted('', 'U are only allowed to change ur own club!', 403);
+            return $this->restricted('', 'Ovaj korisnik moze mijenjati samo podatke za klub: '. Auth::user()->club->name, 403);
         }
         $club->update($request->except(['shortName', 'phoneNumber', 'userId']));
 

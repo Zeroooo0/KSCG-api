@@ -24,7 +24,6 @@ return new class extends Migration
             $table->boolean('kata_or_kumite');
             $table->boolean('status')->default(true);
             $table->tinyInteger('position')->nullable();
-            $table->tinyInteger('count')->default(0);
             $table->timestamps();
         });
     }
