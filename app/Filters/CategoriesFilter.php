@@ -15,9 +15,9 @@ class CategoriesFilter {
         'dateTo' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'weightFrom' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'weightTo' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'soloOrTeam' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'status' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'belts' => ['eq', 'gt', 'gte', 'lt', 'lte'],
+        'soloOrTeam' => ['eq'],
+        'status' => ['eq'],
+        'belts' => ['eq'],
     ];
 
     protected $columnsMap = [

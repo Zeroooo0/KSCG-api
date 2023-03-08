@@ -53,6 +53,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     Route::post('/compatitor-documents/{compatitor}', [FileController::class, 'addDocumentCompatitor']);
     Route::post('/special-personal-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
     Route::post('/compatition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
+    //get
+    Route::get('/compatitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
     //Delete
     Route::post('/document-delete/{document}', [FileController::class, 'deleteDocument']);
 

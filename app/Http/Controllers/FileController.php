@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\StoreImageRequest;
 use App\Http\Resources\ClubsResource;
 use App\Http\Resources\CompatitionsResource;
@@ -19,9 +20,9 @@ use App\Models\Page;
 use App\Models\Post;
 use App\Models\SpecialPersonal;
 use App\Traits\HttpResponses;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 class FileController extends Controller
 {
@@ -33,7 +34,7 @@ class FileController extends Controller
     }
 
     public function setCompatitorImage(StoreImageRequest $request, Compatitor $compatitor) {
-
+        $request->validated($request->all());
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
@@ -57,7 +58,7 @@ class FileController extends Controller
     }
 
     public function setClubImage(StoreImageRequest $request, Club $club) {
-
+        $request->validated($request->all());
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
@@ -81,7 +82,7 @@ class FileController extends Controller
         return new ClubsResource($club);
     }
     public function setCompatitionImage(StoreImageRequest $request, Compatition $compatition) {
-
+        $request->validated($request->all());
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
@@ -104,6 +105,7 @@ class FileController extends Controller
 
     public function setSpecPersonImage(StoreImageRequest $request, SpecialPersonal $personal) 
     {
+        $request->validated($request->all());
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
@@ -126,6 +128,7 @@ class FileController extends Controller
 
     public function addPostImage(StoreImageRequest $request, Post $post) 
     {
+        $request->validated($request->all());
         $path = Storage::putFile('post-image', $request->image);
         
         $image = $post->images()->create([
@@ -141,6 +144,7 @@ class FileController extends Controller
     }
     public function addPageImage(StoreImageRequest $request, Page $page) 
     {
+        $request->validated($request->all());
         $path = Storage::putFile('page-image', $request->image);
         
         $image = $page->images()->create([
@@ -162,9 +166,9 @@ class FileController extends Controller
         return $this->success('', 'Slika je obrisana');
     }
 
-    public function addDocumentCompatitor(Request $request, Compatitor $compatitor)
+    public function addDocumentCompatitor(StoreDocumentRequest $request, Compatitor $compatitor)
     {
-        
+        $request->validated($request->all());
         $path = Storage::putFile('compatitors-docs', $request->document);
         $compatitor->document()->create([
             'name' => $request->name,
@@ -175,9 +179,9 @@ class FileController extends Controller
 
     }
 
-    public function addDocumentSpecialPersonal(Request $request, SpecialPersonal $special_personal)
+    public function addDocumentSpecialPersonal(StoreDocumentRequest $request, SpecialPersonal $special_personal)
     {
-        
+        $request->validated($request->all());
         $path = Storage::putFile('special-persons-docs', $request->document);
         $special_personal->document()->create([
             'name' => $request->name,
@@ -187,9 +191,9 @@ class FileController extends Controller
         return new SpecialPersonalsResource($special_personal);
 
     }
-    public function addDocumentCompatition(Request $request, Compatition $compatition)
+    public function addDocumentCompatition(StoreDocumentRequest $request, Compatition $compatition)
     {
-        
+        $request->validated($request->all());
         $path = Storage::putFile('compatition-docs', $request->document);
         $compatition->document()->create([
             'name' => $request->name,
@@ -201,11 +205,47 @@ class FileController extends Controller
     }
     public function deleteDocument(Document $document)
     {
-
+        $type = $document->documentable_type;
+        $ownerId = $document->documentable_id;
+        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
+            return $this->error('','Trentno vam je nalog suspendovan kontaktirajte KSCG!',403);
+        }
+        if(Auth::user()->user_type == 0) {
+            if(str_contains($type, 'SpecialPersonal') || str_contains($type, 'Compatition')){
+                return $this->error('', 'Klub administrator moze obrisati samo dokumenta koja posjeduju njegovi takmicari!', 403);
+            }
+            if(str_contains($type, 'Compatitor') || str_contains($type, 'Compatition')){
+                $compatitor = Compatitor::where('id', $ownerId)->first()->club_id; 
+                if($compatitor != Auth::user()->club->id){
+                    return $this->error('', 'Ovaj dokument ne pripada vasem takmicaru!', 403);
+                }
+            }
+        }
         $url = $document->where('id', '=', $document->id)->get()->first()->doc_link;
         Storage::delete($url);
         $document->where('id', $document->id)->delete();
-        //return new SpecialPersonalsResource($special_personal);
-        return response()->json($url);
+        return $this->success('', 'Uspjesno obrisan dokument');
+    }
+    public function compatitorDocuments(Compatitor $compatitor, Request $request)
+    {
+        $per_page = $request->perPage;
+        if(Auth::user()->user_type == 0 && $compatitor->club_id != Auth::user()->club->id) {
+            return $this->error('', 'Nije vam dozvoljeno da brisete dokumenta takmicara koji nisu u vasem klubu!', 403);
+        }
+        return DocumentsResource::collection($compatitor->document()->paginate($per_page));
+    }
+
+    public function specialPersonalDocuments(Request $request, SpecialPersonal $specialPersonal)
+    {
+        $per_page = $request->perPage;
+        if(Auth::user()->user_type == 0 && $specialPersonal->club_id != Auth::user()->club->id) {
+            return $this->error('', 'Nije vam dozvoljeno da brisete dokumenta takmicara koji nisu u vasem klubu!', 403);
+        }
+        return DocumentsResource::collection($specialPersonal->document()->paginate($per_page));
+    }
+
+    public function compatitionDocuments(Request $request, Compatition $compatition)
+    {
+
     }
 }

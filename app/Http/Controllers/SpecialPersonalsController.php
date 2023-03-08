@@ -6,6 +6,7 @@ use App\Filters\SpecialPersonalsFilter;
 use App\Http\Requests\StoreSpecialPersonalRequest;
 use App\Http\Requests\UpdateSpecialPersonalRequest;
 use App\Http\Resources\SpecialPersonalsResource;
+use App\Models\Club;
 use App\Models\SpecialPersonal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,17 @@ class SpecialPersonalsController extends Controller
         $specialPersonal = SpecialPersonal::orderBy($sort, $sortDirection);
         
         $search = '%'. $request->search . '%';
-
+        if(Auth::user()->user_type == 0){
+            $club_personal = Club::where('id', Auth::user()->club->id)->first()->roles;
+            $spec_personal = [];
+            foreach($club_personal as $id) {
+                $spec_personal[] = $id->special_personals_id;
+              
+            }
+            //return response($spec_personal);
+            return SpecialPersonalsResource::collection($specialPersonal->whereIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->paginate($per_page));
+    
+        }
         return SpecialPersonalsResource::collection($specialPersonal->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->paginate($per_page));
     }
 

@@ -45,7 +45,7 @@ class CompatitorsResource extends JsonResource
                 $results =  'Ne postoje prijave!';
             }
         }
-        $updateImage = env('APP_URL') . 'api/v1/compatitor-image/' . $this->id;
+
         return [
             'id' => (string)$this->id,
             'kscgId' => $this->kscg_compatitor_id,

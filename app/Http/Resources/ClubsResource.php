@@ -34,20 +34,6 @@ class ClubsResource extends JsonResource
                 'status' => (boolean)$this->user->status,
             ];
         }        
-            $compatitors = 'embeddable';
-            $administration = 'embeddable';
-
-            if(str_contains($request->embed, 'compatitors')) {
-                $compatitors = ClubsCompatiorsResource::collection($this->compatitors);
-            } 
-            if(str_contains($request->embed, 'administration')) {
-                if($this->roles->first() != null) {
-                    $administration = RolesResource::collection($this->roles);
-                } else {
-                    $administration = 'Nema registrovanih upravnika kluba!';
-                }
-            } 
-        
 
         return [
             'id' => (string)$this->id,
@@ -67,8 +53,6 @@ class ClubsResource extends JsonResource
             'user' => $user_info,
             'administrationCount' => count($this->roles),
             'compatitorsCount' => count($this->compatitors),
-            'administration' => $administration,
-            'compatitors' => $compatitors
         ];
     }
 }

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRegistrationRequest;
+use App\Http\Resources\CompatitorsResource;
 use App\Http\Resources\RegistrationsResource;
 use App\Models\Category;
 use App\Models\Compatition;
 use App\Models\Compatitor;
 use App\Models\Registration;
+use App\Models\SpecialPersonal;
 use App\Traits\HttpResponses;
 use ArrayObject;
 use Carbon\Carbon;
@@ -94,7 +96,7 @@ class RegistrationsController extends Controller
             $team_or_solo = $compatition->categories->where('id', $data['categoryId'])->first()->solo_or_team;
             $kata_or_kumite = $compatition->categories->where('id', $data['categoryId'])->first()->kata_or_kumite;
 
-            //return response()->json($arr_collection);
+
             //rekonstruisan objekat dolaznih podataka
             $incoming_data_counter = $arr_collection->where('compatition_id', $data['compatitionId'])->where('compatitor_id', $data['compatitorId'])->where('team_or_single', $team_or_solo)->where('kata_or_kumite', $kata_or_kumite);
             //postojeci podaci u DB
@@ -106,9 +108,6 @@ class RegistrationsController extends Controller
             $existing_category_count = $compatition->registrations->where('compatition_id', $data['compatitionId'])->where('category_id', $data['categoryId'])->where('compatitor_id', $data['compatitorId']);
             
             $some_count = $existing_data_counter->last() == null ? 0 : $existing_data_counter->count();
-            
-        
-
 
             if($some_count + $incoming_data_counter->count() > 2) {
                 return $this->error('','Takmičar ' . Compatitor::where('id', $data['compatitorId'])->first()->name . ' ' . Compatitor::where('id', $data['compatitorId'])->first()->last_name . ' ovom prijavom krši takmičarski pravilnik za prijave!', 403);
@@ -139,6 +138,8 @@ class RegistrationsController extends Controller
         }
 
     }
+
+
 
     /**
      * Remove the specified resource from storage.

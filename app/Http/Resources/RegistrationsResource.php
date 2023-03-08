@@ -26,6 +26,7 @@ class RegistrationsResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'status' => $this->status,
+            'position' => $this->position,
             'compatition' => [
                 'id' => (string)$this->compatition->id,
                 'name' => $this->compatition->name,

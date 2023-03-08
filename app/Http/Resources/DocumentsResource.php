@@ -15,13 +15,11 @@ class DocumentsResource extends JsonResource
     public function toArray($request)
     {
         $storage_url = env('APP_URL') . 'api/file/';
-        $delete_link = env('APP_URL') . 'api/v1/document-delete/' .  $this->id;
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
-            'createdAt' => $this->created_at,
+            'createdAt' => date($this->created_at),
             'documentLink' => $storage_url . $this->doc_link,
-            'deleteLink' => $delete_link
         ];
     }
 }
