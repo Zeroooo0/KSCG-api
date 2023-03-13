@@ -10,7 +10,7 @@ class CategoriesFilter {
         'name' => ['eq', 'like'],
         'kataOrKumite' => ['eq'],
         'categoryName' => ['eq', 'like'],
-        'gender' => ['eq'],
+        'gender' => ['eq', 'gt', 'gte', 'lt', 'lte', 'lorg'],
         'dateFrom' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'dateTo' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'weightFrom' => ['eq', 'gt', 'gte', 'lt', 'lte'],

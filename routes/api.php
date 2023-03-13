@@ -103,7 +103,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'categories']);
  
  
-});
+})->middleware('auth')->name('verification.notice');
 
 
 

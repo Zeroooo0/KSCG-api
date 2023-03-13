@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class CompatitionsFilter {
     protected $safeParms = [
+        'id' => ['eq'],
         'name' => ['eq', 'like'],
         'country' => ['eq', 'like'],
         'city' => ['eq', 'like'],

@@ -13,6 +13,7 @@ use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -61,9 +62,14 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ]);
         
+        
+        event(new Registered($user));
+        $accessToken = $user->createToken('authToken')->accessToken;
         return $this->success([
-            'user' => new UsersResource($user)
+            'user' => new UsersResource($user),
+            'authToken' => $accessToken
         ]);
+
     }
 
     public function logout()

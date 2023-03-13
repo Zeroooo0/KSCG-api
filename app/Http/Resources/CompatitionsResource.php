@@ -16,7 +16,6 @@ class CompatitionsResource extends JsonResource
      */
     public function toArray($request)
     {
-        $categories = env('APP_URL') . 'api/v1/compatition-categories/' . $this->id;
         $storage_url = env('APP_URL') . 'api/file/';
 
         $clubs = [];
@@ -61,7 +60,6 @@ class CompatitionsResource extends JsonResource
             'documents' => $documents,
             'status' => (boolean)$this->status,
             'registrationStatus' => (boolean)$this->registration_status,
-            'categories' => $categories,  
             'registrations' => [
                 'clubs' => $this->registrations->countBy('club_id')->count(),
                 'compatitor' => $this->registrations->countBy('compatitor_id')->count(),
