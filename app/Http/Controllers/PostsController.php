@@ -38,8 +38,16 @@ class PostsController extends Controller
 
     public function index(Request $request)
     {
+        $per_page = $request->perPage; 
+        $filter = new PostsFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $news = Post::orderBy($sort, $sortDirection);
         $per_page = $request->perPage;
-        return PostsResource::collection(Post::paginate($per_page));
+
+
+        return PostsResource::collection($news->where($queryItems)->paginate($per_page));
     }
 
     /**
