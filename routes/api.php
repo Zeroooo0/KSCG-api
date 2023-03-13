@@ -29,7 +29,7 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/competitors', [CompatitorsController::class, 'public']);
     Route::get('/competitors/{compatitor}', [CompatitorsController::class, 'show_public']);
     Route::get('/competitions', [CompatitionsController::class, 'public']);
-    Route::get('/posts', [PostsController::class, 'public']);
+    Route::get('/news', [PostsController::class, 'public']);
     Route::get('/pages', [PagesController::class, 'public']);
 });
 
@@ -90,7 +90,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     //Compatition
     Route::post('/competition-personal/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Posts
-    Route::resource('/posts', PostsController::class);
+    Route::resource('/news', PostsController::class);
     //Pages
     Route::resource('/pages', PagesController::class);
 

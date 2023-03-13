@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\PostsFilter;
 use App\Http\Requests\StorePostsRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostsResource;
@@ -10,6 +11,7 @@ use App\Models\Post;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class PostsController extends Controller
@@ -22,8 +24,16 @@ class PostsController extends Controller
      */
     public function public(Request $request)
     {
+        $per_page = $request->perPage; 
+        $filter = new PostsFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $news = Post::orderBy($sort, $sortDirection);
         $per_page = $request->perPage;
-        return PostsResource::collection(Post::paginate($per_page));
+
+
+        return PostsResource::collection($news->where($queryItems)->paginate($per_page));
     }
 
     public function index(Request $request)
@@ -42,21 +52,21 @@ class PostsController extends Controller
     {
         $request->validated($request->all());
 
-        $post = Post::create([
+        $news = Post::create([
             'title' => $request->title,
             'content' => $request->content,
             'excerpt' => $request->excerpt,
             'user_id' => Auth::user()->id
         ]);
         $path = Storage::putFile('post-image', $request->image);
-        $image = $post->images()->create([
+        $image = $news->images()->create([
             'url' => $path
         ]);
-        $post->update([
+        $news->update([
             'cover_image' => $image->id
         ]);
 
-        return new PostsResource($post);
+        return new PostsResource($news);
        
     }
 
@@ -66,9 +76,9 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show(Post $news)
     {
-        return new PostsResource($post);
+        return new PostsResource($news);
     }
 
     /**
@@ -78,14 +88,14 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $news)
     {
         $request->validated($request->all());
-        $post->update($request->all());
-        $post->update([
+        $news->update($request->all());
+        $news->update([
             'updated_at'=> date('Y:m:d H:i:s')
         ]);
-        return new PostsResource($post);
+        return new PostsResource($news);
     }
 
     /**
@@ -94,15 +104,15 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy(Post $news)
     {
-        foreach($post->images()->get() as $image) {
+        foreach($news->images()->get() as $image) {
             Storage::delete($image->url);
         }
         
-        $post->images()->delete();
-        $post->document()->delete();
-        $post->delete();
+        $news->images()->delete();
+        $news->document()->delete();
+        $news->delete();
         
        return $this->success('','Uspjesno je obrisan post!');
     }
