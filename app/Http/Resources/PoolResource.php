@@ -31,8 +31,8 @@ class PoolResource extends JsonResource
             'poolNo' => $this->pool,
             'groupNo' => $this->group,
             'status' => $this->status,
-            'compatitorOne' => $compatitorOne != null ? "$compatitorOne->name $compatitorOne->last_name ($compatitorOneClub)" : null,
-            'compatitorTwo' => $compatitorTwo != null ? "$compatitorTwo->name $compatitorTwo->last_name ($compatitorTwoClub)" : null
+            'competitorOne' => $compatitorOne != null ? "$compatitorOne->name $compatitorOne->last_name ($compatitorOneClub)" : null,
+            'competitorTwo' => $compatitorTwo != null ? "$compatitorTwo->name $compatitorTwo->last_name ($compatitorTwoClub)" : null
         ];
     }
 }

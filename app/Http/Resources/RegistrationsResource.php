@@ -27,7 +27,7 @@ class RegistrationsResource extends JsonResource
             'id' => (string)$this->id,
             'status' => $this->status,
             'position' => $this->position,
-            'compatition' => [
+            'competition' => [
                 'id' => (string)$this->compatition->id,
                 'name' => $this->compatition->name,
                 'date' => $this->compatition->start_time_date,
@@ -42,7 +42,7 @@ class RegistrationsResource extends JsonResource
                 'id' => (string)$this->category->id,
                 'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
             ],
-            'compatitor' => [
+            'competitor' => [
                 'id' => (string)$this->compatitor->id,
                 'kscgId' => $this->compatitor->kscg_compatitor_id,
                 'name' => $this->compatitor->name,

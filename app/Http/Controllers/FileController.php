@@ -34,7 +34,8 @@ class FileController extends Controller
     }
 
     public function setCompatitorImage(StoreImageRequest $request, Compatitor $compatitor) {
-        $request->validated($request->all());
+        //return $request->safe()->except('coverImage');
+        $request->safe()->except('coverImage');
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
@@ -58,7 +59,7 @@ class FileController extends Controller
     }
 
     public function setClubImage(StoreImageRequest $request, Club $club) {
-        $request->validated($request->all());
+        $request->safe()->except('coverImage');
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
@@ -81,8 +82,9 @@ class FileController extends Controller
         ]);
         return new ClubsResource($club);
     }
-    public function setCompatitionImage(StoreImageRequest $request, Compatition $compatition) {
-        $request->validated($request->all());
+    public function setCompatitionImage(StoreImageRequest $request, Compatition $compatition) 
+    {
+        $request->safe()->except('coverImage');
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }
@@ -105,7 +107,7 @@ class FileController extends Controller
 
     public function setSpecPersonImage(StoreImageRequest $request, SpecialPersonal $personal) 
     {
-        $request->validated($request->all());
+        $request->safe()->except('coverImage');
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
         }

@@ -52,7 +52,7 @@ class RegistrationsController extends Controller
        
         foreach($request->all() as $key) {
             $data = $key;
-            $compatition = Compatition::where('id', $data['compatitionId'])->get()->first();
+            $compatition = Compatition::where('id', $data['competitionId'])->get()->first();
             
             if( $compatition->registration_status == 0) {
                 return $this->error('', 'Registracija je trenutno neaktivna!', 403);
@@ -73,9 +73,9 @@ class RegistrationsController extends Controller
                 $data['teamId'] == null;
             }
 
-            $input['compatition_id'] = $data['compatitionId'];
-            $input['club_id'] = Compatitor::where('id', $data['compatitorId'])->first()->club_id;
-            $input['compatitor_id'] = $data['compatitorId'];
+            $input['compatition_id'] = $data['competitionId'];
+            $input['club_id'] = Compatitor::where('id', $data['competitorId'])->first()->club_id;
+            $input['compatitor_id'] = $data['competitorId'];
             $input['category_id'] = $data['categoryId'];
             $input['team_id'] = $data['teamId'] == null ? null : $data['teamId'];
             $input['team_or_single'] = $team_or_solo;
@@ -92,25 +92,25 @@ class RegistrationsController extends Controller
         $finish_arr = [];
         foreach($request->all() as $val) {
             $data = $val;
-            $compatition = Compatition::where('id', $data['compatitionId'])->get()->first();
+            $compatition = Compatition::where('id', $data['competitionId'])->get()->first();
             $team_or_solo = $compatition->categories->where('id', $data['categoryId'])->first()->solo_or_team;
             $kata_or_kumite = $compatition->categories->where('id', $data['categoryId'])->first()->kata_or_kumite;
 
 
             //rekonstruisan objekat dolaznih podataka
-            $incoming_data_counter = $arr_collection->where('compatition_id', $data['compatitionId'])->where('compatitor_id', $data['compatitorId'])->where('team_or_single', $team_or_solo)->where('kata_or_kumite', $kata_or_kumite);
+            $incoming_data_counter = $arr_collection->where('compatition_id', $data['competitionId'])->where('compatitor_id', $data['competitorId'])->where('team_or_single', $team_or_solo)->where('kata_or_kumite', $kata_or_kumite);
             //postojeci podaci u DB
             //return response($data['category_id']);
-            $existing_data_counter = $compatition->registrations->where('compatitor_id', $data['compatitorId'])->where('team_or_single', $team_or_solo)->where('kata_or_kumite',  $kata_or_kumite);
+            $existing_data_counter = $compatition->registrations->where('compatitor_id', $data['competitorId'])->where('team_or_single', $team_or_solo)->where('kata_or_kumite',  $kata_or_kumite);
             //kategorije dolazni podaci
-            $incoming_category_count = $arr_collection->where('compatition_id', $data['compatitionId'])->where('compatitor_id', $data['compatitorId'])->where('category_id', $data['categoryId']);
+            $incoming_category_count = $arr_collection->where('compatition_id', $data['competitionId'])->where('compatitor_id', $data['competitorId'])->where('category_id', $data['categoryId']);
             //kategorije postojeci podaci u DB
-            $existing_category_count = $compatition->registrations->where('compatition_id', $data['compatitionId'])->where('category_id', $data['categoryId'])->where('compatitor_id', $data['compatitorId']);
+            $existing_category_count = $compatition->registrations->where('compatition_id', $data['competitionId'])->where('category_id', $data['categoryId'])->where('compatitor_id', $data['competitorId']);
             
             $some_count = $existing_data_counter->last() == null ? 0 : $existing_data_counter->count();
 
             if($some_count + $incoming_data_counter->count() > 2) {
-                return $this->error('','Takmičar ' . Compatitor::where('id', $data['compatitorId'])->first()->name . ' ' . Compatitor::where('id', $data['compatitorId'])->first()->last_name . ' ovom prijavom krši takmičarski pravilnik za prijave!', 403);
+                return $this->error('','Takmičar ' . Compatitor::where('id', $data['competitorId'])->first()->name . ' ' . Compatitor::where('id', $data['competitorId'])->first()->last_name . ' ovom prijavom krši takmičarski pravilnik za prijave!', 403);
             }
             if($incoming_category_count->count() > 1) {
                 return $this->error('', 'Takmičar ' . Compatitor::where('id', $incoming_category_count->first()['compatitor_id'])->first()->name . ' ' . Compatitor::where('id', $incoming_category_count->first()['compatitor_id'])->first()->last_name . ' pokusavate da ubacite u istu kategoriju!', 403);
@@ -118,9 +118,9 @@ class RegistrationsController extends Controller
             if($existing_category_count->count() >= 1 ) {
                 return $this->error('', 'Takmičar ' . Compatitor::where('id', $existing_category_count->first()['compatitor_id'])->first()->name . ' ' . Compatitor::where('id', $existing_category_count->first()['compatitor_id'])->first()->last_name . ' pokusavate da ubacite u istu kategoriju!', 403);
             }
-            $input['compatition_id'] = $data['compatitionId'];
-            $input['club_id'] = Compatitor::where('id', $data['compatitorId'])->first()->club_id;
-            $input['compatitor_id'] = $data['compatitorId'];
+            $input['compatition_id'] = $data['competitionId'];
+            $input['club_id'] = Compatitor::where('id', $data['competitorId'])->first()->club_id;
+            $input['compatitor_id'] = $data['competitorId'];
             $input['category_id'] = $data['categoryId'];
             $input['team_id'] = $data['teamId'] == null ? null : $data['teamId'];
             $input['team_or_single'] = $team_or_solo;

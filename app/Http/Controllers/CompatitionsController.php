@@ -51,7 +51,7 @@ class CompatitionsController extends Controller
         return CompatitionsResource::collection($compatition->where('status', 1)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search)->paginate($per_page));
     }
 
-    public function categories(Request $request, Compatition $compatition)
+    public function categories(Request $request, Compatition $competition)
     {
         $filter = new CategoriesFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
@@ -60,7 +60,7 @@ class CompatitionsController extends Controller
         $search = '%'. $request->search . '%';
         //return response('alo');
    
-        return CategoriesResource::collection($compatition->categories->first()->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->paginate($per_page));
+        return CategoriesResource::collection($competition->categories->first()->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->paginate($per_page));
     }
 
     /**
@@ -115,9 +115,9 @@ class CompatitionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Compatition $compatition)
+    public function show(Compatition $competition)
     {
-        return new CompatitionsResource($compatition);
+        return new CompatitionsResource($competition);
     }
 
     /**
@@ -127,24 +127,24 @@ class CompatitionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCompatitionRequest $request, Compatition $compatition)
+    public function update(UpdateCompatitionRequest $request, Compatition $competition)
     {
         $request->validated($request->all());
-        $compatition->update($request->except(['hostName', 'startTimeDate', 'registrationDeadline', 'priceSingle', 'priceTeam', 'registrationStatus', 'status']));
-        $request->has('hostName') ? $compatition->update(['host_name' => $request->hostName]) : null;
-        $request->has('startTimeDate') ? $compatition->update(['start_time_date' => $request->startTimeDate]) : null;
-        $request->has('registrationDeadline') ? $compatition->update(['registration_deadline' => $request->registrationDeadline]) : null;
-        $request->has('priceSingle') ? $compatition->update(['price_single' => $request->priceSingle]) : null;
-        $request->has('priceTeam') ? $compatition->update(['price_team' => $request->priceTeam]) : null;
-        $request->has('registrationStatus') ? $compatition->update(['registration_status' => $request->registrationStatus]) : null;
-        $request->has('status') && Auth::user()->user_type != 0 ? $compatition->update(['status' => $request->status]) : null;
+        $competition->update($request->except(['hostName', 'startTimeDate', 'registrationDeadline', 'priceSingle', 'priceTeam', 'registrationStatus', 'status']));
+        $request->has('hostName') ? $competition->update(['host_name' => $request->hostName]) : null;
+        $request->has('startTimeDate') ? $competition->update(['start_time_date' => $request->startTimeDate]) : null;
+        $request->has('registrationDeadline') ? $competition->update(['registration_deadline' => $request->registrationDeadline]) : null;
+        $request->has('priceSingle') ? $competition->update(['price_single' => $request->priceSingle]) : null;
+        $request->has('priceTeam') ? $competition->update(['price_team' => $request->priceTeam]) : null;
+        $request->has('registrationStatus') ? $competition->update(['registration_status' => $request->registrationStatus]) : null;
+        $request->has('status') && Auth::user()->user_type != 0 ? $competition->update(['status' => $request->status]) : null;
 
         if($request->has('categories')) {
             $categories = array_filter(explode(',', $request->categories));
-            $compatition->categories()->sync($categories);
+            $competition->categories()->sync($categories);
         }
 
-        return new CompatitionsResource($compatition);
+        return new CompatitionsResource($competition);
     }
 
     /**
@@ -158,12 +158,12 @@ class CompatitionsController extends Controller
         //
     }
 
-    public function specialPersonalOnCompatition(Compatition $compatition, Request $request) {
+    public function specialPersonalOnCompatition(Compatition $competition, Request $request) {
 
         $specialPersonal = SpecialPersonal::where('id', $request->specPersonId)->first();
         if($specialPersonal->role == 2 && Auth::user()->user_type == 0) {
             $club = '';
         }
-        return response("Takmicenje $compatition->name" );
+        return response("Takmicenje $competition->name" );
     }
 }

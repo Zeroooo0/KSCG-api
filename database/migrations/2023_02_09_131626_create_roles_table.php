@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('special_personals_id');
             $table->string('title');
-            //Special personal Rolle Trener / Sudija
+            //Special personal Rolle Trener / Sudija / Club personal
             $table->tinyInteger('role');
             //Prestanak funkcije trenera
             $table->timestamp('active_untill')->nullable();

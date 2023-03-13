@@ -6,7 +6,6 @@ use App\Http\Requests\StoreCompatitorRequest;
 use App\Http\Resources\CompatitorsResource;
 use App\Models\Compatitor;
 use App\Filters\CompatitorsFilter;
-use App\Http\Resources\CompatitorsCollectionResource;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -106,18 +105,18 @@ class CompatitorsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show_public(Compatitor $compatitor)
+    public function show_public(Compatitor $competitor)
     {
-        return new CompatitorsResource($compatitor);
+        return new CompatitorsResource($competitor);
     }
 
-    public function show(Compatitor $compatitor)
+    public function show(Compatitor $competitor)
     {
 
-        if(Auth::user()->user_type == 0 && Auth::user()->club->id != $compatitor->club_id) {
+        if(Auth::user()->user_type == 0 && Auth::user()->club->id != $competitor->club_id) {
             return $this->restricted('', 'You are not authorized to make the request!', 403);
         } else {
-            return new CompatitorsResource($compatitor);
+            return new CompatitorsResource($competitor);
         }
 
     }
@@ -129,25 +128,25 @@ class CompatitorsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Compatitor $compatitor)
+    public function update(Request $request, Compatitor $competitor)
     {
         
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Suspendovani ste molimo vas da kontaktirate KSCG!', 403);
         }
-        if(Auth::user()->user_type == 0 && $compatitor->club_id != Auth::user()->club->id) {
+        if(Auth::user()->user_type == 0 && $competitor->club_id != Auth::user()->club->id) {
             return $this->restricted('', 'Možete vršiti izmjene samo članova Vašeg kluba!', 403);
         }
-        $compatitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status']));
+        $competitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status']));
 
 
         if ($request->has('lastName')) {
-            $compatitor->update([
+            $competitor->update([
                 'last_name' => $request->lastName
             ]);
         }
         if ($request->has('dateOfBirth')) {
-            $compatitor->update([
+            $competitor->update([
                 'date_of_birth' => $request->dateOfBirth
             ]);
         }
@@ -157,7 +156,7 @@ class CompatitorsController extends Controller
                 return $this->error('', 'Takmičara mogu premjestiti samo aktivni administratori ove platforme!', 403);
             } 
 
-            $compatitor->update([
+            $competitor->update([
                 'club_id' => $request->clubId
             ]);
         }
@@ -167,17 +166,17 @@ class CompatitorsController extends Controller
                 return $this->error('', 'Status mogu promijeniti aktivni administratori ove platforme!', 403);
             } 
 
-            $compatitor->update([
+            $competitor->update([
                 'status' => $request->status
             ]);
         }
         if(Auth::user()->user_type == 0 && $request->hasAny(['dateOfBirth', 'weight'])) {
-            $compatitor->update([
+            $competitor->update([
                 'status' => 0
             ]);
         }
 
-        return new CompatitorsResource($compatitor);
+        return new CompatitorsResource($competitor);
  
     }
 
@@ -187,20 +186,20 @@ class CompatitorsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Compatitor $compatitor)
+    public function destroy(Compatitor $competitor)
     {
         if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Brisanje nije dozvoljeno!', 403);
         }
-        foreach($compatitor->image()->get() as $image) {
+        foreach($competitor->image()->get() as $image) {
             Storage::delete($image->url);
         }
-        foreach($compatitor->document()->get() as $document) {
+        foreach($competitor->document()->get() as $document) {
             Storage::delete($document->url);
         }
-        $compatitor->image()->delete();
-        $compatitor->document()->delete();
-        $compatitor->delete();
+        $competitor->image()->delete();
+        $competitor->document()->delete();
+        $competitor->delete();
         return $this->success('', 'Takmičar je uspješno obrisan!', 200);
     }
 

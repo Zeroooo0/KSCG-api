@@ -23,7 +23,7 @@ class RolesResource extends JsonResource
         $val = 'clubName';
         if($this->role == 1) {
             $role = 'Sudija';
-            $val = 'compatitionName';
+            $val = 'competitionName';
         }
         if($this->role == 2) {
             $role = 'Trener';

@@ -36,7 +36,7 @@ class ResultsResource extends JsonResource
         }
         return [
             'id' => (string)$this->id,
-            'compatition' => $this->compatition->name,
+            'competition' => $this->compatition->name,
             'category' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
             'position' => $medal,
             'date' => Date('Y-m-d', strtotime($this->compatition->start_time_date))

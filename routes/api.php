@@ -26,9 +26,9 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::get('/clubs', [ClubsController::class, 'public']);  
     Route::get('/clubs/{club}', [ClubsController::class, 'show_public']);  
-    Route::get('/compatitors', [CompatitorsController::class, 'public']);
-    Route::get('/compatitors/{compatitor}', [CompatitorsController::class, 'show_public']);
-    Route::get('/compatitions', [CompatitionsController::class, 'public']);
+    Route::get('/competitors', [CompatitorsController::class, 'public']);
+    Route::get('/competitors/{compatitor}', [CompatitorsController::class, 'show_public']);
+    Route::get('/competitions', [CompatitionsController::class, 'public']);
     Route::get('/posts', [PostsController::class, 'public']);
     Route::get('/pages', [PagesController::class, 'public']);
 });
@@ -39,10 +39,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     Route::post('/change-password/{user}',[AuthController::class, 'changePassword']);
     //File managing
     //Images update
-    Route::post('/compatitor-image/{compatitor}', [FileController::class, 'setCompatitorImage']);
+    Route::post('/competitor-image/{compatitor}', [FileController::class, 'setCompatitorImage']);
     Route::post('/club-image/{club}', [FileController::class, 'setClubImage']);
     Route::post('/special-personal-image/{personal}', [FileController::class, 'setSpecPersonImage']);
-    Route::post('/compatition-image/{compatition}', [FileController::class, 'setCompatitionImage']);
+    Route::post('/competition-image/{compatition}', [FileController::class, 'setCompatitionImage']);
     //Image add
     Route::post('/add-post-images/{post}', [FileController::class, 'addPostImage']);
     Route::post('/add-page-images/{page}', [FileController::class, 'addPageImage']);
@@ -50,11 +50,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     Route::delete('/delete-image/{image}', [FileController::class, 'deleteImage']);
     //Documents
     //Set
-    Route::post('/compatitor-documents/{compatitor}', [FileController::class, 'addDocumentCompatitor']);
+    Route::post('/competitor-documents/{compatitor}', [FileController::class, 'addDocumentCompatitor']);
     Route::post('/special-personal-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
-    Route::post('/compatition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
+    Route::post('/competition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
     //get
-    Route::get('/compatitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
+    Route::get('/competitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
     //Delete
     Route::post('/document-delete/{document}', [FileController::class, 'deleteDocument']);
 
@@ -69,11 +69,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     //Special Persona in club
     Route::post('/club-administration', [ReusableDataController::class, 'clubsAdministration']);
     //COMPATITION
-    Route::resource('/compatitions', CompatitionsController::class);
+    Route::resource('/competitions', CompatitionsController::class);
     //Clubs
     Route::resource('/clubs', ClubsController::class);   
     //Compatitiors
-    Route::resource('/compatitors', CompatitorsController::class);  
+    Route::resource('/competitors', CompatitorsController::class);  
     //Users control
     Route::resource('/users', UsersController::class);
     //Registration of compatitiors on compatition
@@ -88,7 +88,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
     //Roles delete
     Route::delete('/role/{roles}', [ReusableDataController::class, 'deleteRole']);
     //Compatition
-    Route::post('/compatition-personal/{compatition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
+    Route::post('/competition-personal/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Posts
     Route::resource('/posts', PostsController::class);
     //Pages
@@ -100,7 +100,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
 
     //Compatition filtering data
     //Category
-    Route::get('/compatition-categories/{compatition}', [CompatitionsController::class, 'categories']);
+    Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'categories']);
  
  
 });

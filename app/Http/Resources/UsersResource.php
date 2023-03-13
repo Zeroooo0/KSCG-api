@@ -23,15 +23,15 @@ class UsersResource extends JsonResource
         if($this->user_type == 2) {
             $userType = 'Administrator';
         }
-        $data_name = 'userType';
-        $data = $userType;
+        
         if($this->user_type == 0 && $this->club != null) {
-            $data_name = 'club';
             $data = [
                 'id' => (string)$this->club->id,
                 'name' => $this->club->name,
                 'shortName' => $this->club->short_name,
             ];
+        } else {
+            $data = 'Ne posjeduje Klub';
         }
         return [
             'id' => (string)$this->id,
@@ -41,8 +41,8 @@ class UsersResource extends JsonResource
                 'email' => $this->email
             ],
             'status' => (boolean)$this->status,
-            $data_name =>  $data
-
+            'userType' =>  $userType,
+            'club' => $data
         ];
     }
 }

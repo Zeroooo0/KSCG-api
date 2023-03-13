@@ -24,9 +24,9 @@ class StoreRegistrationRequest extends FormRequest
     public function rules()
     {
         return [
-            '*.compatitionId' => ['required', 'integer'],
+            '*.competitionId' => ['required', 'integer'],
             '*.clubId' => ['integer'],
-            '*.compatitorId' => ['required', 'integer'],
+            '*.competitorId' => ['required', 'integer'],
             '*.categoryId' => ['required', 'integer'],
             '*.teamId' => ['integer', 'nullable']
         ];

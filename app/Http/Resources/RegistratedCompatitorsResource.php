@@ -30,7 +30,7 @@ class RegistratedCompatitorsResource extends JsonResource
         }
         return [
             'registrationId' => (string)$this->id,
-            'compatitor' => [
+            'competitor' => [
                 'id' => (string)$this->compatitor->id,
                 'kscgId' => $this->compatitor->kscg_compatitor_id,
                 'name' => $this->compatitor->name,

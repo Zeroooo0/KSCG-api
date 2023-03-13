@@ -38,7 +38,7 @@ class UsersController extends Controller
             );
         }
         return UsersResource::collection(
-            $user->where('id', Auth::user()->id)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->paginate($per_page)
+            $user->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->paginate($per_page)
         );
     }
 
