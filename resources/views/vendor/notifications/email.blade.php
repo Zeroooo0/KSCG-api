@@ -47,8 +47,7 @@
 @isset($actionText)
 <x-slot:subcopy>
 @lang(
-    "Ukoliko imate problema da pritisnete na \":actionText\" dugme, kopirajte link u nastavku i nalijepite\n".
-    'na vaš pretraživač:',
+    "Ukoliko imate problema da pritisnete na \":actionText\" dugme, kopirajte link u nastavku:",
     [
         'actionText' => $actionText,
     ]
