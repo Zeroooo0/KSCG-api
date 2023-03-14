@@ -107,8 +107,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'abilities:admi
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'categories']);
  
  
-})->middleware('auth')->name('verification.notice');
-
+});
+//testing
+Route::get('/validate-token', function () {
+    return ['data' => 'Token is valid'];
+})->middleware('auth:api');
 
 
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'abilities:reset']], function () {

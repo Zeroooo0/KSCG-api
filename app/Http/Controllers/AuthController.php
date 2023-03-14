@@ -46,7 +46,9 @@ class AuthController extends Controller
         if(Auth::user()->user_type == 2) {
             $token_ability = ['admin'];
         }
-        
+        if(auth('sanctum')->check()) {
+            auth()->user()->tokens()->delete();
+        }
         return $this->success([
             'user' => new UsersResource($user),
             'token' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
@@ -78,8 +80,8 @@ class AuthController extends Controller
             $token_ability = ['admin'];
         }
         
-        event(new Registered($user));
-        
+
+
         return $this->success([
             'user' => new UsersResource($user),
             'authToken' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
@@ -116,7 +118,7 @@ class AuthController extends Controller
         $request->validate(['email'=> ['required','email', 'exists:users,email']]);
         $user = User::where('email', $request->email)->first();
         $user->notify(new ForgotPassword());
-        return response('uspjesno poslato');
+        return $this->success('','Uspješno ste poslali mail: '. $request->email);
     }
     public function resetForgotenPassword(Request $request)
     {
