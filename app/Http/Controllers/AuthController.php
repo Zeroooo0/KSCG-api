@@ -9,11 +9,13 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UsersResource;
 use App\Models\Club;
 use App\Models\User;
+use App\Notifications\ForgotPassword;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
 {
@@ -55,19 +57,32 @@ class AuthController extends Controller
     {
         $request->validated($request->all());
         
+
+        
         $user = User::create([
             'name' => $request->name,
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
-        
+        if($user->user_type == 0) {
+            $token_ability = ['club'];
+        } 
+
+        if($user->user_type == 1) {
+            $token_ability = ['commission'];
+        }
+   
+            
+        if($user->user_type == 2) {
+            $token_ability = ['admin'];
+        }
         
         event(new Registered($user));
-        $accessToken = $user->createToken('authToken')->accessToken;
+        
         return $this->success([
             'user' => new UsersResource($user),
-            'authToken' => $accessToken
+            'authToken' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
         ]);
 
     }
@@ -94,6 +109,21 @@ class AuthController extends Controller
                 'user' => new UsersResource($user),
             ]);
         }
+
+    }
+    public function forgotPasswordNotification(Request $request)
+    {
+        $request->validate(['email'=> ['required','email', 'exists:users,email']]);
+        $user = User::where('email', $request->email)->first();
+        $user->notify(new ForgotPassword());
+        return response('uspjesno poslato');
+    }
+    public function resetForgotenPassword(Request $request)
+    {
+
+        $request->validate(['password'=> ['required','confirmed', Rules\Password::defaults()]]);
+
+        return response('Uspjesno izmjenjena sifra!');
 
     }
 }

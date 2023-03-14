@@ -14,7 +14,7 @@ use App\Http\Controllers\ReusableDataController;
 use App\Http\Controllers\SpecialPersonalsController;
 use App\Http\Controllers\TimeTablesController;
 use App\Http\Controllers\UsersController;
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -31,9 +31,14 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/competitions', [CompatitionsController::class, 'public']);
     Route::get('/news', [PostsController::class, 'public']);
     Route::get('/pages', [PagesController::class, 'public']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPasswordNotification']);
 });
 
-Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {    
+// Verify email
+
+
+
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'abilities:admin,club,commision']], function () {    
     //All auth users
     Route::post('/logout', [AuthController::class, 'logout']); 
     Route::post('/change-password/{user}',[AuthController::class, 'changePassword']);
@@ -97,7 +102,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
 
 
 
-
     //Compatition filtering data
     //Category
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'categories']);
@@ -107,6 +111,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum']], function () {
 
 
 
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'abilities:reset']], function () {
+    Route::post('/reset-password', [AuthController::class, 'resetForgotenPassword']);
+    
+});
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'abilities:admin']], function () {
     Route::post('/create-user', [AuthController::class, 'create_user']);
     

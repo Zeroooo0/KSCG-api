@@ -34,7 +34,7 @@ class ClubsResource extends JsonResource
                 'status' => (boolean)$this->user->status,
             ];
         }        
-
+        
         return [
             'id' => (string)$this->id,
             'attributes' => [
