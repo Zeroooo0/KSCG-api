@@ -21,8 +21,10 @@ class ForgotPassword extends Notification implements ShouldQueue
      */
     public function __construct()
     {
-        $this->message = 'Zaboravljena šifra';
-        $this->subject = 'Resetovanje šifre putem linka';
+        $this->message = 'Ovaj link u nastavku je poslat preko forme zaboravljena 
+                        šifra na sajtu Karate Saveza Crne Gore i važi 5 min, ukoliko niste vi zatražili 
+                        ovu funkciju molimo vas da kontaktirate upravu Karate Saveza.';
+        $this->subject = 'Resetovanje zaboravljene šifre';
         $this->fromEmail = 'info@kscg.site';
         $this->mailer = 'smtp';
     }
@@ -53,8 +55,8 @@ class ForgotPassword extends Notification implements ShouldQueue
             ->mailer($this->mailer)
             ->subject($this->subject)
             ->greeting('Poštovani '. $notifiable->name . ' '. $notifiable->last_name)
-            ->line('Ovaj link u nastavku je poslat preko forme zaboravljena šifra na sajtu Karate Saveza Crne Gore i važi 5 min, ukoliko niste vi zatražili ovu funkciju molimo vas da kontaktirate upravu Karate Saveza.')
-            ->action( 'RESETUJ ŠIFRU',$link);
+            ->line($this->message)
+            ->action( 'Resetuj šifru',$link);
     }
 
     /**
