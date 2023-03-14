@@ -46,13 +46,15 @@ class ForgotPassword extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $link = env('FRONT_URL'). '?token='. $notifiable->createToken('API token of ' . $notifiable->name . ' '. $notifiable->last_name, ['reset'])->plainTextToken;
+        $notifiable->tokens()->delete();
+        $token = $notifiable->createToken('API token of ' . $notifiable->name . ' '. $notifiable->last_name, ['reset'])->plainTextToken;
+        $link = env('FRONT_URL'). '?token='. $token;
         return (new MailMessage)
             ->mailer($this->mailer)
             ->subject($this->subject)
-            ->greeting('Hello '. $notifiable->name)
-            ->line('Hello '. $notifiable->name)
-            ->action( 'Link za resetovanje šifre na vašem nalogu:',$link);
+            ->greeting('Poštovani '. $notifiable->name . ' '. $notifiable->last_name)
+            ->line('Ovaj link u nastavku je poslat preko forme zaboravljena šifra na sajtu Karate Saveza Crne Gore i važi 5 min, ukoliko niste vi zatražili ovu funkciju molimo vas da kontaktirate upravu Karate Saveza.')
+            ->action( 'RESETUJ ŠIFRU',$link);
     }
 
     /**

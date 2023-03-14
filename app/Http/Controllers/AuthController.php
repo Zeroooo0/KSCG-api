@@ -114,19 +114,27 @@ class AuthController extends Controller
 
     }
     public function forgotPasswordNotification(Request $request)
-    {
+    {     
         $request->validate(['email'=> ['required','email', 'exists:users,email']]);
         $user = User::where('email', $request->email)->first();
         $user->notify(new ForgotPassword());
         return $this->success('','Uspješno ste poslali mail: '. $request->email);
+
     }
     public function resetForgotenPassword(Request $request)
     {
 
         $request->validate(['password'=> ['required','confirmed', Rules\Password::defaults()]]);
-
-        return response('Uspjesno izmjenjena sifra!');
-
+        Auth::user()->currentAccessToken()->delete();
+        return $this->success('','TUspjesno izmjenjena sifra!');
+    }
+    public function checkToken() {
+        $token = Auth::user()->currentAccessToken();
+        if(now() >= $token->created_at->addMinutes(5)){
+            $token->delete();
+            return $this->error('', 'Token je istekao!', 403);
+        }
+        return $this->success('','Token je još validan!');
     }
 }
     

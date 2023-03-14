@@ -109,12 +109,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'abilities:admi
  
 });
 //testing
-Route::get('/validate-token', function () {
-    return ['data' => 'Token is valid'];
-})->middleware('auth:api');
+
 
 
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'abilities:reset']], function () {
+    Route::get('/validate-token', [AuthController::class, 'checkToken']);
     Route::post('/reset-password', [AuthController::class, 'resetForgotenPassword']);
     
 });
