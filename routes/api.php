@@ -38,7 +38,7 @@ Route::group(['prefix' => 'v1/public'], function () {
 
 
 
-Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,club,commision']], function () {    
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,club,commission']], function () {    
     //All auth users
     Route::post('/logout', [AuthController::class, 'logout']); 
     Route::post('/change-password/{user}',[AuthController::class, 'changePassword']);
