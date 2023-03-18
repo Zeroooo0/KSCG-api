@@ -49,10 +49,11 @@ class TimeTablesController extends Controller
         
         
         $timeTable = [];
+        
         for($i = 1; $i <= $number_of_tatami; $i++) {
             $tatmiIncomingData = $incomin_data->where('tatamiNo', $i);
             $orderNoByTatami = $tatmiIncomingData->countBy('orderNo');
-
+            
             foreach($orderNoByTatami as $orNo=>$count) {
                 if($count > 1) {
                     return $this->error('', 'Redni broj kategorije na borilištu se ne moze ponavljati!', 403);
@@ -60,6 +61,7 @@ class TimeTablesController extends Controller
             }
             $finishedTimeStore = $start_time;
             foreach($tatmiIncomingData as $data) {
+;
                 $registrations = $reg_by_categories[$data['categoryId']] ?? 0;
                 $timePerCategory = $category->where('id', $data['categoryId'])->first()->match_lenght ?? 0;
                 $repesaz = $category->where('id', $data['categoryId'])->first()->repesaz == true ? 2 * $timePerCategory : 0;
