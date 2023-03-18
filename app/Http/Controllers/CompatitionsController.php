@@ -83,8 +83,10 @@ class CompatitionsController extends Controller
       
         $search = '%'. $request->search . '%';
         //return response('alo');
-   
-        return RegistrationsResource::collection($competition->registrations->paginate($per_page));
+        if($competition->registrations->first() != null) {
+            return RegistrationsResource::collection($competition->registrations->first()->paginate($per_page));
+        }
+        return response()->json('Nema Registracija za ovotakmicenje');
     }
 
     /**
