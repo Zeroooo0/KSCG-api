@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class ClubsOnCompatitionResource extends JsonResource
 {
@@ -24,13 +25,20 @@ class ClubsOnCompatitionResource extends JsonResource
         }
         $registration_single = $this->registrations->where('team_or_single', 1)->count();
         $registration_team = $this->registrations->where('team_or_single', 0)->countBy('team_id')->count();
+        $totalPrice = $single_price * $registration_single + $team_price * $registration_team;
+        if(Auth::user() == null){
+            $totalPrice = null;
+        }
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
             'totalRegistrationNo' => $reg_compatitors->count(),
             'singleRegistrationNo' => $registration_single,
             'teamRegistrationNo' => $registration_team,
-            'totalPrice' => $single_price * $registration_single + $team_price * $registration_team,
+            'totalPrice' => $totalPrice,
+            'gold' => $reg_compatitors->where('position', 3)->count(),
+            'silver' => $reg_compatitors->where('position', 2)->count(),
+            'bronze' => $reg_compatitors->where('position', 1)->count(),
             'compatitorRegistrations' => $reg_compatitors,
 
         ];
