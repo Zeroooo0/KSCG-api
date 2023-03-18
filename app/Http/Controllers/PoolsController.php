@@ -32,7 +32,7 @@ class PoolsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function automatedStore(Request $request)
     {
         if(Auth::user()->user_type == 0 || Auth::user()->user_type == 1 && Auth::user()->status == 0 ) {
             return $this->error('', 'Not allowed!', 403);
@@ -46,7 +46,7 @@ class PoolsController extends Controller
 
         foreach($reg_count as $key=>$count){
             $nn_single_cat[] = $registrations->sortBy('club_id')->where('category_id', $key)->where('team_or_single', 1)->values();
-            $nn_team_cat[] = $registrations->where('category_id', $key)->where('team_or_single', 0)->sortBy('club_id')->values();
+            $nn_team_cat[] = $registrations->where('category_id', $key)->where('team_or_single', 0)->values();
         }
 
         $arr = [];

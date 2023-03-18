@@ -137,7 +137,7 @@ class CompatitorsController extends Controller
         if(Auth::user()->user_type == 0 && $competitor->club_id != Auth::user()->club->id) {
             return $this->restricted('', 'Možete vršiti izmjene samo članova Vašeg kluba!', 403);
         }
-        $competitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status']));
+        $competitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status', 'belt']));
 
 
         if ($request->has('lastName')) {
@@ -148,6 +148,11 @@ class CompatitorsController extends Controller
         if ($request->has('dateOfBirth')) {
             $competitor->update([
                 'date_of_birth' => $request->dateOfBirth
+            ]);
+        }
+        if ($request->has('belt')) {
+            $competitor->update([
+                'belt_id' => $request->belt
             ]);
         }
         if ($request->has('clubId')) {
@@ -170,7 +175,7 @@ class CompatitorsController extends Controller
                 'status' => $request->status
             ]);
         }
-        if(Auth::user()->user_type == 0 && $request->hasAny(['dateOfBirth', 'weight'])) {
+        if(Auth::user()->user_type == 0 && $request->hasAny(['dateOfBirth', 'belt'])) {
             $competitor->update([
                 'status' => 0
             ]);

@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreCompatitorRequest extends FormRequest
+class UpdateComatitorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class StoreCompatitorRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -25,14 +25,14 @@ class StoreCompatitorRequest extends FormRequest
     public function rules()
     {
         return [
-            'kscgId' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
-            'lastName' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'integer', 'max:3'], Rule::in([1, 2]),
-            'jmbg' => ['required', 'integer'],
-            'belt' => ['required', 'integer'],
-            'dateOfBirth' => ['required', 'date'],
-            'weight' => ['required', 'decimal:2'],
+            'kscgId' => ['string', 'max:255'],
+            'name' => ['string', 'max:255'],
+            'lastName' => ['string', 'max:255'],
+            'gender' => ['integer', 'max:3'], Rule::in([1, 2]),
+            'jmbg' => ['integer'],
+            'belt' => ['integer'],
+            'dateOfBirth' => ['date'],
+            'weight' => ['decimal:2'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif.png', 'max:2048'],
             'clubId' => ['integer'],
             'status' => ['boolean']

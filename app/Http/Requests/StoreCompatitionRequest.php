@@ -36,7 +36,8 @@ class StoreCompatitionRequest extends FormRequest
             'status' => ['boolean', 'max:255'],
             'categories' =>['required', 'string'],
             'tatamiNo' =>['required', 'numeric'],
-            'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480']
+            'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480'],
+            'document' => ['required', 'mimes:doc,docx,pdf,xml,html', 'max:20480' ]
         ];
     }
 }

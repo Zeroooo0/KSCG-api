@@ -24,7 +24,7 @@ class StoreTimeTableMassRequest extends FormRequest
     public function rules()
     {
         return [
-            '*.compatitionId' => ['required', 'integer'],
+            '*.competitionId' => ['required', 'integer'],
             '*.categoryId' => ['required', 'integer'],
             '*.tatamiNo' => ['required', 'numeric'],
             '*.orderNo' => ['required', 'numeric'],

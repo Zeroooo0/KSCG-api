@@ -29,6 +29,8 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/competitors', [CompatitorsController::class, 'public']);
     Route::get('/competitors/{compatitor}', [CompatitorsController::class, 'show_public']);
     Route::get('/competitions', [CompatitionsController::class, 'public']);
+    Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'piblicCategories']);
+    Route::get('/competition-results/{competition}', [CompatitionsController::class, 'piblicRegistrations']);
     Route::get('/news', [PostsController::class, 'public']);
     Route::get('/pages', [PagesController::class, 'public']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPasswordNotification']);
@@ -85,7 +87,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::resource('/registrations', RegistrationsController::class);
     //Pool table 
     Route::resource('/pools', PoolsController::class);
-    Route::put('/pools/{compatition}', [PoolsController::class, 'updateBatch']);
+    //Route::put('/pools/{compatition}', [PoolsController::class, 'updateBatch']);
     Route::post('/pools-automated', [PoolsController::class, 'automatedStore']);
     //Timetable
     Route::resource('/time-table', TimeTablesController::class);

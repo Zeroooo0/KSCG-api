@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTimeTableMassRequest;
+use App\Http\Resources\TimeTableResource;
 use App\Models\Compatition;
 use App\Models\TimeTable;
 use App\Traits\HttpResponses;
@@ -20,7 +21,7 @@ class TimeTablesController extends Controller
      */
     public function index()
     {
-        return TimeTable::all();
+        return TimeTableResource::collection(TimeTable::all());
     }
 
     /**
@@ -33,19 +34,19 @@ class TimeTablesController extends Controller
     {
 
 
-        $compatition = Compatition::where('id', collect($request->all())->values()->first()['compatitionId'])->first();
+        $compatition = Compatition::where('id', collect($request->all())->values()->first()['competitionId'])->first();
         $number_of_tatami = $compatition->tatami_no;
         $start_time = $compatition->start_time_date;
         $pairs = $compatition->registrations;
         $category = $compatition->categories;
         $reg_by_categories = $pairs->countBy('category_id');
-        $incomin_data = collect($request->all())->except('compatitionId')->values();
+        $incomin_data = collect($request->all())->except('competitionId')->values();
         $timeTableData = $compatition->timeTable;
 
         if($incomin_data->where('tatamiNo', '>', $number_of_tatami)->count() > 0 || $incomin_data->where('tatamiNo', '<=', 0)->count() > 0) {
             return $this->error('', "Tatami pocinje sa indexom 1 i može maksimalno da sadrži $number_of_tatami!", 404);
         }
-
+        
         
         $timeTable = [];
         for($i = 1; $i <= $number_of_tatami; $i++) {
@@ -85,7 +86,7 @@ class TimeTablesController extends Controller
                         break;
                 }
 
-                $input['compatition_id'] = collect($request->all())->values()->first()['compatitionId'];
+                $input['compatition_id'] = collect($request->all())->values()->first()['competitionId'];
                 $input['category_id'] = $data['categoryId'];
                 $input['tatami_no'] = $data['tatamiNo'];
                 $input['order_no'] = $data['orderNo'];

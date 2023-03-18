@@ -22,17 +22,30 @@ class PoolResource extends JsonResource
         $compatitorTwo = $this->registration_two != null ? Registration::where('id', $this->registration_two)->first()->compatitor : null;
         $compatitorOneClub = $this->registration_one != null ? Registration::where('id', $this->registration_one)->first()->club->short_name : null;
         $compatitorTwoClub = $this->registration_two != null ? Registration::where('id', $this->registration_two)->first()->club->short_name : null;
+        if($ekipno == null) {
+            $one = [
+                'registrationId' => $this->registration_one,
+                'name' => $compatitorOne != null ? "$compatitorOne->name $compatitorOne->last_name ($compatitorOneClub)" : null
+            ];
+            $two = [
+                'registrationId' => $this->registration_two,
+                'name' => $compatitorTwo != null ? "$compatitorTwo->name $compatitorTwo->last_name ($compatitorTwoClub)" : null
+            ];
+        } else{
+            $one = null;
+            $two = null;
+        }
 
         return [
             'id' => (string)$this->id,
-            'compatitionName' => $this->compatition->name,
+            'compatition' => $this->compatition->name,
             'category' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
             'poolType' => $this->pool_type,
             'poolNo' => $this->pool,
             'groupNo' => $this->group,
             'status' => $this->status,
-            'competitorOne' => $compatitorOne != null ? "$compatitorOne->name $compatitorOne->last_name ($compatitorOneClub)" : null,
-            'competitorTwo' => $compatitorTwo != null ? "$compatitorTwo->name $compatitorTwo->last_name ($compatitorTwoClub)" : null
+            'competitorOne' => $one,
+            'competitorTwo' => $two
         ];
     }
 }

@@ -7,7 +7,9 @@ use App\Filters\CompatitionsFilter;
 use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CategoriesResource;
+use App\Http\Resources\CCPResource;
 use App\Http\Resources\CompatitionsResource;
+use App\Http\Resources\RegistrationsResource;
 use App\Models\Compatition;
 use App\Models\SpecialPersonal;
 use Illuminate\Http\Request;
@@ -32,7 +34,7 @@ class CompatitionsController extends Controller
         $compatition = Compatition::orderBy($sort, $sortDirection);
 
         $search = '%'. $request->search . '%';
-        
+
         return CompatitionsResource::collection($compatition->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search)->paginate($per_page));
     }
 
@@ -50,6 +52,7 @@ class CompatitionsController extends Controller
         
         return CompatitionsResource::collection($compatition->where('status', 1)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search)->paginate($per_page));
     }
+    
 
     public function categories(Request $request, Compatition $competition)
     {
@@ -61,6 +64,27 @@ class CompatitionsController extends Controller
         //return response('alo');
    
         return CategoriesResource::collection($competition->categories->first()->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->paginate($per_page));
+    }
+    public function piblicCategories(Request $request, Compatition $competition) {
+        $filter = new CategoriesFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+      
+        $search = '%'. $request->search . '%';
+        //return response('alo');
+   
+        return CategoriesResource::collection($competition->categories->first()->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->paginate($per_page));
+    }
+
+    public function piblicRegistrations(Request $request, Compatition $competition) {
+        //$filter = new CategoriesFilter();
+        //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+      
+        $search = '%'. $request->search . '%';
+        //return response('alo');
+   
+        return RegistrationsResource::collection($competition->registrations->paginate($per_page));
     }
 
     /**
@@ -102,7 +126,14 @@ class CompatitionsController extends Controller
                 'url' => $path
             ]);
         };
-
+        if($request->document != null) {
+            $path = Storage::putFile('compatition-docs', $request->document);
+            $year = date('Y', strtotime($request->startTimeDate));
+            $compatition->document()->create([
+                'name' => "Bilten $request->name $year",
+                'doc_link' => $path
+            ]);
+        }
         $categories = array_filter(explode(',', $request->categories));
         $compatition->categories()->sync($categories);
 
