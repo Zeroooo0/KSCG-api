@@ -39,7 +39,8 @@ class ClubsOnCompatitionResource extends JsonResource
             'gold' => $reg_compatitors->where('position', 3)->count(),
             'silver' => $reg_compatitors->where('position', 2)->count(),
             'bronze' => $reg_compatitors->where('position', 1)->count(),
-            'compatitorRegistrations' => $reg_compatitors,
+            'points' => $reg_compatitors->sum('position'),
+            'compatitors' => $reg_compatitors,
 
         ];
     }

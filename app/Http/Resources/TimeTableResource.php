@@ -17,14 +17,20 @@ class TimeTableResource extends JsonResource
      */
     public function toArray($request)
     {
-        $competition = Compatition::where($this->comapatition_id)->first();
-        $category = Category::where($this->category_id)->first();
+        $competition = Compatition::where('id', $this->compatition_id)->first();
+        $category = Category::where('id', $this->category_id)->first();
         $kata_or_kumite = $category->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $category->gender == 1 ? 'M' : ($category->gender == 2 ? 'Ž' : 'M + Ž');
+        $ekipno = $category->solo_or_team  ? null : ' | Ekipno';
         return [
             'id' => $this->id,
-            'tatami' => 'Tatami ' . $this->tatami_no
-            'category' => $gender
+            'tatami' => 'Tatami ' . $this->tatami_no,
+            'categoryName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $category->name . ' ' . $category->category_name  . $ekipno,
+            'etoStart' => date('H:m', strtotime($this->eto_start)),
+            'etoFinish' => date('H:m', strtotime($this->eto_finish)),
+            'startedAt' => $this->started_time != null ? date('H:m', strtotime($this->started_time)) : null,
+            'finishedAt' => $this->finish_time != null ? date('H:m', strtotime($this->finish_time)) : null,
+            'status' => $this->status
 
         ];
     }

@@ -31,6 +31,8 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/competitions', [CompatitionsController::class, 'public']);
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'piblicCategories']);
     Route::get('/competition-results/{competition}', [CompatitionsController::class, 'piblicRegistrations']);
+    Route::get('/competition-clubs-results/{competition}', [CompatitionsController::class, 'piblicClubsResults']);
+
     Route::get('/news', [PostsController::class, 'public']);
     Route::get('/pages', [PagesController::class, 'public']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPasswordNotification']);
@@ -91,6 +93,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('/pools-automated', [PoolsController::class, 'automatedStore']);
     //Timetable
     Route::resource('/time-table', TimeTablesController::class);
+    Route::post('/time-table-update/{time_table}', [TimeTablesController::class, 'updateTime']);
 
     //Roles delete
     Route::delete('/role/{roles}', [ReusableDataController::class, 'deleteRole']);

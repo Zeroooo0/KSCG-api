@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TimeTable extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
     protected $fillable = [
         'compatition_id',
         'categoty_id',
@@ -17,7 +17,9 @@ class TimeTable extends Model
         'eto_start',
         'eto_finish',
         'status',
-        'pairs'
+        'pairs',
+        'started_time',
+        'finish_time'
     ];
 
     public function compatition()

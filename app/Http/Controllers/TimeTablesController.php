@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTimeTableMassRequest;
+use App\Http\Requests\UpdateTimeTableRequest;
 use App\Http\Resources\TimeTableResource;
 use App\Models\Compatition;
 use App\Models\TimeTable;
 use App\Traits\HttpResponses;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Date;
 
 class TimeTablesController extends Controller
 {
@@ -21,7 +20,7 @@ class TimeTablesController extends Controller
      */
     public function index()
     {
-        return TimeTableResource::collection(TimeTable::all());
+        return TimeTableResource::collection(TimeTable::paginate());
     }
 
     /**
@@ -42,18 +41,17 @@ class TimeTablesController extends Controller
         $reg_by_categories = $pairs->countBy('category_id');
         $incomin_data = collect($request->all())->except('competitionId')->values();
         $timeTableData = $compatition->timeTable;
-
+        
         if($incomin_data->where('tatamiNo', '>', $number_of_tatami)->count() > 0 || $incomin_data->where('tatamiNo', '<=', 0)->count() > 0) {
             return $this->error('', "Tatami pocinje sa indexom 1 i može maksimalno da sadrži $number_of_tatami!", 404);
         }
         
         
         $timeTable = [];
-        
         for($i = 1; $i <= $number_of_tatami; $i++) {
             $tatmiIncomingData = $incomin_data->where('tatamiNo', $i);
             $orderNoByTatami = $tatmiIncomingData->countBy('orderNo');
-            
+
             foreach($orderNoByTatami as $orNo=>$count) {
                 if($count > 1) {
                     return $this->error('', 'Redni broj kategorije na borilištu se ne moze ponavljati!', 403);
@@ -61,7 +59,7 @@ class TimeTablesController extends Controller
             }
             $finishedTimeStore = $start_time;
             foreach($tatmiIncomingData as $data) {
-;
+      
                 $registrations = $reg_by_categories[$data['categoryId']] ?? 0;
                 $timePerCategory = $category->where('id', $data['categoryId'])->first()->match_lenght ?? 0;
                 $repesaz = $category->where('id', $data['categoryId'])->first()->repesaz == true ? 2 * $timePerCategory : 0;
@@ -109,7 +107,29 @@ class TimeTablesController extends Controller
             TimeTable::destroy($timeTableData);
         }
         TimeTable::insert($timeTable);
-        return $this->success('', $timeTable);
+        return $this->success($timeTable);
     }
 
+
+    public function updateTime(Request $request, TimeTable $time_table) 
+    {
+        if($request->has('status')) {
+
+            if($request->status == 1 && $time_table->status < 1) {
+                $time_table->update([
+                    'status' => $request->status,
+                    'started_time' => date('H:i:s')
+                ]);
+            }
+            if($request->status == 2 && $time_table->status < 2) {
+                $time_table->update([
+                    'status' => $request->status,
+                    'finish_time' => date('H:i:s')
+                ]);
+            }
+        }
+
+        return  $this->success($time_table);
+        
+    }
 }

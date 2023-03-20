@@ -8,9 +8,11 @@ use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CategoriesResource;
 use App\Http\Resources\CCPResource;
+use App\Http\Resources\ClubsOnCompatitionResource;
 use App\Http\Resources\CompatitionsResource;
 use App\Http\Resources\RegistrationsResource;
 use App\Models\Category;
+use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\SpecialPersonal;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -22,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CompatitionsController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *
@@ -84,12 +87,22 @@ class CompatitionsController extends Controller
     public function piblicRegistrations(Request $request, Compatition $competition) {
         //$filter = new CategoriesFilter();
         //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        
         $per_page = $request->perPage;
-      
         $search = '%'. $request->search . '%';
         //return response('alo');
 
         return RegistrationsResource::collection((new Collection($competition->registrations))->paginate($per_page));
+
+    }
+    public function piblicClubsResults(Request $request, Compatition $competition) 
+    {
+        $per_page = $request->perPage;
+        $clubs = [];
+        foreach ($competition->registrations->countBy('club_id') as $club=>$val) {   
+            $clubs[] = $club;
+        }
+        return ClubsOnCompatitionResource::collection(Club::whereIn('id', $clubs)->paginate($per_page));
 
     }
 
