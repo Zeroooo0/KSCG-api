@@ -54,12 +54,12 @@ class SpecialPersonalsController extends Controller
     {
         $request->validated($request->all());
         if(Auth::user()->user_type == 0) {
-            $rolle = 0; 
+            $role = 0; 
         } else{
-            if($request->rolle == null){
-                $rolle = 0; 
+            if($request->role == null){
+                $role = 0; 
             }
-            $rolle = $request->rolle;
+            $role = $request->role;
         }
 
         $special_personal = SpecialPersonal::create([
@@ -68,7 +68,7 @@ class SpecialPersonalsController extends Controller
             'email' => $request->email,
             'country' => $request->country,
             'phone_number' => $request->phone,
-            'rolle' => $rolle,
+            'role' => $role,
             'gender' => $request->gender,
         ]);
         if($request->image != null){
@@ -102,22 +102,22 @@ class SpecialPersonalsController extends Controller
     public function update(UpdateSpecialPersonalRequest $request, SpecialPersonal $special_personal)
     {
         $request->validated($request->all());
-        if($request->rolle != null && Auth::user()->user_type == 0) {
-            $rolle = $special_personal->rolle; 
+        if($request->role != null && Auth::user()->user_type == 0) {
+            $role = $special_personal->role; 
         } else{
-            $rolle = $request->rolle;
+            $role = $request->role;
 
             
         }
-        $special_personal->update($request->except('lastName', 'rolle', 'status'));
+        $special_personal->update($request->except('lastName', 'role', 'status'));
         if($request->has('lastName')){ 
             $special_personal->update([
                 'last_name' => $request->lastName
             ]);
         }
-        if($request->has('rolle')){ 
+        if($request->has('role')){ 
             $special_personal->update([
-                'rolle' => $rolle
+                'role' => $role
             ]);
         }
         if($request->has('status')){ 

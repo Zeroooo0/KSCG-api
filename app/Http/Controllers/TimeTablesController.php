@@ -31,8 +31,6 @@ class TimeTablesController extends Controller
      */
     public function store(StoreTimeTableMassRequest $request)
     {
-
-
         $compatition = Compatition::where('id', collect($request->all())->values()->first()['competitionId'])->first();
         $number_of_tatami = $compatition->tatami_no;
         $start_time = $compatition->start_time_date;

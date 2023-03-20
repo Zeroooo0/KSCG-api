@@ -15,7 +15,7 @@ class SpecialPersonal extends Model
         'last_name',
         'email',
         'phone_number',
-        'rolle',
+        'role',
         'country',
         'gender',
     ];
