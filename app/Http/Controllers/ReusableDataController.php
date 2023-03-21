@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BulkBeltsStoreRequest;
 use App\Http\Requests\StoreClubAdministration;
+use App\Http\Resources\BeltResource;
 use App\Http\Resources\ClubsResource;
 use App\Models\Belt;
 use App\Models\Club;
@@ -11,10 +12,16 @@ use App\Models\Roles;
 use App\Models\SpecialPersonal;
 use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ReusableDataController extends Controller
 {
     use HttpResponses;
+
+    public function index()
+    {
+        return BeltResource::collection(Belt::all());
+    }
     public function bulkStoreBelts(BulkBeltsStoreRequest $request)
     {
 
@@ -32,6 +39,20 @@ class ReusableDataController extends Controller
         
         Belt::insert($data);
         return $this->success('', $data);
+    }
+    public function bulkStore(Request $request)
+    {
+
+        if(Auth::user()->user_type != 2) {
+            return $this->error('', 'Dodavanje pojaseva je dozvoljeno samo super administratoru!', 406);
+        }
+        $belt = Belt::create([
+            'name' => $request->name,
+            'hash_color' => $request->hashColor
+        ]);
+
+        
+        return new BeltResource($belt);
     }
 
     public function clubsAdministration(StoreClubAdministration $request)

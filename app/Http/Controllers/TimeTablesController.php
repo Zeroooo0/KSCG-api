@@ -9,6 +9,7 @@ use App\Models\Compatition;
 use App\Models\TimeTable;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TimeTablesController extends Controller
 {
@@ -18,9 +19,17 @@ class TimeTablesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return TimeTableResource::collection(TimeTable::paginate());
+
+        //$filter = new SpecialPersonalsFilter();
+        //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+        $timeTable = TimeTable::orderBy('tatami_no', 'asc')->orderBy('order_no', 'asc');
+        
+
+
+        return TimeTableResource::collection($timeTable->paginate($per_page));
     }
 
     /**

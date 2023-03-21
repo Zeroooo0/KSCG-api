@@ -9,6 +9,8 @@ class Belt extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = ['name', 'hash_color'];
 
     public function compatitor()

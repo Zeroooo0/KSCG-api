@@ -71,8 +71,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Categories
     Route::resource('/categories', CategoriesController::class);
     //Belts
-    Route::post('/belts', [ReusableDataController::class, 'bulkStoreBelts']);
-    //Route::get('/belts', [ReusableDataController::class, 'index']);
+    Route::post('/belts-bulk-store', [ReusableDataController::class, 'bulkStoreBelts']);
+    Route::post('/belts-store', [ReusableDataController::class, 'bulkStore']);
+    Route::get('/belts', [ReusableDataController::class, 'index']);
     //Special personal
     Route::resource('/special-personal', SpecialPersonalsController::class);
     //Special Persona in club

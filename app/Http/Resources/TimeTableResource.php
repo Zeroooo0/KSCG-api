@@ -26,6 +26,7 @@ class TimeTableResource extends JsonResource
             'id' => $this->id,
             'tatami' => 'Tatami ' . $this->tatami_no,
             'categoryName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $category->name . ' ' . $category->category_name  . $ekipno,
+            'competitionName' => $competition->name,
             'etoStart' => date('H:m', strtotime($this->eto_start)),
             'etoFinish' => date('H:m', strtotime($this->eto_finish)),
             'startedAt' => $this->started_time != null ? date('H:m', strtotime($this->started_time)) : null,
