@@ -86,7 +86,7 @@ class CompatitionsController extends Controller
         
         $per_page = $request->perPage;
         $search = '%'. $request->search . '%';
-        //return response('alo');
+
 
         return RegistrationsResource::collection((new Collection($competition->registrations))->paginate($per_page));
 
@@ -95,7 +95,7 @@ class CompatitionsController extends Controller
     {
         $per_page = $request->perPage;
         $clubs = [];
-        foreach ($competition->registrations->countBy('club_id') as $club=>$val) {   
+        foreach ($competition->registrations->countBy('club_id') as $club=>$val) {
             $clubs[] = $club;
         }
         return ClubsOnCompatitionResource::collection(Club::whereIn('id', $clubs)->paginate($per_page));

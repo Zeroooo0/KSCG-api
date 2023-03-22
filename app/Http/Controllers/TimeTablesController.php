@@ -37,7 +37,7 @@ class TimeTablesController extends Controller
         //$filter = new SpecialPersonalsFilter();
         //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
-        $timeTable = TimeTable::orderBy('tatami_no', 'asc')->orderBy('order_no', 'asc');
+        $timeTable = TimeTable::where('compatition_id', $request->competitionId)->orderBy('tatami_no', 'asc')->orderBy('order_no', 'asc');
         
 
 

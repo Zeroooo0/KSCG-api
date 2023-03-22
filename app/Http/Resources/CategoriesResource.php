@@ -2,10 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Traits\LenghtOfCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoriesResource extends JsonResource
 {
+    use LenghtOfCategory;
     /**
      * Transform the resource into an array.
      *
@@ -39,7 +41,8 @@ class CategoriesResource extends JsonResource
                 'lenghtOfMatch' => $this->match_lenght,
                 'status' => (boolean)$this->status,
                 'belts' => $belts
-            ]
+            ],
+            'duration' => is_object($request->competition) ? $this->countRegInCatOnCompa($request->competition, $this) : null,
         ];
     }
 }

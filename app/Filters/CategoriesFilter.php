@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class CategoriesFilter {
     protected $safeParms = [
+        'id' => ['eq'],
         'name' => ['eq', 'like'],
         'kataOrKumite' => ['eq'],
         'categoryName' => ['eq', 'like'],
