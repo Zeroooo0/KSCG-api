@@ -73,15 +73,11 @@ class CompatitionsController extends Controller
     }
     public function piblicCategories(Request $request, Compatition $competition) {
         $filter = new CategoriesFilter();
-        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
-       
-      
-        $search = '%'. $request->search . '%';
-        //return response('alo');
-        //return $competition->categories;
 
-        return CategoriesResource::collection((new Collection($competition->categories))->paginate($per_page));
+        $categories = $competition->categories;
+
+        return CategoriesResource::collection((new Collection($categories))->paginate($per_page));
     }
 
     public function piblicRegistrations(Request $request, Compatition $competition) {

@@ -31,6 +31,18 @@ class TimeTablesController extends Controller
 
         return TimeTableResource::collection($timeTable->paginate($per_page));
     }
+    public function public(Request $request)
+    {
+
+        //$filter = new SpecialPersonalsFilter();
+        //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+        $timeTable = TimeTable::orderBy('tatami_no', 'asc')->orderBy('order_no', 'asc');
+        
+
+
+        return TimeTableResource::collection($timeTable->paginate($per_page));
+    }
 
     /**
      * Store a newly created resource in storage.

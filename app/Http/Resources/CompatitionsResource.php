@@ -27,7 +27,7 @@ class CompatitionsResource extends JsonResource
             $imageUrl = $storage_url . $this->image->url;
         }
         $documents = 'embeddable';
-        $clubsData = 'embeddable';
+
         if(str_contains($request->embed, 'documents')) {
             if($this->document->first() != null) {
                 $documents = DocumentsResource::collection($this->document);
@@ -36,13 +36,7 @@ class CompatitionsResource extends JsonResource
             }
         }
 
-        if(str_contains($request->embed, 'clubsData')) {
-            if($clubs != null) {
-                $clubsData = ClubsOnCompatitionResource::collection(Club::whereIn('id', $clubs)->get());
-            } else {
-                $clubsData =  'Trenutno nema prijavljenih!';
-            }
-        }
+
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
@@ -67,8 +61,7 @@ class CompatitionsResource extends JsonResource
                 'categories' => $this->registrations->countBy('category_id')->count(),
                 'total' => $this->registrations->count(),
                 'countries' => Club::whereIn('id', $clubs)->get()->countBy('country')->count(),
-                'clubsData' => $clubsData
-            ],
+            ]
             
 
            
