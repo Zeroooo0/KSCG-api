@@ -46,9 +46,7 @@ class AuthController extends Controller
         if(Auth::user()->user_type == 2) {
             $token_ability = ['admin'];
         }
-        if(auth('sanctum')->check()) {
-            auth()->user()->tokens()->delete();
-        }
+
         return $this->success([
             'user' => new UsersResource($user),
             'token' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
