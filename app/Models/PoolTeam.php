@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Pool extends Model
+class PoolTeam extends Model
 {
     use HasFactory;
-
+    
     protected $fillable = [
         'compatition_id',
         'category_id',
         'pool',
         'group',
-        'registration_one',
-        'registration_two'
+        'team_one',
+        'team_two'
     ];
 
     public function compatition()
@@ -27,9 +27,9 @@ class Pool extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function registrations()
+    public function teams()
     {
-        return $this->hasMany(Registration::class);
+        return $this->hasMany(Team::class);
     }
 
 }

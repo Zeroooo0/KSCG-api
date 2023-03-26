@@ -122,7 +122,7 @@ class RegistrationsController extends Controller
             $input['club_id'] = Compatitor::where('id', $data['competitorId'])->first()->club_id;
             $input['compatitor_id'] = $data['competitorId'];
             $input['category_id'] = $data['categoryId'];
-            $input['team_id'] = $data['teamId'] == null ? null : $data['teamId'];
+            $input['team_id'] = $team_or_solo == 1 ? null : $data['teamId'];
             $input['team_or_single'] = $team_or_solo;
             $input['kata_or_kumite'] = $kata_or_kumite;
             $input['created_at'] = date("Y:m:d H:i:s");

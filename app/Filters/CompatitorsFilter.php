@@ -13,13 +13,15 @@ class CompatitorsFilter {
         'status' => ['eq'],
         'beltId' => ['eq'],
         'birthDay' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'weight' => ['eq', 'gt', 'gte', 'lt', 'lte']
+        'weight' => ['eq', 'gt', 'gte', 'lt', 'lte'],
+        'clubId' => ['eq']
     ];
 
     protected $columnsMap = [
         'lastName' => 'last_name',
         'birthDay' => 'date_of_birth',
-        'beltId' => 'belt_id'
+        'beltId' => 'belt_id',
+        'clubId' => 'club_id'
     ];
 
     protected $operatorMap = [

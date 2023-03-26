@@ -12,6 +12,7 @@ use App\Http\Controllers\PostsController;
 use App\Http\Controllers\RegistrationsController;
 use App\Http\Controllers\ReusableDataController;
 use App\Http\Controllers\SpecialPersonalsController;
+use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\TimeTablesController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
@@ -87,6 +88,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Users control
     Route::resource('/users', UsersController::class);
     //Registration of compatitiors on compatition
+    Route::resource('/teams', TeamsController::class);
     Route::resource('/registrations', RegistrationsController::class);
     //Pool table 
     Route::resource('/pools', PoolsController::class);

@@ -46,10 +46,11 @@ class PoolsController extends Controller
 
         foreach($reg_count as $key=>$count){
             $nn_single_cat[] = $registrations->sortBy('club_id')->where('category_id', $key)->where('team_or_single', 1)->values();
-            $nn_team_cat[] = $registrations->where('category_id', $key)->where('team_or_single', 0)->values();
+            $nn_team_cat[] = $registrations->where('category_id', $key)->where('team_or_single', 0)->groupBy('team_id')->values();
         }
-
+        //return $nn_team_cat;
         $arr = [];
+        $teamArr = [];
         if(isset($request->categoryId)) {
             $pool = $pools->where('category_id', $request->categoryId);
             $data = collect($request)->except(['compatitionId', 'categoryId']);
@@ -59,7 +60,6 @@ class PoolsController extends Controller
    
                     
             foreach($data as $new_data) {
-
                 $input['compatition_id'] = $request->compatitionId;
                 $input['category_id'] = $request->categoryId;
                 $input['pool'] = $new_data['pool'];
@@ -80,13 +80,61 @@ class PoolsController extends Controller
             
             return $this->success('', $arr);
         }
-      
+      /*
         if($pools->where('compatition_id', $request->compatitionId)->count() > 0) {
             return $this->error('', 'Žrijebanje je već odrađeno za ovo takmičenje', 403);
         }
+  */
+        
+        foreach($nn_team_cat as $key => $val) {
+            $count = 0;
+            $countingTeams = $val->count();
+            return response()->json($countingTeams <= 8);
+            switch ($countingTeams){
+                case $countingTeams <= 2:
+                    $count = 0;
+                    $pool = 0;
+                    break;
+                case $countingTeams <= 4:
+                    $count = 1;
+                    $pool = 1;
+                    break;
+                case $countingTeams <= 8:
+                    $count = 3;
+                    $pool = 2;
+                    break;
+                case $countingTeams <= 16:
+                    $count = 7;
+                    $pool = 3;
+                    break;
+                case $countingTeams <= 32:
+                    $count = 15;
+                    $pool = 4;
+                    break;
+                case $countingTeams <= 64:
+                    $count = 31;
+                    $pool = 5;
+                    break;
+            }
+            
+            for($i = 0; $i <= $count; $i++) {
+                $first = $i;
+                $second = ($count * 2 + 1) - $i;
+                $input['compatition_id'] = Arr::get($val, '0.0.compatition_id');
+                $input['category_id'] = Arr::get($val, '0.0.category_id');
+                $input['pool'] = $pool;
+                $input['pool_type'] = 'P';
+                $input['group'] = $i;
+                $input['status'] = false;
+                $input['team_one'] = Arr::get($val,  $first . '.0.team_id');
+                $input['team_two'] = Arr::get($val, $second .  '.0.team_id');
+                $teamArr[] = $input;
+            }
+        }
+
+        return $teamArr;
         foreach($nn_single_cat as $val) {
             $count = 0;
-   
             switch (count($val)){
                 case count($val) <= 2:
                     $count = 0;

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('club_id')->nullable()->references('id')->on('clubs')->nullOnDelete();
             $table->foreignId('compatitor_id')->nullable()->references('id')->on('compatitors')->nullOnDelete();
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->foreignId('team_id')->nullable()->references('id')->on('teams')->uniqid();
+            $table->foreignId('team_id')->nullable()->references('id')->on('teams')->nullOnDelete();
             $table->boolean('team_or_single');
             $table->boolean('kata_or_kumite');
             $table->boolean('status')->default(true);
