@@ -47,7 +47,7 @@ class AuthController extends Controller
             $token_ability = ['admin'];
         }
 
-        return $this->success([
+        return $this->success('Uspješno ste ulogovni!',[
             'user' => new UsersResource($user),
             'token' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
         ]);
@@ -80,7 +80,7 @@ class AuthController extends Controller
         
 
 
-        return $this->success([
+        return $this->success('Uspješno ste ulogovani!',[
             'user' => new UsersResource($user),
             'authToken' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
         ]);
@@ -94,21 +94,19 @@ class AuthController extends Controller
 
         Auth::user()->currentAccessToken()->delete();
 
-        return $this->success([
-            'message' => 'You have logged out Best Regards!'
-        ]);
+        return $this->success('', 'Uspješno ste izlogovani!');
     }
     public function changePassword(ChangePasswordRequest $request, User $user)
     {
         $request->validated($request->all());
         if(Auth::user()->id == $user->id) {
             if(!Hash::check($request->old_password, Auth::user()->password)){
-                return $this->error('', 'Password does not match!', 200);
+                return $this->error('', 'Šifra se ne poklapa', 200);
             }
             $user->update([
                 'password' => Hash::make($request->password)
             ]);
-            return $this->success([
+            return $this->success('Uspješno ste izmjenili šifru!', [
                 'user' => new UsersResource($user),
             ]);
         }
@@ -119,7 +117,7 @@ class AuthController extends Controller
         $request->validate(['email'=> ['required','email', 'exists:users,email']]);
         $user = User::where('email', $request->email)->first();
         $user->notify(new ForgotPassword());
-        return $this->success('','Uspješno ste poslali mail: '. $request->email);
+        return $this->success('','Uspješno ste poslali email: '. $request->email);
 
     }
     public function resetForgotenPassword(Request $request)
@@ -127,7 +125,7 @@ class AuthController extends Controller
 
         $request->validate(['password'=> ['required','confirmed', Rules\Password::defaults()]]);
         Auth::user()->currentAccessToken()->delete();
-        return $this->success('','TUspjesno izmjenjena sifra!');
+        return $this->success('','Uspjesno izmjenjena sifra!');
     }
     public function checkToken() {
         $token = Auth::user()->currentAccessToken();
