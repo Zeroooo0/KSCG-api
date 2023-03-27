@@ -148,7 +148,7 @@ class TimeTablesController extends Controller
             }
         }
 
-        return  $this->success($time_table);
+        return  $this->success($time_table, 'Uspješno ispravljen Time Table.');
         
     }
 }

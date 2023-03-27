@@ -181,6 +181,6 @@ class ClubsController extends Controller
         $club->image()->delete();
         $club->delete();
 
-        return $this->success('', 'Club has been deleted successfully!');
+        return $this->success('', 'Klub je uspjesno obrisan.');
     }
 }

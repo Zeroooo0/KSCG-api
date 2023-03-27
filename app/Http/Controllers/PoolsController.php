@@ -78,7 +78,7 @@ class PoolsController extends Controller
 
             Pool::insert($arr);
             
-            return $this->success('', $arr);
+            return $this->success($arr);
         }
       /*
         if($pools->where('compatition_id', $request->compatitionId)->count() > 0) {

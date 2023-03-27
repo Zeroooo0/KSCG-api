@@ -134,7 +134,7 @@ class RegistrationsController extends Controller
         $exit_obj = new ArrayObject($finish_arr);
         if($incoming_obj->count() == $exit_obj->count()) {
             Registration::insert($finish_arr);
-            return $this->success('', $finish_arr);
+            return $this->success($finish_arr, 'Uspješna registracija takmičara!');
         }
 
     }

@@ -38,7 +38,7 @@ class ReusableDataController extends Controller
         }
         
         Belt::insert($data);
-        return $this->success('', $data);
+        return $this->success($data, 'Uspješno dodati pojasevi.');
     }
     public function bulkStore(Request $request)
     {
