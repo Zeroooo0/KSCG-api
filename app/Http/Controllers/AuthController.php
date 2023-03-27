@@ -47,10 +47,10 @@ class AuthController extends Controller
             $token_ability = ['admin'];
         }
 
-        return $this->success('Uspješno ste ulogovni!',[
+        return $this->success([
             'user' => new UsersResource($user),
             'token' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
-        ]);
+        ], 'Uspješno ste ulogovni!');
     }
 
     public function register(StoreUserRequest $request)
@@ -80,10 +80,10 @@ class AuthController extends Controller
         
 
 
-        return $this->success('Uspješno ste ulogovani!',[
+        return $this->success([
             'user' => new UsersResource($user),
             'authToken' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
-        ]);
+        ], 'Uspješno ste ulogovani!');
 
     }
 
@@ -106,9 +106,9 @@ class AuthController extends Controller
             $user->update([
                 'password' => Hash::make($request->password)
             ]);
-            return $this->success('Uspješno ste izmjenili šifru!', [
+            return $this->success([
                 'user' => new UsersResource($user),
-            ]);
+            ], 'Uspješno ste izmjenili šifru!');
         }
 
     }
