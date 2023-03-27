@@ -129,9 +129,6 @@ class UsersController extends Controller
         if($user->user_type == 2) {
             return $this->restricted('', 'Nije vam dozvoljeno da obrišete Administratora!', 403);
         }
-        if($user->user_type == 0 && $user->club != null) {
-            return $this->restricted('', 'Morate premjestiti klub ili obrisati kako bi ste obrisali korisnika!', 403);
-        }
         $user->delete();
 
         return $this->success('', 'Korisnik je obrisan', 200);
