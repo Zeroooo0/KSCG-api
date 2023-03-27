@@ -61,10 +61,7 @@ class CompatitionsResource extends JsonResource
                 'categories' => $this->registrations->countBy('category_id')->count(),
                 'total' => $this->registrations->count(),
                 'countries' => Club::whereIn('id', $clubs)->get()->countBy('country')->count(),
-            ]
-            
-
-           
+            ]  
         ];
     }
 }

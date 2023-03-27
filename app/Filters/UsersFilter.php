@@ -11,7 +11,8 @@ class UsersFilter {
         'lastName' => ['eq', 'like'],
         'status' => ['eq'],
         'email' => ['eq', 'like'],
-        'userType' => ['eq']
+        'userType' => ['eq'],
+        'id' => ['eq']
     ];
 
     protected $columnsMap = [

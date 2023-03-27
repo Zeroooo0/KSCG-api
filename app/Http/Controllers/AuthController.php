@@ -26,7 +26,7 @@ class AuthController extends Controller
         $request->validated($request->all());
 
         if(!Auth::attempt($request->only('email', 'password'))) {
-            return $this->error('', 'Credentials do not match', 401);
+            return $this->error('', 'Pogrešno unešeni email ili password!', 401);
         }  
 
         $user = User::where('email', $request->email)->first();
@@ -89,6 +89,9 @@ class AuthController extends Controller
 
     public function logout()
     {
+
+        return Auth::attempt();
+
         Auth::user()->currentAccessToken()->delete();
 
         return $this->success([

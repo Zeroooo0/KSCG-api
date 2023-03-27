@@ -124,13 +124,13 @@ class UsersController extends Controller
     public function destroy(User $user)
     {
         if(Auth::user()->user_type != 2){
-            return $this->restricted('', 'Not alowed!', 403);
+            return $this->restricted('', 'Nije vam dozvoljeno!', 403);
         }
         if($user->user_type == 2) {
-            return $this->restricted('', 'Not alowed to delete main administrators!', 403);
+            return $this->restricted('', 'Nije vam dozvoljeno da obrišete Administratora!', 403);
         }
         $user->delete();
 
-        return $this->success('', 'User is delten', 200);
+        return $this->success('', 'Korisnik je obrisan', 200);
     }
 }
