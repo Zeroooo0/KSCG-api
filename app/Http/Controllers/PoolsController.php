@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PoolResource;
-use App\Models\Category;
 use App\Models\Compatition;
 use App\Models\Pool;
-use App\Models\Registration;
+use App\Models\PoolTeam;
 use App\Traits\HttpResponses;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -39,26 +37,32 @@ class PoolsController extends Controller
         }
         $compatition = Compatition::where('id', $request->compatitionId)->get()->first();
         $registrations = $compatition->registrations;
-        $reg_count = $registrations->countBy('category_id');
+        $reg_single = $registrations->where('team_or_single', 1)->countBy('category_id');
+        $reg_teams = $registrations->where('team_or_single', 0)->countBy('category_id');
         $pools = $compatition->pools;
+        $poolsTeam = $compatition->poolsTeam;
         $nn_single_cat = [];
         $nn_team_cat = [];
-
-        foreach($reg_count as $key=>$count){
-            $nn_single_cat[] = $registrations->sortBy('club_id')->where('category_id', $key)->where('team_or_single', 1)->values();
-            $nn_team_cat[] = $registrations->where('category_id', $key)->where('team_or_single', 0)->groupBy('team_id')->values();
-        }
-        //return $nn_team_cat;
-        $arr = [];
+        $singleArr = [];
         $teamArr = [];
-        if(isset($request->categoryId)) {
+
+        $requestedCategory = $compatition->categories->where('id', $request->categoryId)->first();
+
+        foreach($reg_single as $key=>$count){
+            $nn_single_cat[] = $registrations->sortBy('club_id')->where('category_id', $key)->values();
+        }
+        foreach($reg_teams as $key=>$count){
+            $nn_team_cat[] = $registrations->where('category_id', $key)->groupBy('team_id')->values();
+        }
+  
+
+        if(isset($request->categoryId) && $requestedCategory->solo_or_team == 1) {
             $pool = $pools->where('category_id', $request->categoryId);
             $data = collect($request)->except(['compatitionId', 'categoryId']);
             if($pool->count() == 0) {
                 return $this->error('', 'Prvo odradite žrijebanje da bi ste mogli da editujete!', 403);
             }
-   
-                    
+
             foreach($data as $new_data) {
                 $input['compatition_id'] = $request->compatitionId;
                 $input['category_id'] = $request->categoryId;
@@ -68,7 +72,34 @@ class PoolsController extends Controller
                 $input['status'] = $new_data['status'];
                 $input['registration_one'] = $new_data['registrationOne'];
                 $input['registration_two'] = $new_data['registrationTwo'];
-                $arr[] = $input;
+                $singleArr[] = $input;
+            }
+            if($pools->where('category_id', $request->categoryId)->count() > 0) {
+                foreach($pool as $trash) {
+                    $trash->delete();
+                }
+            }
+            //return $singleArr;
+            Pool::insert($singleArr);
+            return $this->success($singleArr);
+        }
+        if(isset($request->categoryId) && $requestedCategory->solo_or_team == 0) {
+            $pool = $pools->where('category_id', $request->categoryId);
+            $data = collect($request)->except(['compatitionId', 'categoryId']);
+            if($pool->count() == 0) {
+                return $this->error('', 'Prvo odradite žrijebanje da bi ste mogli da editujete!', 403);
+            }
+
+            foreach($data as $new_data) {
+                $input['compatition_id'] = $request->compatitionId;
+                $input['category_id'] = $request->categoryId;
+                $input['pool'] = $new_data['pool'];
+                $input['pool_type'] = $new_data['poolType'];
+                $input['group'] = $new_data['group'];
+                $input['status'] = $new_data['status'];
+                $input['team_one'] = $new_data['registrationOne'];
+                $input['team_two'] = $new_data['registrationTwo'];
+                $teamArr[] = $input;
             }
             if($pools->where('category_id', $request->categoryId)->count() > 0) {
                 foreach($pool as $trash) {
@@ -76,20 +107,22 @@ class PoolsController extends Controller
                 }
             }
 
-            Pool::insert($arr);
-            
-            return $this->success($arr);
+            PoolTeam::insert($singleArr);
+            return $this->success($singleArr);
         }
-      /*
+
         if($pools->where('compatition_id', $request->compatitionId)->count() > 0) {
             return $this->error('', 'Žrijebanje je već odrađeno za ovo takmičenje', 403);
         }
-  */
-        
+        if($pools->where('compatition_id', $request->compatitionId)->count() > 0) {
+            return $this->error('', 'Žrijebanje je već odrađeno za ovo takmičenje', 403);
+        }
+
+        //return $nn_team_cat;
         foreach($nn_team_cat as $key => $val) {
             $count = 0;
             $countingTeams = $val->count();
-            return response()->json($countingTeams <= 8);
+            //return response()->json($countingTeams <= 8);
             switch ($countingTeams){
                 case $countingTeams <= 2:
                     $count = 0;
@@ -120,19 +153,18 @@ class PoolsController extends Controller
             for($i = 0; $i <= $count; $i++) {
                 $first = $i;
                 $second = ($count * 2 + 1) - $i;
-                $input['compatition_id'] = Arr::get($val, '0.0.compatition_id');
-                $input['category_id'] = Arr::get($val, '0.0.category_id');
-                $input['pool'] = $pool;
-                $input['pool_type'] = 'P';
-                $input['group'] = $i;
-                $input['status'] = false;
-                $input['team_one'] = Arr::get($val,  $first . '.0.team_id');
-                $input['team_two'] = Arr::get($val, $second .  '.0.team_id');
-                $teamArr[] = $input;
+                $inputTeam['compatition_id'] = Arr::get($val, '0.0.compatition_id');
+                $inputTeam['category_id'] = Arr::get($val, '0.0.category_id');
+                $inputTeam['pool'] = $pool;
+                $inputTeam['pool_type'] = 'P';
+                $inputTeam['group'] = $i;
+                $inputTeam['status'] = false;
+                $inputTeam['team_one'] = Arr::get($val,  $first . '.0.team_id');
+                $inputTeam['team_two'] = Arr::get($val, $second .  '.0.team_id');
+                $teamArr[] = $inputTeam;
             }
         }
-
-        return $teamArr;
+        PoolTeam::insert($teamArr);
         foreach($nn_single_cat as $val) {
             $count = 0;
             switch (count($val)){
@@ -167,11 +199,9 @@ class PoolsController extends Controller
                 $sorted_cats[] = $key;
             }
             $cleaned = Arr::collapse($sorted_cats);
-            //return response()->json(Arr::get($cleaned, '0.compatition_id'));
             for($i = 0; $i <= $count; $i++) {
                 $first = 0 + $i;
                 $second = ($count * 2 + 1) - $i;
-                //return response($first);
                 $input['compatition_id'] = Arr::get($cleaned, '0.compatition_id');
                 $input['category_id'] = Arr::get($cleaned, '0.category_id');
                 $input['pool'] = $pool;
@@ -180,12 +210,13 @@ class PoolsController extends Controller
                 $input['status'] = false;
                 $input['registration_one'] = Arr::get($cleaned, $first . '.id');
                 $input['registration_two'] = Arr::get($cleaned, $second .  '.id');
-                $arr[] = $input;
+                $singleArr[] = $input;
                 
             }
         }
-        Pool::insert($arr);
-        return $this->success('', $arr);
+
+        Pool::insert($singleArr);
+        return $this->success(['single' => $singleArr, 'teams' => $teamArr]);
 
     }
 

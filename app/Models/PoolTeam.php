@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PoolTeam extends Model
 {
     use HasFactory;
-    
+    public $timestamps = false;
     protected $fillable = [
         'compatition_id',
         'category_id',

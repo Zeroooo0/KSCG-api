@@ -40,6 +40,10 @@ class Compatition extends Model
     {
         return $this->hasMany(Pool::class);
     }
+    public function poolsTeam()
+    {
+        return $this->hasMany(Pool::class);
+    }
     public function timeTable()
     {
         return $this->hasMany(TimeTable::class);
