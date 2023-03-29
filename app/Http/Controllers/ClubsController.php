@@ -168,16 +168,14 @@ class ClubsController extends Controller
         }
         if($club->compatitors()->count() > 0) {
             if($request->newClubId == null) {
-                return $this->error('', 'Molimo vas da odaberete klub u koji zelite prebaciti takmicare!', 200);
+                return $this->error('', 'Molimo vas da odaberete klub u koji zelite prebaciti takmicare!', 403);
             } else {
                 $club->compatitors()->update([
                     'club_id' => $request->newClubId,
                 ]);
             }
         }
-        foreach($club->images()->get() as $image) {
-            Storage::delete($image->url);
-        }
+
         $club->image()->delete();
         $club->delete();
 
