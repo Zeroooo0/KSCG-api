@@ -30,9 +30,13 @@ class ClubsController extends Controller
         $club = Club::orderBy($sort, $sortDirection);
 
         $search = '%'. $request->search . '%';
-               
+        if($per_page != 0){
+            return ClubsResource::collection(
+                $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->paginate($per_page)
+            );
+        }
         return ClubsResource::collection(
-            $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name, email)'), 'like', $search)->paginate($per_page)
+            $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->all()
         );
 
         
@@ -54,9 +58,15 @@ class ClubsController extends Controller
                 Club::where('user_id', Auth::user()->id)->get()
             );
         } else {
+            if($per_page != 0){
+                return ClubsResource::collection(
+                    $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->paginate($per_page)
+                );
+            }
             return ClubsResource::collection(
-                $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name, email)'), 'like', $search)->paginate($per_page)
+                $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->get()
             );
+
         }
         
     }
