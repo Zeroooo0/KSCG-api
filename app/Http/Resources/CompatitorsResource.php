@@ -54,7 +54,7 @@ class CompatitorsResource extends JsonResource
             'gender' => $this->gender,
             'jmbg' => $jmbg,
             'weight' => $this->weight,
-            'brthDay' => date($this->date_of_birth),
+            'birthDay' => date($this->date_of_birth),
             'status' => (boolean)$this->status,
             'belt' => new BeltResource($this->belt),
             'image' => $path,
