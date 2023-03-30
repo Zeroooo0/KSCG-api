@@ -26,10 +26,11 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
+            'lastName' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'user_type' => ['integer', 'max:1']
+            'password' => ['min:6','required_with:passwordConfirmation', 'same:passwordConfirmation', Rules\Password::defaults()],
+            'passwordConfirmation' => ['min:6'],
+            'userType' => ['integer', 'max:1']
         ];
     }
 }

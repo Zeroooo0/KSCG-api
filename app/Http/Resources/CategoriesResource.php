@@ -32,16 +32,14 @@ class CategoriesResource extends JsonResource
             'categoryName' => $this->category_name,
             'gender' => $gender, 
             'soloOrTeam' => $soloOrTeam,
-            'validationData' => [
-                'dateFrom' => date($this->date_from),
-                'dateTo' => date($this->date_to),
-                'weightFrom' => $this->weight_from,
-                'weightTo' => $this->weight_to,
-                'soloOrTeam' => $this->solo_or_team,
-                'lenghtOfMatch' => $this->match_lenght,
-                'status' => (boolean)$this->status,
-                'belts' => $belts
-            ],
+            'dateFrom' => date($this->date_from),
+            'dateTo' => date($this->date_to),
+            'weightFrom' => $this->weight_from,
+            'weightTo' => $this->weight_to,
+            'soloOrTeam' => $this->solo_or_team,
+            'lenghtOfMatch' => $this->match_lenght,
+            'status' => (boolean)$this->status,
+            'belts' => $belts,
             'duration' => is_object($request->competition) ? $this->countRegInCatOnCompa($request->competition, $this) : null,
         ];
     }

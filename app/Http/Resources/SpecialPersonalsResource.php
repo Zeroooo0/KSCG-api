@@ -60,17 +60,15 @@ class SpecialPersonalsResource extends JsonResource
 
         return [
             'id' => (string)$this->id,
-            'basicInfo' => [
-                'name' => $this->name,
-                'lastName' => $this->last_name,
-                'country' => $this->country,
-                'email' => $this->email,
-                'phone' => $this->phone_number,
-                'role' => $role,
-                'status' => (boolean)$this->status,
-                'gender' => $this->gender,
-                'image' => $path
-            ],
+            'name' => $this->name,
+            'lastName' => $this->last_name,
+            'country' => $this->country,
+            'email' => $this->email,
+            'phone' => $this->phone_number,
+            'role' => $role,
+            'status' => (boolean)$this->status,
+            'gender' => $this->gender,
+            'image' => $path,
             'documents' => $documents,
             'roles' => $rolesCollection
         ];

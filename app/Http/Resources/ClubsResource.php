@@ -37,19 +37,15 @@ class ClubsResource extends JsonResource
         
         return [
             'id' => (string)$this->id,
-            'attributes' => [
-                'name' => $this->name,
-                'shortName' => $this->short_name,
-                'pib' => $pib,
-                'email' => $this->email,
-                'phone' => $this->phone_number,
-                'image' =>  $path 
-            ],
-            'location' => [
-                'country' => $this->country,
-                'city' => $this->town,
-                'address' => $this->address,
-            ],
+            'name' => $this->name,
+            'shortName' => $this->short_name,
+            'pib' => $pib,
+            'email' => $this->email,
+            'phone' => $this->phone_number,
+            'image' =>  $path,
+            'country' => $this->country,
+            'city' => $this->town,
+            'address' => $this->address,
             'user' => $user_info,
             'administrationCount' => count($this->roles),
             'competitorsCount' => count($this->compatitors),

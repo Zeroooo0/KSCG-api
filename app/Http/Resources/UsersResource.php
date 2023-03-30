@@ -35,11 +35,9 @@ class UsersResource extends JsonResource
         }
         return [
             'id' => (string)$this->id,
-            'user' => [
-                'name' => $this->name,
-                'lastName' => $this->last_name,
-                'email' => $this->email
-            ],
+            'name' => $this->name,
+            'lastName' => $this->last_name,
+            'email' => $this->email,
             'status' => (boolean)$this->status,
             'userType' =>  $userType,
             'club' => $data

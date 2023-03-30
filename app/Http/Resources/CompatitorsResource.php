@@ -49,21 +49,17 @@ class CompatitorsResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'kscgId' => $this->kscg_compatitor_id,
-            'compatitor' => [
-                'name' => $this->name,
-                'lastName' => $this->last_name,
-                'jmbg' => $jmbg,
-                'image' => $path,
-                'createAt' => date($this->created_at),
-                'updatedAt' => date($this->updated_at)
-            ],
-            'validation' => [
-                'status' => (boolean)$this->status,
-                'gender' => $this->gender,
-                'brthDay' => date($this->date_of_birth),
-                'weight' => $this->weight,
-                'belt' => new BeltResource($this->belt),
-            ],
+            'name' => $this->name,
+            'lastName' => $this->last_name,
+            'gender' => $this->gender,
+            'jmbg' => $jmbg,
+            'weight' => $this->weight,
+            'brthDay' => date($this->date_of_birth),
+            'status' => (boolean)$this->status,
+            'belt' => new BeltResource($this->belt),
+            'image' => $path,
+            'createAt' => date($this->created_at),
+            'updatedAt' => date($this->updated_at),
             'club' => [
                 'id' => (string)$this->club->id,
                 'name' => $this->club->name,
