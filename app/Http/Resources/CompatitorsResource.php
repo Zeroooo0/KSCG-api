@@ -53,6 +53,7 @@ class CompatitorsResource extends JsonResource
             'lastName' => $this->last_name,
             'gender' => $this->gender,
             'jmbg' => $jmbg,
+            'country' => $this->country,
             'weight' => $this->weight,
             'birthDay' => date($this->date_of_birth),
             'status' => (boolean)$this->status,

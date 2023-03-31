@@ -27,6 +27,7 @@ class StoreCompatitorRequest extends FormRequest
         return [
             'kscgId' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
+            'country' => ['required', 'string', 'max:255'],
             'lastName' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'integer', 'max:3'], Rule::in([1, 2]),
             'jmbg' => ['required', 'integer'],

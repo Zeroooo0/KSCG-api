@@ -25,6 +25,7 @@ class CompatitorFactory extends Factory
             'club_id' => Club::all()->random()->id,
             'name' => $name,
             'last_name' => $this->faker->lastName(),
+            'country' => $this->faker->state(),
             'gender' => $gender,
             'jmbg' => $this->faker->numberBetween(1000000000001, 9999999999999),
             'status' => $this->faker->randomElement([true, false]),

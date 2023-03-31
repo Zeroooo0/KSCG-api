@@ -14,7 +14,8 @@ class CompatitorsFilter {
         'beltId' => ['eq'],
         'birthDay' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'weight' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'clubId' => ['eq']
+        'clubId' => ['eq'],
+        'country' => ['eq', 'like']
     ];
 
     protected $columnsMap = [

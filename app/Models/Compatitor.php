@@ -20,7 +20,8 @@ class Compatitor extends Model
         'belt_id',
         'date_of_birth',
         'weight',
-        'status'
+        'status',
+        'country'
     ];
 
     public function club() 

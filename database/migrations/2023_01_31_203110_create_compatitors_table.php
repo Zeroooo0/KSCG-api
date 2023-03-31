@@ -22,7 +22,7 @@ return new class extends Migration
             //Male=1 Femail=2 
             $table->tinyInteger('gender');
             $table->string('jmbg');
-
+            $table->string('country');
             $table->date('date_of_birth');
             $table->decimal('weight', 4, 2);
             $table->boolean('status')->default(false);

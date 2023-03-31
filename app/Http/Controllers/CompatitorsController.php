@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCompatitorRequest;
 use App\Http\Resources\CompatitorsResource;
 use App\Models\Compatitor;
 use App\Filters\CompatitorsFilter;
+use App\Http\Requests\UpdateComatitorRequest;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -85,6 +86,7 @@ class CompatitorsController extends Controller
             'belt_id' => $request->belt,
             'date_of_birth' => $request->dateOfBirth,
             'weight' => $request->weight,
+            'country' => $request->country,
             'status' => Auth::user()->user_type == 0 ? 0 : 1
         ]);
         if($request->image != null) {
@@ -128,9 +130,9 @@ class CompatitorsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Compatitor $competitor)
+    public function update(UpdateComatitorRequest $request, Compatitor $competitor)
     {
-        
+        $request->validated($request->all());
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Suspendovani ste molimo vas da kontaktirate KSCG!', 403);
         }
