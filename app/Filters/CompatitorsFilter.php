@@ -15,7 +15,8 @@ class CompatitorsFilter {
         'birthDay' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'weight' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'clubId' => ['eq'],
-        'country' => ['eq', 'like']
+        'country' => ['eq', 'like'],
+        'gender' => ['eq', 'lorg']
     ];
 
     protected $columnsMap = [
@@ -31,6 +32,7 @@ class CompatitorsFilter {
         'lte' => '<=',
         'gt' => '>',
         'gte' => '>=',
+        'lorg' => '<>',
         'like' => 'like'
     ];
 
