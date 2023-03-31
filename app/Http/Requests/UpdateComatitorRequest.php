@@ -14,7 +14,7 @@ class UpdateComatitorRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -27,6 +27,7 @@ class UpdateComatitorRequest extends FormRequest
         return [
             'kscgId' => ['string', 'max:255'],
             'name' => ['string', 'max:255'],
+            'country' => ['string', 'max:255'],
             'lastName' => ['string', 'max:255'],
             'gender' => ['integer', 'max:3'], Rule::in([1, 2]),
             'jmbg' => ['integer'],
