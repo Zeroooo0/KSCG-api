@@ -51,7 +51,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Images update
     Route::post('/competitor-image/{compatitor}', [FileController::class, 'setCompatitorImage']);
     Route::post('/club-image/{club}', [FileController::class, 'setClubImage']);
-    Route::post('/special-personal-image/{personal}', [FileController::class, 'setSpecPersonImage']);
+    Route::post('/special-personnel-image/{personal}', [FileController::class, 'setSpecPersonImage']);
     Route::post('/competition-image/{compatition}', [FileController::class, 'setCompatitionImage']);
     //Image add
     Route::post('/add-post-images/{post}', [FileController::class, 'addPostImage']);
@@ -61,7 +61,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Documents
     //Set
     Route::post('/competitor-documents/{compatitor}', [FileController::class, 'addDocumentCompatitor']);
-    Route::post('/special-personal-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
+    Route::post('/special-personel-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
     Route::post('/competition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
     //get
     Route::get('/competitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
@@ -76,7 +76,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('/belts-store', [ReusableDataController::class, 'bulkStore']);
     Route::get('/belts', [ReusableDataController::class, 'index']);
     //Special personal
-    Route::resource('/special-personal', SpecialPersonalsController::class);
+    Route::resource('/special-personnel', SpecialPersonalsController::class);
     //Special Persona in club
     Route::post('/club-administration', [ReusableDataController::class, 'clubsAdministration']);
     //COMPATITION

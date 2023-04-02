@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateSpecialPersonalRequest;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Club;
 use App\Models\SpecialPersonal;
+use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 
 class SpecialPersonalsController extends Controller
 {
+    use HttpResponses;
     /**
      * Display a listing of the resource.
      *
