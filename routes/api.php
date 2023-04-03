@@ -78,6 +78,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Special personal
     Route::resource('/special-personnel', SpecialPersonalsController::class);
     //Special Persona in club
+    Route::get('/club-administration/{club}', [ReusableDataController::class, 'getClubsAdministration']);
     Route::post('/club-administration', [ReusableDataController::class, 'clubsAdministration']);
     //COMPATITION
     Route::resource('/competitions', CompatitionsController::class);

@@ -6,6 +6,7 @@ use App\Http\Requests\BulkBeltsStoreRequest;
 use App\Http\Requests\StoreClubAdministration;
 use App\Http\Resources\BeltResource;
 use App\Http\Resources\ClubsResource;
+use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Belt;
 use App\Models\Club;
 use App\Models\Roles;
@@ -91,6 +92,17 @@ class ReusableDataController extends Controller
             ]);
             return new ClubsResource($club);
         }
+    }
+
+    public function getClubsAdministration(Request $request, Club $club)
+    {
+        $clubRolles = $club->roles()->get();
+        $clubsRollesIds = [];
+        foreach($clubRolles as $data){
+            $clubsRollesIds[] = $data->special_personals_id;
+        }
+        //return $clubsRollesIds;
+        return SpecialPersonalsResource::collection(SpecialPersonal::whereIn('id', $clubsRollesIds)->paginate($request->perPage));
     }
 
     public function deleteRole(Roles $roles)
