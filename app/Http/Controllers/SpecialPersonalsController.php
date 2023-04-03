@@ -89,9 +89,9 @@ class SpecialPersonalsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(SpecialPersonal $special_personal)
+    public function show(SpecialPersonal $special_personnel)
     {
-        return new SpecialPersonalsResource($special_personal);
+        return new SpecialPersonalsResource($special_personnel);
     }
 
     /**
@@ -101,36 +101,36 @@ class SpecialPersonalsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateSpecialPersonalRequest $request, SpecialPersonal $special_personal)
+    public function update(UpdateSpecialPersonalRequest $request, SpecialPersonal $special_personnel)
     {
         $request->validated($request->all());
         if($request->role != null && Auth::user()->user_type == 0) {
-            $role = $special_personal->role; 
+            $role = $special_personnel->role; 
         } else{
             $role = $request->role;
 
             
         }
-        $special_personal->update($request->except('lastName', 'role', 'status'));
+        $special_personnel->update($request->except('lastName', 'role', 'status'));
         if($request->has('lastName')){ 
-            $special_personal->update([
+            $special_personnel->update([
                 'last_name' => $request->lastName
             ]);
         }
         if($request->has('role')){ 
-            $special_personal->update([
+            $special_personnel->update([
                 'role' => $role
             ]);
         }
         if($request->has('status')){ 
             if(Auth::user()->user_type != 0){
-                $special_personal->update([
+                $special_personnel->update([
                     'status' => $request->status
                 ]);
             }
         }
 
-        return new SpecialPersonalsResource($special_personal);
+        return new SpecialPersonalsResource($special_personnel);
     }
 
     /**
@@ -139,20 +139,20 @@ class SpecialPersonalsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SpecialPersonal $personal)
+    public function destroy(SpecialPersonal $special_personnel)
     {
         if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
-        foreach($personal->image()->get() as $image) {
+        foreach($special_personnel->image()->get() as $image) {
             Storage::delete($image->url);
         }
-        foreach($personal->document()->get() as $document) {
+        foreach($special_personnel->document()->get() as $document) {
             Storage::delete($document->url);
         }
-        $personal->image()->delete();
-        $personal->document()->delete();
-        $personal->delete();
+        $special_personnel->image()->delete();
+        $special_personnel->document()->delete();
+        $special_personnel->delete();
         return $this->success('', 'Uspješno Obrisano!', 200);
     }
 }
