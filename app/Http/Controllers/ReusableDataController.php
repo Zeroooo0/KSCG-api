@@ -8,6 +8,7 @@ use App\Http\Requests\StoreClubAdministration;
 use App\Http\Resources\BeltResource;
 use App\Http\Resources\ClubsResource;
 use App\Http\Resources\CompatitorsResource;
+use App\Http\Resources\RolesResource;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Belt;
 use App\Models\Club;
@@ -106,7 +107,7 @@ class ReusableDataController extends Controller
             $clubsRollesIds[] = $data->special_personals_id;
         }
         //return $clubsRollesIds;
-        return SpecialPersonalsResource::collection(SpecialPersonal::whereIn('id', $clubsRollesIds)->paginate($request->perPage));
+        return RolesResource::collection(Roles::whereIn('id', $clubsRollesIds)->paginate($request->perPage));
     }
 
     public function clubCompatitors(Request $request, Club $club)
