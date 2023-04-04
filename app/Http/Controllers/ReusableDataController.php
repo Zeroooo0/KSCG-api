@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\CompatitorsFilter;
 use App\Http\Requests\BulkBeltsStoreRequest;
 use App\Http\Requests\StoreClubAdministration;
 use App\Http\Resources\BeltResource;
 use App\Http\Resources\ClubsResource;
+use App\Http\Resources\CompatitorsResource;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Belt;
 use App\Models\Club;
+use App\Models\Compatitor;
 use App\Models\Roles;
 use App\Models\SpecialPersonal;
 use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReusableDataController extends Controller
 {
@@ -103,6 +107,19 @@ class ReusableDataController extends Controller
         }
         //return $clubsRollesIds;
         return SpecialPersonalsResource::collection(SpecialPersonal::whereIn('id', $clubsRollesIds)->paginate($request->perPage));
+    }
+
+    public function clubCompatitors(Request $request, Club $club)
+    {
+        $filter = new CompatitorsFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $per_page = $request->perPage;
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $compatitor = Compatitor::where('club_id',$club->id)->orderBy($sort, $sortDirection);
+        $search = '%'. $request->search . '%';
+
+        return CompatitorsResource::collection($compatitor->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page));
     }
 
     public function deleteRole(Roles $roles)
