@@ -28,7 +28,6 @@ class RolesResource extends JsonResource
         if($this->role == 2) {
             $role = 'Trener';
         }
-        $role_delete = env('APP_URL') . 'api/v1/role/';
         
         return [
             'id' => (string)$this->id,
@@ -37,8 +36,7 @@ class RolesResource extends JsonResource
             'role' => $role,
             'status' => (boolean)$specialPersonal->status,
             $val => $this->roleable->name,
-            'registeredOn' => date('Y-m-d H:m:s', strtotime($this->roleable->created_at)),
-            'deleteRequest' => $role_delete . $this->id
+            'registeredOn' => date('Y-m-d H:m:s', strtotime($this->roleable->created_at))
         ];
     }
 }
