@@ -52,7 +52,7 @@ class CompatitionsResource extends JsonResource
             'documents' => $documents,
             'status' => (boolean)$this->status,
             'registrationStatus' => (boolean)$this->registration_status,
-            'tatamiNumber' => $this->tatmi_no,
+            'tatamiNumber' => $this->tatami_no,
             'registrations' => [
                 'clubs' => $this->registrations->countBy('club_id')->count(),
                 'compatitor' => $this->registrations->countBy('compatitor_id')->count(),
