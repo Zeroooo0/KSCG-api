@@ -22,7 +22,7 @@ class CompatitionsResource extends JsonResource
         foreach ($this->registrations->countBy('club_id') as $club=>$val) {   
             $clubs[] = $club;            
         }
-        $imageUrl = null;
+        $imageUrl = $storage_url . 'default/default-competition-poster.jpg';
         if($this->image != null) {
             $imageUrl = $storage_url . $this->image->url;
         }
