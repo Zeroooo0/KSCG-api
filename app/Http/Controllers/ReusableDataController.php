@@ -8,11 +8,13 @@ use App\Http\Requests\StoreClubAdministration;
 use App\Http\Resources\BeltResource;
 use App\Http\Resources\ClubsResource;
 use App\Http\Resources\CompatitorsResource;
+use App\Http\Resources\ResultsResource;
 use App\Http\Resources\RolesResource;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Belt;
 use App\Models\Club;
 use App\Models\Compatitor;
+use App\Models\Registration;
 use App\Models\Roles;
 use App\Models\SpecialPersonal;
 use App\Traits\HttpResponses;
@@ -110,6 +112,7 @@ class ReusableDataController extends Controller
         return RolesResource::collection(Roles::whereIn('id', $clubsRollesIds)->paginate($request->perPage));
     }
 
+
     public function clubCompatitors(Request $request, Club $club)
     {
         $filter = new CompatitorsFilter();
@@ -121,6 +124,13 @@ class ReusableDataController extends Controller
         $search = '%'. $request->search . '%';
 
         return CompatitorsResource::collection($compatitor->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page));
+    }
+
+    public function getCompatitorResults(Request $request, Compatitor $competitor)
+    {
+        $perPage = $request->per_page;
+
+        return ResultsResource::collection(Registration::where('compatitor_id', $competitor->id)->paginate($perPage));
     }
 
     public function deleteRole(Roles $roles)

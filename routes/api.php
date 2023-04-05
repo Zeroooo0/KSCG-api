@@ -87,6 +87,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::resource('/clubs', ClubsController::class);   
     //Compatitiors
     Route::resource('/competitors', CompatitorsController::class);  
+    Route::get('/competitor-results/{competitor}', [ReusableDataController::class, 'getCompatitorResults']);
     //Users control
     Route::resource('/users', UsersController::class);
     //Registration of compatitiors on compatition

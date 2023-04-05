@@ -18,6 +18,7 @@ class RegistratedCompatitorsResource extends JsonResource
         $gender = $this->category->gender == 1 ? 'M' : ($this->category->gender == 2 ? 'Ž' : 'M + Ž');
         $ekipno = $this->category->solo_or_team == 0 ? ' | Ekipno' : null;
         $price = $this->category->solo_or_team == 1 ? $this->compatition->price_single : $this->compatition->price_team;
+
         if($this->category->solo_or_team == 0 && $this->team_id != null){
             $name = 'team';
             $data = [
@@ -28,14 +29,18 @@ class RegistratedCompatitorsResource extends JsonResource
             $name = 'single';
             $data = true;
         }
-        return [
-            'registrationId' => (string)$this->id,
-            'competitor' => [
-                'id' => (string)$this->compatitor->id,
+        $competitorData = null;
+        if($this->compatitor != null) {
+            $competitorData = [
+                'id' => $this->compatitor != null ? (string)$this->compatitor->id : null,
                 'kscgId' => $this->compatitor->kscg_compatitor_id,
                 'name' => $this->compatitor->name,
                 'lastName' => $this->compatitor->last_name,
-            ],
+            ];
+        }
+        return [
+            'registrationId' => (string)$this->id,
+            'competitor' => $competitorData,
             'status' => (boolean)$this->status,
             'price' => $price,
             'category' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
