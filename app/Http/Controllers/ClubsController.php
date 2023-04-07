@@ -36,7 +36,7 @@ class ClubsController extends Controller
             );
         }
         return ClubsResource::collection(
-            $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->all()
+            $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->get()
         );
 
         
