@@ -86,25 +86,15 @@ class PostsController extends Controller
      */
     public function show(Post $news)
     {
-        $per_page = $request->perPage; 
-        $filter = new PostsFilter($queryItems);
-        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
-        $per_page = $request->perPage;
+
         
-        return new PostsResource($news->orderBy($sort, $sortDirection)->where($queryItems));
+        return new PostsResource($news);
     }
     public function showPublic(Request $request, Post $news)
     {
-        $per_page = $request->perPage; 
-        $filter = new PostsFilter($queryItems);
-        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
-        $per_page = $request->perPage;
+
         
-        return new PostsResource($news->orderBy($sort, $sortDirection)->where($queryItems));
+        return new PostsResource($news);
     }
 
     /**
