@@ -88,8 +88,6 @@ class AuthController extends Controller
     public function logout()
     {
 
-        return Auth::attempt();
-
         Auth::user()->currentAccessToken()->delete();
 
         return $this->success('', 'Uspješno ste izlogovani!');

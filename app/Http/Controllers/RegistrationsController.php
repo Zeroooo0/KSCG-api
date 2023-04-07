@@ -48,12 +48,22 @@ class RegistrationsController extends Controller
         }
         
         $arr = [];
+        $compatitionCheck = Compatition::where('id', $request[0]['competitionId'])->get()->first();
+        if($compatitionCheck->registration_status == 1){
+            if($compatitionCheck->registration_deadline <= date(now())) {
+                $compatitionCheck->update(['registration_status' => false]);
+                return $this->error('', 'Registracije su završene', 403);
+            }
+        }
+        if($compatitionCheck->registration_status == 0) {
+            return $this->error('', 'Registracije su završene', 403);
+        }
 
-       
         foreach($request->all() as $key) {
             $data = $key;
             $compatition = Compatition::where('id', $data['competitionId'])->get()->first();
             
+           
             if( $compatition->registration_status == 0) {
                 return $this->error('', 'Registracija je trenutno neaktivna!', 403);
             }
