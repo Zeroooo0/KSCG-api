@@ -35,6 +35,7 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/competition-clubs-results/{competition}', [CompatitionsController::class, 'piblicClubsResults']);
     Route::get('/time-table', [TimeTablesController::class, 'public']);
     Route::get('/news', [PostsController::class, 'public']);
+    Route::get('/news/{news}', [PostsController::class, 'showPublic']);
     Route::get('/pages', [PagesController::class, 'public']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPasswordNotification']);
 });
