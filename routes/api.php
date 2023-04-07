@@ -28,7 +28,7 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/clubs', [ClubsController::class, 'public']);  
     Route::get('/clubs/{club}', [ClubsController::class, 'show_public']);  
     Route::get('/competitors', [CompatitorsController::class, 'public']);
-    Route::get('/competitors/{compatitor}', [CompatitorsController::class, 'show_public']);
+    Route::get('/competitors/{competitor}', [CompatitorsController::class, 'show_public']);
     Route::get('/competitions', [CompatitionsController::class, 'public']);
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'piblicCategories']);
     Route::get('/competition-results/{competition}', [CompatitionsController::class, 'piblicRegistrations']);

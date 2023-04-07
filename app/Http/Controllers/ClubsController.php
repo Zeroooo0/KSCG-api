@@ -30,7 +30,7 @@ class ClubsController extends Controller
         $club = Club::orderBy($sort, $sortDirection);
 
         $search = '%'. $request->search . '%';
-        if($per_page !== 0){
+        if($per_page != 0){
             return ClubsResource::collection(
                 $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->paginate($per_page)
             );
