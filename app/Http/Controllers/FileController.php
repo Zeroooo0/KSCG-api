@@ -128,21 +128,21 @@ class FileController extends Controller
         return new SpecialPersonalsResource($personal);
     }
 
-    public function addPostImage(StoreImageRequest $request, Post $post) 
+    public function addPostImage(StoreImageRequest $request, Post $news) 
     {
         $request->validated($request->all());
         $path = Storage::putFile('post-image', $request->image);
         
-        $image = $post->images()->create([
+        $image = $news->images()->create([
             'url' => $path
         ]);
 
         if($request->coverImage == 'true') {
-            $post->update([
+            $news->update([
                 'cover_image' => $image->id
             ]);
         } 
-        return new PostsResource($post);
+        return new PostsResource($news);
     }
     public function addPageImage(StoreImageRequest $request, Page $page) 
     {

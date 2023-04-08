@@ -56,7 +56,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('/special-personnel-image/{personal}', [FileController::class, 'setSpecPersonImage']);
     Route::post('/competition-image/{compatition}', [FileController::class, 'setCompatitionImage']);
     //Image add
-    Route::post('/add-post-images/{post}', [FileController::class, 'addPostImage']);
+    Route::post('/add-news-images/{news}', [FileController::class, 'addPostImage']);
     Route::post('/add-page-images/{page}', [FileController::class, 'addPageImage']);
     //Image delete
     Route::delete('/delete-image/{image}', [FileController::class, 'deleteImage']);
