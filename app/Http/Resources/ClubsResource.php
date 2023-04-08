@@ -34,15 +34,16 @@ class ClubsResource extends JsonResource
                 'status' => (boolean)$this->user->status,
             ];
         }        
-        $registrations = $this->registrations;
-        function teamCount($position, $registrations) 
-        {
-            return $registrations->where('team_or_single', 0)->where('position', $position)->countBy('team_id')->count();
-        }
-        function singleCount($position, $registrations) 
-        {
-            return $registrations->where('team_or_single', 1)->where('position', $position)->countBy('team_id')->count();
-        }
+
+
+        $dataTeamGold = $this->registrations->where('team_or_single', 0)->where('position', 3)->countBy('team_id')->count();
+        $dataTeamSilver = $this->registrations->where('team_or_single', 0)->where('position', 2)->countBy('team_id')->count();
+        $dataTeamBronze = $this->registrations->where('team_or_single', 0)->where('position', 1)->countBy('team_id')->count();
+
+        $dataSingleGold = $this->registrations->where('team_or_single', 1)->where('position', 3)->count();
+        $dataSingleSilver = $this->registrations->where('team_or_single', 1)->where('position', 2)->count();
+        $dataSingleBronze = $this->registrations->where('team_or_single', 1)->where('position', 1)->count();
+
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
@@ -57,9 +58,9 @@ class ClubsResource extends JsonResource
             'user' => $user_info,
             'administrationCount' => count($this->roles),
             'competitorsCount' => count($this->compatitors),
-            'gold' => singleCount(3, $registrations) + teamCount(3, $registrations),
-            'silver' => singleCount(2, $registrations) + teamCount(2, $registrations),
-            'bronze' => singleCount(1, $registrations) + teamCount(1, $registrations),
+            'gold' => $dataTeamGold + $dataSingleGold,
+            'silver' => $dataTeamSilver + $dataSingleSilver,
+            'bronze' => $dataTeamBronze + $dataSingleBronze,
         ];
     }
 }
