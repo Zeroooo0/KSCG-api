@@ -7,23 +7,22 @@ use App\Filters\CompatitionsFilter;
 use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CategoriesResource;
-use App\Http\Resources\CCPResource;
 use App\Http\Resources\ClubsOnCompatitionResource;
 use App\Http\Resources\CompatitionsResource;
 use App\Http\Resources\RegistrationsResource;
-use App\Models\Category;
 use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\SpecialPersonal;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Http\Request;
 use App\Support\Collection;
+use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CompatitionsController extends Controller
 {
+    use HttpResponses;
     
     /**
      * Display a listing of the resource.
@@ -201,13 +200,14 @@ class CompatitionsController extends Controller
      */
     public function destroy(Compatition $competition)
     {
-   
+
         if($competition->registrations()->count() > 0){
-            return $this->error('', 'Ovo takmičenje već ima registracije pa nije moguće obrisati!');
+            return $this->error('', 'Ovo takmičenje već ima registracije pa nije moguće obrisati!', 403);
         }
         $competition->image()->delete();
-        $competition->documents()->delete();
+        $competition->document()->delete();
         $competition->delete();
+        return $this->success('', 'Uspješno obrisano takmičenje.');
     }
 
     public function specialPersonalOnCompatition(Compatition $competition, Request $request) {
