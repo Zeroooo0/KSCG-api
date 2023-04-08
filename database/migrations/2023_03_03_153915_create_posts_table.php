@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->mediumText('content');
             $table->text('excerpt');
+            $table->boolean('gallery')->default(0);
             $table->unsignedBigInteger('cover_image')->nullable();
             $table->foreignId('user_id')->nullable()->references('id')->on('users')->nullOnDelete();
             $table->timestamps();

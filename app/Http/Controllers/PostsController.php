@@ -63,6 +63,7 @@ class PostsController extends Controller
         $news = Post::create([
             'title' => $request->title,
             'content' => $request->content,
+            'gallery' => $request->gallery == null ? false : $request->gallery,
             'excerpt' => $request->excerpt,
             'user_id' => Auth::user()->id
         ]);
@@ -108,9 +109,6 @@ class PostsController extends Controller
     {
         $request->validated($request->all());
         $news->update($request->all());
-        $news->update([
-            'updated_at'=> date('Y:m:d H:i:s')
-        ]);
         return new PostsResource($news);
     }
 

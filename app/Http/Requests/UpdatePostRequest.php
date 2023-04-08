@@ -27,6 +27,7 @@ class UpdatePostRequest extends FormRequest
             'title' => ['string'],
             'contet' => ['string'],
             'excerpt' => ['string'],
+            'gallery' => ['boolean'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480']
         ];
     }

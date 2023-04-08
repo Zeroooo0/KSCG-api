@@ -15,6 +15,7 @@ class PostsResource extends JsonResource
     public function toArray($request)
     {
         date_default_timezone_set('Europe/Amsterdam');
+        $storage_url = env('APP_URL') . 'api/file/';
         $userData = $this->user_id;
         if($this->user_id != null) {
             $userData = [
@@ -27,7 +28,7 @@ class PostsResource extends JsonResource
         if($this->images != []) {
            $image = ImageResource::collection($this->images);
         }
-        $cover_image = $this->cover_image;
+        $cover_image = $storage_url . 'default/default-news-poster.jpg';
         if($this->cover_image != null) {
             $cover_image = new ImageResource($this->images->where('id', $this->cover_image)->first());
         }
@@ -36,6 +37,7 @@ class PostsResource extends JsonResource
             'title' => $this->title,
             'content' => $this->content,
             'excerpt' => $this->excerpt,
+            'gallery' => $this->gallery,
             'createdAt' => date($this->created_at),
             'updatedAt' => date($this->updated_at),
             'user' => $userData,

@@ -199,9 +199,15 @@ class CompatitionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Compatition $compatition)
+    public function destroy(Compatition $competition)
     {
-        //
+   
+        if($competition->registrations()->count() > 0){
+            return $this->error('', 'Ovo takmičenje već ima registracije pa nije moguće obrisati!');
+        }
+        $competition->image()->delete();
+        $competition->documents()->delete();
+        $competition->delete();
     }
 
     public function specialPersonalOnCompatition(Compatition $competition, Request $request) {
