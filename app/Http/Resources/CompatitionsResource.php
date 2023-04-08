@@ -56,7 +56,7 @@ class CompatitionsResource extends JsonResource
             'registrations' => [
                 'clubs' => $this->registrations->countBy('club_id')->count(),
                 'compatitor' => $this->registrations->countBy('compatitor_id')->count(),
-                'teams' => $this->registrations->countBy('team_id')->count() - 1,
+                'teams' => $this->registrations->countBy('team_id')->except(null)->count(),
                 'categories' => $this->registrations->countBy('category_id')->count(),
                 'total' => $this->registrations->count(),
                 'countries' => Club::whereIn('id', $clubs)->get()->countBy('country')->count(),

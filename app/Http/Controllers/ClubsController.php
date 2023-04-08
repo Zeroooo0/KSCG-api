@@ -32,11 +32,11 @@ class ClubsController extends Controller
         $search = '%'. $request->search . '%';
         if($per_page != 0){
             return ClubsResource::collection(
-                $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->paginate($per_page)
+                $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name, country, town)'), 'like', $search)->paginate($per_page)
             );
         }
         return ClubsResource::collection(
-            $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->get()
+            $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name, country, town)'), 'like', $search)->get()
         );
 
         
@@ -60,11 +60,11 @@ class ClubsController extends Controller
         } else {
             if($per_page != 0){
                 return ClubsResource::collection(
-                    $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->paginate($per_page)
+                    $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name, country, town)'), 'like', $search)->paginate($per_page)
                 );
             }
             return ClubsResource::collection(
-                $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name)'), 'like', $search)->get()
+                $club->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, short_name, country, town)'), 'like', $search)->get()
             );
 
         }

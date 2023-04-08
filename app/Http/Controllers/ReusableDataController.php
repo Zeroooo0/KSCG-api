@@ -13,6 +13,7 @@ use App\Http\Resources\RolesResource;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Belt;
 use App\Models\Club;
+use App\Models\Compatition;
 use App\Models\Compatitor;
 use App\Models\Registration;
 use App\Models\Roles;
@@ -150,6 +151,9 @@ class ReusableDataController extends Controller
     {
         $perPage = $request->per_page;
         return ResultsResource::collection(Registration::where('club_id', $club->id)->paginate($perPage));
+    }
+    public function registeredClubs(Compatition $competition) {
+        return $competition;
     }
 
 }
