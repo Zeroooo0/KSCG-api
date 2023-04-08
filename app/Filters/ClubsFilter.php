@@ -15,7 +15,8 @@ class ClubsFilter {
         'pib' => ['eq'],
         'email' => ['eq', 'like'],
         'phoneNumber' => ['eq', 'like'],
-        'userId' => ['eq']
+        'userId' => ['eq'],
+        'id' => ['eq']
     ];
 
     protected $columnsMap = [

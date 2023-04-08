@@ -48,7 +48,10 @@ class ClubsResource extends JsonResource
             'address' => $this->address,
             'user' => $user_info,
             'administrationCount' => count($this->roles),
-            'competitorsCount' => count($this->compatitors)
+            'competitorsCount' => count($this->compatitors),
+            'gold' => $this->registrations()->where('position', 3)->count(),
+            'silver' => $this->registrations()->where('position', 2)->count(),
+            'bronze' => $this->registrations()->where('position', 1)->count()
         ];
     }
 }
