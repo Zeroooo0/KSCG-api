@@ -37,7 +37,7 @@ class PostsResource extends JsonResource
             'title' => $this->title,
             'content' => $this->content,
             'excerpt' => $this->excerpt,
-            'gallery' => $this->gallery,
+            'gallery' => (boolean)$this->gallery,
             'createdAt' => date($this->created_at),
             'updatedAt' => date($this->updated_at),
             'user' => $userData,
