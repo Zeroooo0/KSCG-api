@@ -9,7 +9,7 @@ class ClubsFilter {
     protected $safeParms = [
         'name' => ['eq', 'like'],
         'shortName' => ['eq', 'like'],
-        'country' => ['eq', 'like'],
+        'country' => ['eq', 'like', 'neq'],
         'city' => ['eq', 'like'],
         'address' => ['eq', 'like'],
         'pib' => ['eq'],
@@ -26,6 +26,7 @@ class ClubsFilter {
 
     protected $operatorMap = [
         'eq' => '=',
+        'neq' => '!=',
         'like' => 'like'
     ];
 
