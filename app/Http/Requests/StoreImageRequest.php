@@ -24,7 +24,7 @@ class StoreImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => ['required','image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480'],
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480'],
             'coverImage' => ['boolean']
         ];
     }

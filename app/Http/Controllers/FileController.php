@@ -130,14 +130,16 @@ class FileController extends Controller
 
     public function addPostImage(StoreImageRequest $request, Post $news) 
     {
-        $request->validated($request->all());
+        
+        $request->safe()->except('coverImage');
+
         $path = Storage::putFile('post-image', $request->image);
         
         $image = $news->images()->create([
             'url' => $path
         ]);
-
-        if($request->coverImage == 'true') {
+        
+        if($request->has('coverImage') && $request->coverImage == 'true') {
             $news->update([
                 'cover_image' => $image->id
             ]);
