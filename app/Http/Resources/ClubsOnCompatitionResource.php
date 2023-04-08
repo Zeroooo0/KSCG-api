@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-
+use App\Models\Club;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,6 +16,8 @@ class ClubsOnCompatitionResource extends JsonResource
      */
     public function toArray($request)
     {
+
+
         $reg_compatitors = RegistratedCompatitorsResource::collection($this->registrations);
         $team_price = 0;
         $single_price = 0;
@@ -36,12 +38,11 @@ class ClubsOnCompatitionResource extends JsonResource
             'singleRegistrationNo' => $registration_single,
             'teamRegistrationNo' => $registration_team,
             'totalPrice' => $totalPrice,
-            'gold' => $reg_compatitors->where('position', 3)->count(),
+            'gold' => $reg_compatitors->where('position', 3)->count(), 
             'silver' => $reg_compatitors->where('position', 2)->count(),
             'bronze' => $reg_compatitors->where('position', 1)->count(),
             'points' => $reg_compatitors->sum('position'),
-            'compatitors' => $reg_compatitors,
-
+            'compatitors' => $reg_compatitors
         ];
     }
 }

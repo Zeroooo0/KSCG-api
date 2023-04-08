@@ -6,6 +6,7 @@ use App\Filters\CompatitorsFilter;
 use App\Http\Requests\BulkBeltsStoreRequest;
 use App\Http\Requests\StoreClubAdministration;
 use App\Http\Resources\BeltResource;
+use App\Http\Resources\ClubsOnCompatitionResource;
 use App\Http\Resources\ClubsResource;
 use App\Http\Resources\CompatitorsResource;
 use App\Http\Resources\ResultsResource;
@@ -152,8 +153,17 @@ class ReusableDataController extends Controller
         $perPage = $request->per_page;
         return ResultsResource::collection(Registration::where('club_id', $club->id)->paginate($perPage));
     }
-    public function registeredClubs(Compatition $competition) {
-        return $competition;
+    public function registeredClubs(Compatition $competition) 
+    {
+
+        $clubs = [];
+        foreach ($competition->registrations->countBy('club_id') as $club=>$val) {   
+            $clubs[] = $club;            
+        }
+
+        $clubs = Club::whereIn('id', array_filter($clubs))->paginate(10);
+
+        return 'sta';
     }
 
 }

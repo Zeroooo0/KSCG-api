@@ -27,7 +27,8 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::get('/clubs', [ClubsController::class, 'public']);  
     Route::get('/clubs/{club}', [ClubsController::class, 'show_public']);  
-    Route::get('/club-results/{club}', [ReusableDataController::class, 'clubsResults']);  
+    Route::get('/club-results/{club}', [ReusableDataController::class, 'clubsResults']); 
+    Route::get('/club-competitors/{club}', [ReusableDataController::class, 'clubCompatitors']);
     Route::get('/competitors', [CompatitorsController::class, 'public']);
     Route::get('/competitors/{competitor}', [CompatitorsController::class, 'show_public']);
     Route::get('/competitions', [CompatitionsController::class, 'public']);
@@ -85,6 +86,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/club-competitors/{club}', [ReusableDataController::class, 'clubCompatitors']);
     //COMPATITION
     Route::resource('/competitions', CompatitionsController::class);
+    Route::get('/clubs-registered/{competition}', [ReusableDataController::class, 'registeredClubs']);
+
     //Clubs
     Route::resource('/clubs', ClubsController::class);   
     //Compatitiors
