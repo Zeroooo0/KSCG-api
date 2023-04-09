@@ -210,12 +210,19 @@ class CompatitionsController extends Controller
         return $this->success('', 'Uspješno obrisano takmičenje.');
     }
 
-    public function specialPersonalOnCompatition(Compatition $competition, Request $request) {
+    public function specialPersonalOnCompatition(Compatition $competition, Request $request) 
+    {
 
         $specialPersonal = SpecialPersonal::where('id', $request->specPersonId)->first();
-        if($specialPersonal->role == 2 && Auth::user()->user_type == 0) {
-            $club = '';
+
+        if($specialPersonal->role == 1 && Auth::user()->user_type == 0) {
+            return $this->error('', 'Sudije mogu dodati samo administratori!', 403);
         }
-        return response("Takmicenje $competition->name" );
+        $competition->roles()->create([
+            'special_personals_id' => $request->specPersonId,
+            'title' => $request->title,
+            'role' => $specialPersonal->role
+        ]);
+        return $this->success('', 'Uspješno ste dodali sudiju!');
     }
 }
