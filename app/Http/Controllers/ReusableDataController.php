@@ -175,7 +175,12 @@ class ReusableDataController extends Controller
     public function competitionRoles(Compatition $competition, Request $request)
     {
         $per_page = !$request->has('perPage') ? 15 : $request->perPage;
-        return SpecialPersonalsResource::collection((new Collection($competition->roles))->paginate($per_page));
+        $specPersonnels = [];
+        foreach($competition->roles as $val) {
+            $specPersonnels[] = $val->special_personals_id;
+        }
+       
+        return RolesResource::collection((new Collection($competition->roles))->paginate($per_page));
     }
 
 }

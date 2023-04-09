@@ -218,6 +218,9 @@ class CompatitionsController extends Controller
         if($specialPersonal->role == 1 && Auth::user()->user_type == 0) {
             return $this->error('', 'Sudije mogu dodati samo administratori!', 403);
         }
+        if($competition->roles()->where('special_personals_id', $specialPersonal->id)->get()->count() > 0) {
+            return $this->error('', 'Ovaj sudija je već dodat!', 422);
+        }
         $competition->roles()->create([
             'special_personals_id' => $request->specPersonId,
             'title' => $request->title,
