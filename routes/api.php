@@ -86,7 +86,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/club-competitors/{club}', [ReusableDataController::class, 'clubCompatitors']);
     //COMPATITION
     Route::resource('/competitions', CompatitionsController::class);
-    Route::get('/clubs-registered/{competition}', [ReusableDataController::class, 'registeredClubs']);
+    Route::get('/competition-roles/{cometition}', [ReusableDataController::class, 'competitionRoles']);
+    Route::get('/registered-clubs', [ReusableDataController::class, 'registeredClubs']);
 
     //Clubs
     Route::resource('/clubs', ClubsController::class);   

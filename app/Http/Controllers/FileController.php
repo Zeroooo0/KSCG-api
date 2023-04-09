@@ -250,6 +250,6 @@ class FileController extends Controller
 
     public function compatitionDocuments(Request $request, Compatition $compatition)
     {
-
+        //
     }
 }

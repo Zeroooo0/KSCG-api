@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RegistratedCompatitorsResource extends JsonResource
+class RegistratedCompatitorInTeamResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,18 +17,7 @@ class RegistratedCompatitorsResource extends JsonResource
         $kata_or_kumite = $this->category->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $this->category->gender == 1 ? 'M' : ($this->category->gender == 2 ? 'Ž' : 'M + Ž');
         $ekipno = $this->category->solo_or_team == 0 ? ' | Ekipno' : null;
-        $price = $this->category->solo_or_team == 1 ? $this->compatition->price_single : $this->compatition->price_team;
 
-        if($this->category->solo_or_team == 0 && $this->team_id != null){
-            $name = 'team';
-            $data = [
-                'id' => $this->team->id,
-                'name' => $this->team->name
-            ];
-        } else {
-            $name = 'single';
-            $data = true;
-        }
         $competitorData = null;
         if($this->compatitor != null) {
             $competitorData = [
@@ -41,10 +30,8 @@ class RegistratedCompatitorsResource extends JsonResource
         return [
             'registrationId' => (string)$this->id,
             'competitor' => $competitorData,
-            'status' => (boolean)$this->status,
-            'price' => $price,
             'category' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
-            $name => $data
+
         ];
     }
 }

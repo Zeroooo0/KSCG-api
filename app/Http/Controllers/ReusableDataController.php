@@ -19,6 +19,7 @@ use App\Models\Compatitor;
 use App\Models\Registration;
 use App\Models\Roles;
 use App\Models\SpecialPersonal;
+use App\Support\Collection;
 use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -153,17 +154,28 @@ class ReusableDataController extends Controller
         $perPage = $request->per_page;
         return ResultsResource::collection(Registration::where('club_id', $club->id)->paginate($perPage));
     }
-    public function registeredClubs(Compatition $competition) 
+    public function registeredClubs(Request $request) 
     {
-
+        if(!$request->has('competitionId'))
+        {
+            return $this->error('', 'Mora da postoji parametar competitionId={id}', 422);
+        }
+        $per_page = $request->perPage;
+        $competition = Compatition::where('id', $request->competitionId)->first();
         $clubs = [];
+
         foreach ($competition->registrations->countBy('club_id') as $club=>$val) {   
             $clubs[] = $club;            
         }
 
-        $clubs = Club::whereIn('id', array_filter($clubs))->paginate(10);
+        $clubs = Club::whereIn('id', array_filter($clubs));
 
-        return 'sta';
+        return ClubsOnCompatitionResource::collection($clubs->paginate($per_page));
+    }
+    public function competitionRoles(Compatition $competition, Request $request)
+    {
+        $per_page = !$request->has('perPage') ? 15 : $request->perPage;
+        return SpecialPersonalsResource::collection((new Collection($competition->roles))->paginate($per_page));
     }
 
 }
