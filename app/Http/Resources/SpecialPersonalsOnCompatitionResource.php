@@ -51,10 +51,10 @@ class SpecialPersonalsOnCompatitionResource extends JsonResource
             $role = 'Trener';
         } 
         if($this->role == 0) {
-            $role = 'Uprava Kluba';
+            $role = 'Uprava';
         } 
         if($this->role == 3) {
-            $role = 'Uprava Kluba';
+            $role = 'Uprava';
         } 
 
         return [
@@ -67,8 +67,7 @@ class SpecialPersonalsOnCompatitionResource extends JsonResource
             'role' => $role,
             'status' => (boolean)$this->status,
             'image' => $path,
-            'documents' => $documents,
-            'roles' => $testing
+            'documents' => $documents
         ];
     }
 }

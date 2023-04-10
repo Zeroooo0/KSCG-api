@@ -150,6 +150,7 @@ class SpecialPersonalsController extends Controller
         foreach($special_personnel->document()->get() as $document) {
             Storage::delete($document->url);
         }
+        $special_personnel->role()->delete();
         $special_personnel->image()->delete();
         $special_personnel->document()->delete();
         $special_personnel->delete();

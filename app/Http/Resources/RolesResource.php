@@ -19,7 +19,7 @@ class RolesResource extends JsonResource
     {
     
         $specialPersonal = SpecialPersonal::where('id', $this->special_personals_id)->first();
-        $role = 'Uprava kluba';
+        $role = 'Uprava';
         $val = 'clubName';
         if($this->role == 1) {
             $role = 'Sudija';
