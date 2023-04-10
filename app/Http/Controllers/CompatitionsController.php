@@ -204,6 +204,7 @@ class CompatitionsController extends Controller
         if($competition->registrations()->count() > 0){
             return $this->error('', 'Ovo takmičenje već ima registracije pa nije moguće obrisati!', 403);
         }
+        $competition->roles()->delete();
         $competition->image()->delete();
         $competition->document()->delete();
         $competition->delete();
@@ -212,7 +213,6 @@ class CompatitionsController extends Controller
 
     public function specialPersonalOnCompatition(Compatition $competition, Request $request) 
     {
-
         $specialPersonal = SpecialPersonal::where('id', $request->specPersonId)->first();
 
         if($specialPersonal->role == 1 && Auth::user()->user_type == 0) {

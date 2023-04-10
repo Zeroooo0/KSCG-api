@@ -20,7 +20,7 @@ class ComponentResource extends JsonResource
             'orderNo' => $this->order_number,
             'documents' => $request->has('embed') && str_contains($request->embed, 'documents') ? DocumentsResource::collection($this->documents) : 'embeddable',
             'images' => $request->has('embed') && str_contains($request->embed, 'images') ? ImageResource::collection($this->images) : 'embeddable',
-            'roles' => $request->has('embed') && str_contains($request->embed, 'images') ? RolesResource::collection($this->roles) : 'embeddable'
+            'roles' => $request->has('embed') && str_contains($request->embed, 'roles') ? RolesResource::collection($this->roles) : 'embeddable'
         ];
     }
 }

@@ -139,8 +139,8 @@ class CompatitorsController extends Controller
         if(Auth::user()->user_type == 0 && $competitor->club_id != Auth::user()->club->id) {
             return $this->restricted('', 'Možete vršiti izmjene samo članova Vašeg kluba!', 403);
         }
+        
         $competitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status', 'belt']));
-
 
         if ($request->has('lastName')) {
             $competitor->update([
@@ -182,9 +182,7 @@ class CompatitorsController extends Controller
                 'status' => 0
             ]);
         }
-
         return new CompatitorsResource($competitor);
- 
     }
 
     /**
@@ -209,7 +207,4 @@ class CompatitorsController extends Controller
         $competitor->delete();
         return $this->success('', 'Takmičar je uspješno obrisan!', 200);
     }
-
-
-
 }
