@@ -35,7 +35,7 @@ class CompatitionsController extends Controller
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
         $sort = $request->sort == null ? 'start_time_date' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $compatition = Compatition::orderBy($sort, $sortDirection);
 
         $search = '%'. $request->search . '%';
@@ -50,7 +50,7 @@ class CompatitionsController extends Controller
         $per_page = $request->perPage;
 
         $sort = $request->sort == null ? 'start_time_date' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $compatition = Compatition::orderBy($sort, $sortDirection);
         //return $request->sortDirection;
         $search = '%'. $request->search . '%';
