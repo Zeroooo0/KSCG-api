@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ClubsController;
 use App\Http\Controllers\ComponentController;
 use App\Http\Controllers\CompatitorsController;
+use App\Http\Controllers\CompatitionsController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PoolsController;
@@ -123,6 +124,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Component
     Route::post('page-component/{page}', [ComponentController::class, 'storePageComponent']);
     Route::post('news-component/{news}', [ComponentController::class, 'storePostComponent']);
+    Route::delete('component/{component}', [ComponentController::class, 'destroy']);
     //component file managament
     Route::post('component-document/{component}', [FileController::class, 'storeComponentDocs']);
     Route::post('component-roles/{component}', [ReusableDataController::class, 'storeComponentRole']);
