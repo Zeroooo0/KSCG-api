@@ -25,6 +25,7 @@ class StorePostsRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string'],
+            'slug' => ['required', 'string', 'not_regex:/([A-Z])| |\.|\/n/'],
             'content' => ['required','string'],
             'excerpt' => ['required','string'],
             'gallery' => ['boolean'],

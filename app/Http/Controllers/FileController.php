@@ -8,12 +8,15 @@ use App\Http\Resources\ClubsResource;
 use App\Http\Resources\CompatitionsResource;
 use App\Http\Resources\CompatitorsResource;
 use App\Http\Resources\DocumentsResource;
+use App\Http\Resources\ImageResource;
 use App\Http\Resources\PagesResource;
 use App\Http\Resources\PostsResource;
+use App\Http\Resources\RolesResource;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\Compatitor;
+use App\Models\Component;
 use App\Models\Document;
 use App\Models\Image;
 use App\Models\Page;
@@ -182,6 +185,30 @@ class FileController extends Controller
         return new CompatitorsResource($compatitor);
 
     }
+    public function addDocumentPage(StoreDocumentRequest $request, Page $page)
+    {
+        $request->validated($request->all());
+        $path = Storage::putFile('page-docs', $request->document);
+        $page->document()->create([
+            'name' => $request->name,
+            'doc_link' => $path
+        ]);
+
+        return new PagesResource($page);
+
+    }
+    public function addDocumentPost(StoreDocumentRequest $request, Post $news)
+    {
+        $request->validated($request->all());
+        $path = Storage::putFile('page-docs', $request->document);
+        $news->document()->create([
+            'name' => $request->name,
+            'doc_link' => $path
+        ]);
+
+        return new PostsResource($news);
+
+    }
 
     public function addDocumentSpecialPersonal(StoreDocumentRequest $request, SpecialPersonal $special_personal)
     {
@@ -252,4 +279,27 @@ class FileController extends Controller
     {
         //
     }
+
+    //Component data managament
+    public function storeComponentDocs(Request $request, Component $component)
+    {
+        $path = Storage::putFile('component-docs', $request->document);
+        $document = $component->documents()->create([
+            'name' => $request->name,
+            'doc_link' => $path
+        ]);
+        return $this->success(new DocumentsResource($document), 'Uspjesno dodat dokument');
+      
+    }
+
+    public function storeComponentImage(Request $request, Component $component)
+    {
+        $path = Storage::putFile('component-image', $request->image);
+        $image = $component->images()->create([
+            'url' => $path
+        ]);            
+        return $this->success(new ImageResource($image), 'Uspjesno dodata slika');
+    }
+
+
 }

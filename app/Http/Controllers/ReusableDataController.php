@@ -16,6 +16,7 @@ use App\Models\Belt;
 use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\Compatitor;
+use App\Models\Component;
 use App\Models\Registration;
 use App\Models\Roles;
 use App\Models\SpecialPersonal;
@@ -181,6 +182,18 @@ class ReusableDataController extends Controller
         }
        
         return RolesResource::collection((new Collection($competition->roles))->paginate($per_page));
+    }
+
+    public function storeComponentRole(Request $request, Component $component)
+    {
+        $specialPersonal = SpecialPersonal::where('id', $request->specPersonId)->first();
+  
+        $role = $component->roles()->create([
+            'special_personals_id' => $request->specPersonId,
+            'title' => $request->title,
+            'role' => $specialPersonal->role
+        ]);
+        return $this->success(new RolesResource($role), 'Uspjesno dodata slika');
     }
 
 }

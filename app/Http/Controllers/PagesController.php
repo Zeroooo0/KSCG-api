@@ -22,13 +22,19 @@ class PagesController extends Controller
     public function public(Request $request)
     {
         $per_page = $request->perPage;
-        return PagesResource::collection(Page::paginate($per_page));
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+
+        return PagesResource::collection(Page::orderBy($sort, $sortDirection)->paginate($per_page));
     }
 
     public function index(Request $request)
     {
         $per_page = $request->perPage;
-        return PagesResource::collection(Page::paginate($per_page));
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+
+        return PagesResource::collection(Page::orderBy($sort, $sortDirection)->paginate($per_page));
     }
 
     /**
@@ -42,6 +48,7 @@ class PagesController extends Controller
         $request->validated($request->all());
 
         $page = Page::create([
+            'slug' => $request->slug,
             'title' => $request->title,
             'content' => $request->content,
             'excerpt' => $request->excerpt,
@@ -95,6 +102,7 @@ class PagesController extends Controller
      */
     public function destroy(Page $page)
     {
+
         $page->delete();
         $page->images()->delete();
         $page->document()->delete();

@@ -61,6 +61,7 @@ class PostsController extends Controller
         $request->validated($request->all());
 
         $news = Post::create([
+            'slug' => $request->slug,
             'title' => $request->title,
             'content' => $request->content,
             'gallery' => $request->gallery == null ? false : $request->gallery,

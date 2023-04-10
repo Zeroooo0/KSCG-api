@@ -17,8 +17,11 @@ class PageFactory extends Factory
      */
     public function definition()
     {
+        $title = $this->faker->sentence();
+        $slug = str_replace(' ', '-', strtolower(trim($title, '.')));
         return [
-            'title' => $this->faker->sentence(),
+            'title' => $title,
+            'slug' => $slug,
             'content' => $this->faker->paragraph(5),
             'excerpt' => $this->faker->paragraph(2),
             'user_id' => User::all()->random()->id

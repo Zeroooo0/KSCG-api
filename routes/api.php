@@ -3,7 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ClubsController;
-use App\Http\Controllers\CompatitionsController;
+use App\Http\Controllers\ComponentController;
 use App\Http\Controllers\CompatitorsController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\PagesController;
@@ -66,6 +66,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('/competitor-documents/{compatitor}', [FileController::class, 'addDocumentCompatitor']);
     Route::post('/special-personel-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
     Route::post('/competition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
+    Route::post('/page-documents/{page}', [FileController::class, 'addDocumentPage']);
+    Route::post('/news-documents/{news}', [FileController::class, 'addDocumentPost']);
+    
     //get
     Route::get('/competitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
     //Delete
@@ -117,7 +120,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Pages
     Route::resource('/pages', PagesController::class);
 
-
+    //Component
+    Route::post('page-component/{page}', [ComponentController::class, 'storePageComponent']);
+    Route::post('news-component/{news}', [ComponentController::class, 'storePostComponent']);
+    //component file managament
+    Route::post('component-document/{component}', [FileController::class, 'storeComponentDocs']);
+    Route::post('component-roles/{component}', [ReusableDataController::class, 'storeComponentRole']);
+    Route::post('component-image/{component}', [FileController::class, 'storeComponentImage']);
 
 
     //Compatition filtering data

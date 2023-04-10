@@ -11,6 +11,7 @@ class Post extends Model
 
     protected $fillable = [
         'title',
+        'slug',
         'content',
         'user_id',
         'cover_image',
@@ -30,5 +31,9 @@ class Post extends Model
     public function document()
     {
         return $this->morphMany(Document::class, 'documentable');
+    }
+    public function components()
+    {
+        return $this->morphMany(Component::class, 'componentable');
     }
 }

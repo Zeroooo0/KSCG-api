@@ -39,8 +39,11 @@ class ResultsResource extends JsonResource
             'competition' => $this->compatition->name,
             'competitor' => [
                 'id' => $this->compatitor->id,
+                'kscgId' => $this->compatitor->kscg_compatitor_id,
                 'name' => $this->compatitor->name,
                 'lastName' => $this->compatitor->last_name,
+                'gender' => $this->compatitor->gender,
+                'genderStr' => $this->compatitor->gender == 1 ? 'M' : 'Ž',
             ],
             'category' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
             'position' => $medal,

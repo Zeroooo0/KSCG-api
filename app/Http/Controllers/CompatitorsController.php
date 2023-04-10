@@ -89,7 +89,7 @@ class CompatitorsController extends Controller
             'country' => $request->country,
             'status' => Auth::user()->user_type == 0 ? 0 : 1
         ]);
-        if($request->image != null) {
+        if($request->has('image')) {
             $path = Storage::putFile('compatitor-image', $request->image);
             $compatitor->image()->create([
                 'url' => $path

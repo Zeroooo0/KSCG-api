@@ -25,6 +25,7 @@ class StorePagesRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string'],
+            'slug' => ['required', 'string', 'not_regex:/([A-Z])| |\.|\/n/'],
             'content' => ['required','string'],
             'excerpt' => ['required','string'],
             'image' => ['required','image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480'],

@@ -34,6 +34,7 @@ class PostsResource extends JsonResource
         }
         return [
             'id' => (string)$this->id,
+            'slug' => $this->slug,
             'title' => $this->title,
             'content' => $this->content,
             'excerpt' => $this->excerpt,
@@ -42,7 +43,8 @@ class PostsResource extends JsonResource
             'updatedAt' => date($this->updated_at),
             'user' => $userData,
             'coverImage' => $cover_image,
-            'images' => $image
+            'images' => $image,
+            'components' => ComponentResource::collection($this->components)
         ];
     }
 }
