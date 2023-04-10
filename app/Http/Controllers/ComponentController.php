@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreComponentRequest;
+use App\Http\Requests\UpdateComponentRequest;
 use App\Http\Resources\ComponentResource;
 use App\Models\Component;
 use App\Models\Page;
@@ -21,8 +23,9 @@ class ComponentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storePageComponent(Request $request, Page $page)
+    public function storePageComponent(StoreComponentRequest $request, Page $page)
     {
+        $request->validated($request->all());
         $component = $page->components()->create([
             'type' => $request->type,
             'title' => $request->title,
@@ -33,8 +36,9 @@ class ComponentController extends Controller
     }
 
 
-    public function storePostComponent(Request $request, Post $news)
+    public function storePostComponent(StoreComponentRequest $request, Post $news)
     {
+        $request->validated($request->all());
         $component = $news->components()->create([
             'type' => $request->type,
             'title' => $request->title,
@@ -50,7 +54,7 @@ class ComponentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Component $component)
+    public function update(UpdateComponentRequest $request, Component $component)
     {
         $component->update($request->except('orderNumber'));
         !$request->has('orderNumber') ? null : $component->update(['order_number' => $request->orderNumber]);
