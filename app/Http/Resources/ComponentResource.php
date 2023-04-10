@@ -17,6 +17,7 @@ class ComponentResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'type' => $this->type,
             'orderNo' => $this->order_number,
             'documents' => $request->has('embed') && str_contains($request->embed, 'documents') ? DocumentsResource::collection($this->documents) : 'embeddable',
             'images' => $request->has('embed') && str_contains($request->embed, 'images') ? ImageResource::collection($this->images) : 'embeddable',
