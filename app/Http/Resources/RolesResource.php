@@ -19,6 +19,16 @@ class RolesResource extends JsonResource
     {
     
         $specialPersonal = SpecialPersonal::where('id', $this->special_personals_id)->first();
+        $storage_url = env('APP_URL') . 'api/file/';
+        if($specialPersonal->image != null) {
+            $path =  $storage_url . $specialPersonal->image->url;
+        } else {
+            if($specialPersonal->gender == 'M') {
+                $path = $storage_url . 'default/default-m-user.jpg';
+            } else{
+                $path = $storage_url . 'default/default-f-user.jpg';
+            }
+        }
         $role = 'Uprava';
         $val = 'clubName';
         if($this->role == 1) {
@@ -35,6 +45,7 @@ class RolesResource extends JsonResource
             'title' => $this->title,
             'role' => $role,
             'status' => (boolean)$specialPersonal->status,
+            'image' => $path,
             $val => $this->roleable->name,
             'registeredOn' => date('Y-m-d H:m:s', strtotime($this->roleable->created_at))
         ];
