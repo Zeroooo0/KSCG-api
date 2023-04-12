@@ -52,10 +52,10 @@ class SpecialPersonalsResource extends JsonResource
             $role = 'Trener';
         } 
         if($this->role == 0) {
-            $role = 'Uprava Kluba';
+            $role = 'Uprava';
         } 
         if($this->role == 3) {
-            $role = 'Uprava Kluba';
+            $role = 'Uprava';
         } 
 
         return [
