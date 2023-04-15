@@ -20,8 +20,9 @@ class PoolResource extends JsonResource
         $ekipno = $this->category->solo_or_team  ? null : ' | Ekipno';
         $compatitorOne = $this->registration_one != null ? Registration::where('id', $this->registration_one)->first()->compatitor : null;
         $compatitorTwo = $this->registration_two != null ? Registration::where('id', $this->registration_two)->first()->compatitor : null;
-        $compatitorOneClub = $this->registration_one != null ? Registration::where('id', $this->registration_one)->first()->club->short_name : null;
-        $compatitorTwoClub = $this->registration_two != null ? Registration::where('id', $this->registration_two)->first()->club->short_name : null;
+    
+        $compatitorOneClub = $this->registration_one != null && Registration::where('id', $this->registration_one)->first()->club != null ? Registration::where('id', $this->registration_one)->first()->club->short_name : null;
+        $compatitorTwoClub = $this->registration_two != null && Registration::where('id', $this->registration_two)->first()->club != null ? Registration::where('id', $this->registration_two)->first()->club->short_name : null;
         if($ekipno == null) {
             $one = [
                 'registrationId' => $this->registration_one,

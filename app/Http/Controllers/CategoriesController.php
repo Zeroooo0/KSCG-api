@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Filters\CategoriesFilter;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Resources\CategoriesForTimeTableResource;
 use App\Http\Resources\CategoriesResource;
 use App\Models\Category;
+use App\Models\Compatition;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -125,5 +127,12 @@ class CategoriesController extends Controller
         return $this->success('', 'Kategorija je uspjesno obrisana!');
 
 
+    }
+
+    public function catForTimeTable(Compatition $competition,Request $request)
+    {
+
+
+        return CategoriesForTimeTableResource::collection($competition->categories);
     }
 }

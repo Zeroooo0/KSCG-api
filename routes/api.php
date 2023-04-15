@@ -78,6 +78,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
 
     //Categories
     Route::resource('/categories', CategoriesController::class);
+    Route::get('/categories-for-time-table/{competition}', [CategoriesController::class, 'catForTimeTable']);
     //Belts
     Route::post('/belts-bulk-store', [ReusableDataController::class, 'bulkStoreBelts']);
     Route::post('/belts-store', [ReusableDataController::class, 'bulkStore']);

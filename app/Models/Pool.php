@@ -15,7 +15,10 @@ class Pool extends Model
         'pool',
         'group',
         'registration_one',
-        'registration_two'
+        'registration_two',
+        'winner_id',
+        'looser_id',
+        'start_time'
     ];
 
     public function compatition()
