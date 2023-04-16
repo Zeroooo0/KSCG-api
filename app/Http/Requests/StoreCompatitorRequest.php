@@ -30,10 +30,10 @@ class StoreCompatitorRequest extends FormRequest
             'country' => ['required', 'string', 'max:255'],
             'lastName' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'integer', 'max:3'], Rule::in([1, 2]),
-            'jmbg' => ['required', 'integer'],
+            'jmbg' => ['required', 'numeric'],
             'belt' => ['required', 'integer'],
             'dateOfBirth' => ['required', 'date'],
-            'weight' => ['required', 'decimal:2'],
+            'weight' => ['required', 'numeric'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif.png', 'max:2048'],
             'clubId' => ['integer'],
             'status' => ['boolean']

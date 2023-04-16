@@ -118,19 +118,20 @@ class PoolsController extends Controller
         }
         //END category change
 
-       
+        /*
         if($pools->where('compatition_id', $request->compatitionId)->count() > 0) {
             return $this->error('', 'Žrijebanje je već odrađeno za ovo takmičenje', 403);
         }
         if($timeTable->count() == 0) {
             return $this->error('', 'Potrebno je prvo da se odredi Time Table', 422);
         }
-
+        */
         /** Here we start rebuilding */
         //return $nn_team_cat;
         foreach($nn_team_cat as $key => $val) {
             $category_id =  $val[0][0]->category_id;
-            $category_timeStart = $timeTable->where('category_id', $category_id)->first()->eto_start;
+            //$category_timeStart = $timeTable->where('category_id', $category_id)->first()->eto_start;
+            return $timeTable->where('category_id', $category_id);
             $category = Category::where('id', $category_id)->first();
             $category_match_lenght = $category->mathc_lenght;
             $catSpec = $this->categoryDuration($compatition, $category);
@@ -159,8 +160,8 @@ class PoolsController extends Controller
             $category = Category::where('id', $category_id)->first();
             $category_match_lenght = $category->mathc_lenght;
             $catSpec = $this->categoryDuration($compatition, $category);
-            $count = $catSpec['categoryGroupsBack'];
-            $pool = $catSpec['categoryPoolsBack'];
+            $count = $catSpec['categoryGroupsFront'];
+            $pool = $catSpec['categoryPoolsFront'];
             
             $cat_ids = $val->groupBy('club_id')->sortDesc();
             $sorted_cats = [];
@@ -168,24 +169,62 @@ class PoolsController extends Controller
                 $sorted_cats[] = $key;
             }
             $cleaned = Arr::collapse($sorted_cats);
-            for($j = 0; $j <= $pool; $j++) {
+            for($j = 1; $j <= $pool; $j++) {
                 $counting = $count;
-                for($i = 0; $i <= $count; $i++) {
+                switch($j) {
+                    case $j == 1:
+                        $counting = $count;
+                        $groupsStart = 0;
+                        break;
+                    case $j == 2:
+                        $counting = $count / 2;
+                        $groupsStart = $count;
+                        break;
+                    case $j == 3:
+                        $counting = $count / 4;
+                        $groupsStart = $count + ($count / 2);
+                        break;
+                    case $j == 4:
+                        $counting = $count / 8;
+                        $groupsStart = $count + ($count / 2) + ($count / 4);
+                        break;
+                    case $j == 5:
+                        $counting = $count / 16;
+                        $groupsStart = $count + ($count / 2) + ($count / 4) + ($count / 8);
+                        break;
+                    case $j == 6:
+                        $counting = $count  / 32;
+                        break;
+                }
+                switch($counting) {
+                    case $counting >= 4:
+                        $groupType = 'G';
+                        break;
+                    case $counting = 2:
+                        $groupType = 'SF';
+                        break;
+                    case $counting = 1:
+                        $groupType = 'FM';
+                        break;
+                }
+                for($i = 1; $i <= $counting; $i++) {
                     $first = 0 + $i;
                     $second = ($count * 2 + 1) - $i;
                     $input['compatition_id'] = Arr::get($cleaned, '0.compatition_id');
                     $input['category_id'] = Arr::get($cleaned, '0.category_id');
                     $input['pool'] = $pool;
-                    $input['pool_type'] = 'G';
-                    $input['group'] =  $j * $i;
-                    $inputTeam['start_time'] = $i == 0 ? $category_timeStart : $category_timeStart + $i * $category_match_lenght;
+                    $input['pool_type'] = $groupType == 'G' ? $groupType . " $j": $groupType;
+                    $input['group'] =  $i;
+                    $inputTeam['start_time'] = $i == 1 ? $category_timeStart : $category_timeStart + $i * $category_match_lenght;
                     $input['status'] = false;
-                    $input['registration_one'] = Arr::get($cleaned, $first . '.id');
-                    $input['registration_two'] = Arr::get($cleaned, $second .  '.id');
+                    $input['registration_one'] = $j == 1 ? Arr::get($cleaned, $first . '.id') : null;
+                    $input['registration_two'] = $j == 1 ? Arr::get($cleaned, $second .  '.id') : null;
+                    
                     $singleArr[] = $input;
                     
                 }
             }
+            return $singleArr;
          
         }
         PoolTeam::insert($teamArr);
