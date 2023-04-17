@@ -40,10 +40,12 @@ class SpecialPersonalsController extends Controller
               
             }
             //return response($spec_personal);
-            return SpecialPersonalsResource::collection($specialPersonal->whereIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->paginate($per_page));
+            $specPerson = $specialPersonal->whereIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search);
+            return SpecialPersonalsResource::collection($per_page == 0 ? $specPerson->get() : $specPerson->paginate($per_page));
     
         }
-        return SpecialPersonalsResource::collection($specialPersonal->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->paginate($per_page));
+        $specPerson = $specialPersonal->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search);
+        return SpecialPersonalsResource::collection($per_page == 0 ? $specPerson->get() : $specPerson->paginate($per_page));
     }
 
     /**
