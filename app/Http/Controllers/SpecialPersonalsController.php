@@ -33,7 +33,7 @@ class SpecialPersonalsController extends Controller
         $specialPersonal = SpecialPersonal::orderBy($sort, $sortDirection);
         
         $search = '%'. $request->search . '%';
-        if($request->has('avalableRoles') && $request->avalableRoles == true) {
+        if($request->has('avalableRoles') && $request->avalableRoles == 1) {
             $club_personal_taken = Roles::where('roleable_type', 'App\Models\Club');
             $spec_personal = [];
             foreach($club_personal_taken as $id) {
@@ -47,8 +47,7 @@ class SpecialPersonalsController extends Controller
             foreach($club_personal as $id) {
                 $spec_personal[] = $id->special_personals_id;
             }
-            //return response($spec_personal);
-            $coachRequest = $request->role['eq'] == 2;
+
             $specPerson = $specialPersonal->whereIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search);
             return SpecialPersonalsResource::collection($per_page == 0 ? $specPerson->get() : $specPerson->paginate($per_page));
     
@@ -85,10 +84,10 @@ class SpecialPersonalsController extends Controller
         
         if($request->has(['clubId', 'title'])) {
             $club = Club::where('id', $request->clubId)->first();
-      
+            $title = 'Trener' ;
             $club->roles()->create([
                 'special_personals_id' => $special_personal->id,
-                'title' => $request->title,
+                'title' => $title,
                 'role' => $role
             ]);
 
