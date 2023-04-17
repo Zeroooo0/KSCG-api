@@ -62,6 +62,7 @@ class SpecialPersonalsResource extends JsonResource
             'id' => (string)$this->id,
             'name' => $this->name,
             'lastName' => $this->last_name,
+            'nameCombine' => $this->name . ' ' . $this->last_name,
             'country' => $this->country,
             'email' => $this->email,
             'phone' => $this->phone_number,
