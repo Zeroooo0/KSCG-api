@@ -26,7 +26,7 @@ class StoreClubAdministration extends FormRequest
         return [
             'specialPersonalId' => ['required', 'integer'],
             'clubId' => ['required', 'integer'],
-            'title' => ['required', 'string']
+            'title' => ['string']
         ];
     }
 }

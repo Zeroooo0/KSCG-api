@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSpecialPersonalRequest;
 use App\Http\Requests\UpdateSpecialPersonalRequest;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Club;
+use App\Models\Roles;
 use App\Models\SpecialPersonal;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -32,14 +33,22 @@ class SpecialPersonalsController extends Controller
         $specialPersonal = SpecialPersonal::orderBy($sort, $sortDirection);
         
         $search = '%'. $request->search . '%';
+        if($request->role['eq'] == 2) {
+            $club_personal_taken = Roles::all();
+            $spec_personal = [];
+            foreach($club_personal_taken as $id) {
+                $spec_personal[] = $id->special_personals_id;
+            }
+            return $specialPersonal->whereNotIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->get();
+        }
         if(Auth::user()->user_type == 0){
             $club_personal = Club::where('id', Auth::user()->club->id)->first()->roles;
             $spec_personal = [];
             foreach($club_personal as $id) {
                 $spec_personal[] = $id->special_personals_id;
-              
             }
             //return response($spec_personal);
+            $coachRequest = $request->role['eq'] == 2;
             $specPerson = $specialPersonal->whereIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search);
             return SpecialPersonalsResource::collection($per_page == 0 ? $specPerson->get() : $specPerson->paginate($per_page));
     

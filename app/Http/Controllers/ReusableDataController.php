@@ -96,9 +96,10 @@ class ReusableDataController extends Controller
                 return $this->error('', 'Trener je već angažovan u KK ' . $roleInClub, 406);
             }
         } else {
+            $role = $spec_personal->role == 2 ? 'Trener' : $request->title;
             $club->roles()->create([
                 'special_personals_id' => $request->specialPersonalId,
-                'title' => $request->title,
+                'title' => $role,
                 'role' => $spec_personal->role
             ]);
             return new ClubsResource($club);
