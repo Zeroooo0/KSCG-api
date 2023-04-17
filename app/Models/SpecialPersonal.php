@@ -18,6 +18,8 @@ class SpecialPersonal extends Model
         'role',
         'country',
         'gender',
+        'clubId',
+        'title'
     ];
     
 

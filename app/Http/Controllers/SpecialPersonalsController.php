@@ -55,13 +55,11 @@ class SpecialPersonalsController extends Controller
     public function store(StoreSpecialPersonalRequest $request)
     {
         $request->validated($request->all());
+
         if(Auth::user()->user_type == 0) {
             $role = 0; 
         } else{
-            if($request->role == null){
-                $role = 0; 
-            }
-            $role = $request->role;
+            $role = $request->has('role') ? $role = $request->role : $role = 0;
         }
 
         $special_personal = SpecialPersonal::create([
@@ -73,6 +71,18 @@ class SpecialPersonalsController extends Controller
             'role' => $role,
             'gender' => $request->gender,
         ]);
+        
+        if($request->has(['clubId', 'title'])) {
+            $club = Club::where('id', $request->clubId)->first();
+      
+            $club->roles()->create([
+                'special_personals_id' => $special_personal->id,
+                'title' => $request->title,
+                'role' => $role
+            ]);
+
+        }
+
         if($request->image != null){
             $path = Storage::putFile('special-personal-image', $request->image);
             $special_personal->image()->create([
