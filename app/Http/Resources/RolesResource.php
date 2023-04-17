@@ -41,6 +41,7 @@ class RolesResource extends JsonResource
         
         return [
             'id' => (string)$this->id,
+            'specialPersonalId' => (string)$specialPersonal->id,
             'name' => $specialPersonal->name . ' ' . $specialPersonal->last_name,
             'title' => $this->title,
             'role' => $role,
