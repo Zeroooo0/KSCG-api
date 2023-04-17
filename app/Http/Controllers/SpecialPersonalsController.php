@@ -33,7 +33,7 @@ class SpecialPersonalsController extends Controller
         $specialPersonal = SpecialPersonal::orderBy($sort, $sortDirection);
         
         $search = '%'. $request->search . '%';
-        if($request->has('availableRoles') && $request->avalableRoles == 1) {
+        if($request->has('availableRoles') && $request->availableRoles == true) {
             $club_personal_taken = Roles::where('roleable_type', 'App\Models\Club');
             $spec_personal = [];
             foreach($club_personal_taken as $id) {
