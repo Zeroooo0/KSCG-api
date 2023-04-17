@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\TeamsResource;
+use App\Http\Resources\TeamsRegistrationsResource;
+
+
 use App\Models\Team;
 use Illuminate\Http\Request;
 
@@ -16,7 +18,7 @@ class TeamsController extends Controller
     public function index(Request $request)
     {
 
-        return TeamsResource::collection(Team::all());
+        return TeamsRegistrationsResource::collection(Team::all());
     }
 
     /**
@@ -31,7 +33,7 @@ class TeamsController extends Controller
             'compatition_id' => $request->competitionId,
             'name' => $request->name
         ]);
-        return new TeamsResource($team);
+        return new TeamsRegistrationsResource($team);
     }
 
     /**
@@ -42,7 +44,7 @@ class TeamsController extends Controller
      */
     public function show(Team $team)
     {
-        return TeamsResource::collection($team);
+        return TeamsRegistrationsResource::collection($team);
     }
 
     /**

@@ -28,7 +28,7 @@ class PostsController extends Controller
         $filter = new PostsFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $news = Post::orderBy($sort, $sortDirection);
         $per_page = $request->perPage;
 
@@ -42,7 +42,7 @@ class PostsController extends Controller
         $filter = new PostsFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $news = Post::orderBy($sort, $sortDirection);
         $per_page = $request->perPage;
 

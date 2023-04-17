@@ -12,6 +12,7 @@ use App\Models\Compatition;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CategoriesController extends Controller
 {
@@ -27,10 +28,11 @@ class CategoriesController extends Controller
         $filter = new CategoriesFilter();
         $queryItems = $filter->transform($request);
         $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $paginate = $request->perPage;
         $category = Category::orderBy($sort, $sortDirection);
-        return CategoriesResource::collection($category->where($queryItems)->paginate($paginate));
+        $search = '%'. $request->search . '%';
+        return CategoriesResource::collection($category->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name)'), 'like', $search)->paginate($paginate));
     }
 
     /**
@@ -120,13 +122,12 @@ class CategoriesController extends Controller
      */
     public function destroy(Category $category)
     {
-        if($category->compatitions != null ? $category->compatitions->count() : 0 > 0) {
+    
+        if($category->compatitions->count() > 0) {
             return $this->error('', 'Deaktivirajte kategorije koje više ne koristite!', 403);
         }
         $category->delete();
         return $this->success('', 'Kategorija je uspjesno obrisana!');
-
-
     }
 
     public function catForTimeTable(Compatition $competition,Request $request)

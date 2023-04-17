@@ -12,10 +12,15 @@ class PoolTeam extends Model
     protected $fillable = [
         'compatition_id',
         'category_id',
+        'pool_type',
         'pool',
         'group',
         'team_one',
-        'team_two'
+        'team_two',
+        'winner_id',
+        'looser_id',
+        'status',
+        'start_time'
     ];
 
     public function compatition()

@@ -24,6 +24,7 @@ class CategoriesResource extends JsonResource
         foreach ($this->belts as $belt) {
             $belts[] = $belt->id;
         }
+
         return [
             'id' => (string)$this->id,
             'combinedName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->name . ' ' . $this->category_name  . $ekipno,
@@ -40,7 +41,7 @@ class CategoriesResource extends JsonResource
             'lenghtOfMatch' => $this->match_lenght,
             'status' => (boolean)$this->status,
             'belts' => $belts,
-            'duration' => is_object($request->competition) ? $this->countRegInCatOnCompa($request->competition, $this) : null,
+            
         ];
     }
 }

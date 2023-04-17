@@ -148,7 +148,7 @@ class ClubsController extends Controller
         }
         $club->update($request->except(['shortName', 'phoneNumber', 'userId']));
 
-        $request->has('shortName') ? $club->update(['short_name' => $request->shortName]) : null;
+        $request->has('shortName')  ? $club->update(['short_name' => $request->shortName]) : null;
         $request->has('phoneNumber') ? $club->update(['phone_number' => $request->phoneNumber]) : null;
         if ($request->has('userId')) {
             if(Auth::user()->user_type != 0) {

@@ -57,10 +57,11 @@ class TimeTablesController extends Controller
         $start_time = $compatition->start_time_date;
         $pairs = $compatition->registrations;
         $category = $compatition->categories;
-        $reg_by_categories = $pairs->countBy('category_id');
-        $incomin_data = collect($request->all())->except('competitionId')->values();
+        $reg_singles = $pairs->where('team_or_single', 1);
+        $reg_team = $pairs->where('team_or_single', 0);
+        $incomin_data = collect($request->all())->except('competitionId')->values()->sortBy('orderNo');
         $timeTableData = $compatition->timeTable;
-        
+
         if($incomin_data->where('tatamiNo', '>', $number_of_tatami)->count() > 0 || $incomin_data->where('tatamiNo', '<=', 0)->count() > 0) {
             return $this->error('', "Tatami pocinje sa indexom 1 i može maksimalno da sadrži $number_of_tatami!", 404);
         }
@@ -78,32 +79,41 @@ class TimeTablesController extends Controller
             }
             $finishedTimeStore = $start_time;
             foreach($tatmiIncomingData as $data) {
+                
+                $teamOrSingle = $pairs->where('category_id', $data['categoryId'])->first()->team_or_single;
+
+                $teamCount =  $reg_team->where('category_id', $data['categoryId'])->groupBy('team_id')->count();
+                $singleCount = $reg_singles->where('category_id', $data['categoryId'])->count();
+                $registrations = $teamOrSingle == 0 ? $teamCount : $singleCount;
       
-                $registrations = $reg_by_categories[$data['categoryId']] ?? 0;
                 $timePerCategory = $category->where('id', $data['categoryId'])->first()->match_lenght ?? 0;
                 $repesaz = $category->where('id', $data['categoryId'])->first()->repesaz == true ? 2 * $timePerCategory : 0;
                 $totalTimePerCat = 0;
                 
                 switch($registrations) {
-                    case $registrations < 2:
-                        $totalTimePerCat = $registrations / 2 * $timePerCategory;
+                    case $registrations == 0:
                         break;
-                    case $registrations < 4:
-                        $totalTimePerCat = $registrations / 2 * $timePerCategory + $timePerCategory + $repesaz;
+                    case $registrations <= 2:
+                        $totalTimePerCat = ($registrations - ( 2 - $registrations)) / 2 * $timePerCategory;
                         break;
-                    case $registrations < 8:
-                        $totalTimePerCat = $registrations / 2 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 2 * $repesaz;
+                    case $registrations <= 4:
+                        $totalTimePerCat = ($registrations - ( 4 - $registrations)) / 2 * $timePerCategory + $timePerCategory + $repesaz;
                         break;
-                    case $registrations < 16:
-                        $totalTimePerCat = $registrations / 2 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 3 * $repesaz;
+                    case $registrations <= 8:
+                        $totalTimePerCat = ($registrations - ( 8 - $registrations)) / 2 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 2 * $repesaz;
                         break;
-                    case $registrations < 32:
-                        $totalTimePerCat = $registrations / 2 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 4 * $repesaz;
+                    case $registrations <= 16:
+                        $totalTimePerCat = ($registrations - ( 16 - $registrations)) / 2 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 3 * $repesaz;
                         break;
-                    case $registrations < 64:
-                        $totalTimePerCat = $registrations / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
+                    case $registrations <= 32:
+                        $totalTimePerCat = ($registrations - ( 32 - $registrations)) / 2 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 4 * $repesaz;
                         break;
+                    case $registrations <= 64:
+                        $totalTimePerCat = ($registrations - ( 64 - $registrations)) / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
+                        break;
+                        
                 }
+            
 
                 $input['compatition_id'] = collect($request->all())->values()->first()['competitionId'];
                 $input['category_id'] = $data['categoryId'];
@@ -119,7 +129,7 @@ class TimeTablesController extends Controller
             }
         }
 
-        if($timeTableData->count() > 1) {
+        if($timeTableData->count() >= 1) {
             if($timeTableData->where('status', '!=', 0)->count() > 0) {
                 return $this->error('', 'Takmičenje je već započelo!', 403);
             }

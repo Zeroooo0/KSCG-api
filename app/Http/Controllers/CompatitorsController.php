@@ -29,7 +29,7 @@ class CompatitorsController extends Controller
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
         $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $compatitior = Compatitor::orderBy($sort, $sortDirection);
 
         $search = '%'. $request->search . '%';
@@ -45,7 +45,7 @@ class CompatitorsController extends Controller
         $filter = new CompatitorsFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $compatitior = Compatitor::orderBy($sort, $sortDirection);
 
         $search = '%'. $request->search . '%';

@@ -75,7 +75,7 @@ class CompatitionsController extends Controller
         $per_page = $request->perPage;
 
         $categories = $competition->categories;
-
+  
         return CategoriesResource::collection((new Collection($categories))->paginate($per_page));
     }
 
@@ -198,15 +198,16 @@ class CompatitionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Compatition $competition)
+    public function destroy(Compatition $competition, Request $request)
     {
 
-        if($competition->registrations()->count() > 0){
-            return $this->error('', 'Ovo takmičenje već ima registracije pa nije moguće obrisati!', 403);
+        if($competition->registrations()->count() > 0 || $request->forceDelete == true){
+            return $this->error('', 'Ovo takmičenje već ima registracije pa nije moguće obrisati ili pošaljite parametar [forceDelete=true]!', 403);
         }
         $competition->roles()->delete();
         $competition->image()->delete();
         $competition->document()->delete();
+        $competition->registrations()->delete();
         $competition->delete();
         return $this->success('', 'Uspješno obrisano takmičenje.');
     }

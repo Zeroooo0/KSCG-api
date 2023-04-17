@@ -18,10 +18,14 @@ return new class extends Migration
             $table->foreignId('compatition_id')->references('id')->on('compatitions')->onDelete('cascade');
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('cascade');
             //Calculated by back end, depends on number of compatitors min 4 compatitors max 64
-            $table->string('pool_type');//['P', 'R', 'G', 'S', 'B', 'p', 'r', 'g', 's', 'b'] P=pool, R=repesaz G=gold S=silver B=bronze
+            $table->string('pool_type');//['FM', 'SF', 'G', 'RG', 'G3', 'G4', 'G5', 'g', 's', 'b']
             $table->tinyInteger('pool');
             $table->integer('group');
-            $table->boolean('status')->default(false);
+            //0=SCHEDULED 1=active 2=finished
+            $table->boolean('status')->default(0);
+            $table->time('start_time');
+            $table->bigInteger('winner_id')->nullable()->references('id')->on('teams')->nullOnDelete();
+            $table->bigInteger('looser_id')->nullable()->references('id')->on('teams')->nullOnDelete();
             $table->foreignId('team_one')->nullable()->references('id')->on('teams')->nullOnDelete();
             $table->foreignId('team_two')->nullable()->references('id')->on('teams')->nullOnDelete();
         });
