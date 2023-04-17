@@ -113,8 +113,8 @@ class ReusableDataController extends Controller
         foreach($clubRolles as $data){
             $clubsRollesIds[] = $data->special_personals_id;
         }
-        
-        return RolesResource::collection(Roles::whereIn('id', $clubsRollesIds)->paginate($request->perPage));
+        //return $clubsRollesIds;
+        return RolesResource::collection(Roles::whereIn('special_personals_id', $clubsRollesIds)->get());
     }
 
 

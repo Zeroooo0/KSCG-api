@@ -39,7 +39,7 @@ class SpecialPersonalsController extends Controller
             foreach($club_personal_taken as $id) {
                 $spec_personal[] = $id->special_personals_id;
             }
-            return SpecialPersonalsResource::collection($specialPersonal->whereNotIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->get());
+            return SpecialPersonalsResource::collection($specialPersonal->whereNotIn('special_personals_id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->get());
         }
         if(Auth::user()->user_type == 0){
             $club_personal = Club::where('id', Auth::user()->club->id)->first()->roles;
