@@ -37,6 +37,7 @@ class UsersResource extends JsonResource
             'id' => (string)$this->id,
             'name' => $this->name,
             'lastName' => $this->last_name,
+            'combinedName' => $this->name . ' ' . $this->last_name,
             'email' => $this->email,
             'status' => (boolean)$this->status,
             'userType' =>  $userType,
