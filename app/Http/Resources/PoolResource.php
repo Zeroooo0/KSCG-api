@@ -15,8 +15,6 @@ class PoolResource extends JsonResource
      */
     public function toArray($request)
     {
-        $kata_or_kumite = $this->category->kata_or_kumite ? 'Kate' : 'Kumite';
-        $gender = $this->category->gender == 1 ? 'M' : ($this->gender == 2 ? 'Ž' : 'M + Ž');
         $ekipno = $this->category->solo_or_team  ? null : ' | Ekipno';
         $compatitorOne = $this->registration_one != null ? Registration::where('id', $this->registration_one)->first()->compatitor : null;
         $compatitorTwo = $this->registration_two != null ? Registration::where('id', $this->registration_two)->first()->compatitor : null;
@@ -39,12 +37,12 @@ class PoolResource extends JsonResource
 
         return [
             'id' => (string)$this->id,
-            'compatition' => $this->compatition->name,
-            'category' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
             'poolType' => $this->pool_type,
             'poolNo' => $this->pool,
             'groupNo' => $this->group,
-            'status' => $this->status,
+            'winnerId' => $this->winner_id,
+            'looserId' => $this->winner_id,
+            'startTime' => $this->start_time,
             'competitorOne' => $one,
             'competitorTwo' => $two
         ];

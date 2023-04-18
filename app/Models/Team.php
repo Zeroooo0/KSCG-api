@@ -21,4 +21,8 @@ class Team extends Model
     {
         return $this->hasMany(Registration::class);
     }
+    public function poolsTeams()
+    {
+        return $this->hasMany(PoolTeam::class);
+    }
 }

@@ -120,7 +120,7 @@ class RegistrationsController extends Controller
             $some_count = $existing_data_counter->last() == null ? 0 : $existing_data_counter->count();
 
             if($some_count + $incoming_data_counter->count() > 2) {
-                return $this->error('','Takmičar ' . Compatitor::where('id', $data['competitorId'])->first()->name . ' ' . Compatitor::where('id', $data['competitorId'])->first()->last_name . ' ovom prijavom krši takmičarski pravilnik za prijave!', 403);
+                return $this->error('','Takmičar ' . Compatitor::where('id', $data['competitorId'])->first()->name . ' ' . Compatitor::where('id', $data['competitorId'])->first()->last_name . ' ' . Compatitor::where('id', $data['competitorId'])->first()->id . ' ovom prijavom krši takmičarski pravilnik za prijave!', 403);
             }
             if($incoming_category_count->count() > 1) {
                 return $this->error('', 'Takmičar ' . Compatitor::where('id', $incoming_category_count->first()['compatitor_id'])->first()->name . ' ' . Compatitor::where('id', $incoming_category_count->first()['compatitor_id'])->first()->last_name . ' pokusavate da ubacite u istu kategoriju!', 403);
@@ -146,6 +146,7 @@ class RegistrationsController extends Controller
             Registration::insert($finish_arr);
             return $this->success($finish_arr, 'Uspješna registracija takmičara!');
         }
+        return $this->error($exit_obj, 'poslati su podaci nepostojećih takmičara ili', 402);
 
     }
 

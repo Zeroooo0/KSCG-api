@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TeamResource;
 use App\Http\Resources\TeamsRegistrationsResource;
 
 
@@ -18,7 +19,7 @@ class TeamsController extends Controller
     public function index(Request $request)
     {
 
-        return TeamsRegistrationsResource::collection(Team::all());
+        return TeamResource::collection(Team::all());
     }
 
     /**

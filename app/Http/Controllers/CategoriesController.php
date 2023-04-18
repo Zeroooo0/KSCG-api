@@ -133,7 +133,7 @@ class CategoriesController extends Controller
     public function catForTimeTable(Compatition $competition,Request $request)
     {
 
-
+    
         return CategoriesForTimeTableResource::collection($competition->categories);
     }
 }
