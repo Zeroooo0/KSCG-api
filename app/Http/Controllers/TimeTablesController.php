@@ -126,9 +126,9 @@ class TimeTablesController extends Controller
         TimeTable::insert($timeTable);
         return $this->success($timeTable);
     }
-    public function show(TimeTable $timeTable) 
+    public function show(TimeTable $time_table) 
     {
-        return new TimeTableResource($timeTable);
+        return new TimeTableResource($time_table);
     }
 
     public function updateTime(Request $request, TimeTable $time_table) 
