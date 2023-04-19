@@ -21,7 +21,7 @@ class TimeTableResource extends JsonResource
      */
     public function toArray($request)
     {
-        $competition = Compatition::where('id', $this->compatition_id)->first();
+        
         $category = Category::where('id', $this->category_id)->first();
         $kata_or_kumite = $category->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $category->gender == 1 ? 'M' : ($category->gender == 2 ? 'Ž' : 'M + Ž');
@@ -29,6 +29,10 @@ class TimeTableResource extends JsonResource
         $pool = $category->solo_or_team == 1 ? Pool::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->get() : PoolTeam::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->get();
         $pools = PoolResource::collection($pool);
         $poolsTeam = PoolsTeamResource::collection($pool);
+        $data = 'embeddable';
+        if(str_contains($request->embed, 'groups')) {
+            $data = $ekipno == null  ? $pools : $poolsTeam;
+        }
 
         return [
             'id' => $this->id,
@@ -42,7 +46,7 @@ class TimeTableResource extends JsonResource
             'startedAt' => $this->started_time != null ? date('H:m', strtotime($this->started_time)) : null,
             'finishedAt' => $this->finish_time != null ? date('H:m', strtotime($this->finish_time)) : null,
             'status' => $this->status,
-            'groups' => $ekipno == null  ? $pools : $poolsTeam     
+            'groups' => $data  
 
         ];
     }

@@ -19,25 +19,13 @@ class TimeTablesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, Compatition $competition)
     {
 
         //$filter = new SpecialPersonalsFilter();
         //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $per_page = $request->perPage;
-        $timeTable = TimeTable::orderBy('tatami_no', 'asc')->orderBy('order_no', 'asc')->where('compatition_id', $request->competitionId);
-        
-
-
-        return TimeTableResource::collection($timeTable->paginate($per_page));
-    }
-    public function public(Request $request)
-    {
-
-        //$filter = new SpecialPersonalsFilter();
-        //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $per_page = $request->perPage;
-        $timeTable = TimeTable::where('compatition_id', $request->competitionId)->orderBy('tatami_no', 'asc')->orderBy('order_no', 'asc');
+        $timeTable = TimeTable::orderBy('tatami_no', 'asc')->orderBy('order_no', 'asc')->where('compatition_id', $competition->id);
         
 
 
@@ -138,7 +126,10 @@ class TimeTablesController extends Controller
         TimeTable::insert($timeTable);
         return $this->success($timeTable);
     }
-
+    public function show(TimeTable $timeTable) 
+    {
+        return new TimeTableResource($timeTable);
+    }
 
     public function updateTime(Request $request, TimeTable $time_table) 
     {
