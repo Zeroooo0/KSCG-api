@@ -154,7 +154,7 @@ class ReusableDataController extends Controller
     public function clubsResults(Request $request, Club $club)
     {
         $perPage = $request->per_page;
-        return ResultsResource::collection($club->registrations);
+        return ResultsResource::collection(Registration::where('club_id', $club->id)->paginate($perPage));
     }
     public function registeredClubs(Request $request) 
     {
