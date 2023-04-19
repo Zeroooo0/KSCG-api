@@ -18,6 +18,7 @@ class TimeTableResource extends JsonResource
      */
     public function toArray($request)
     {
+        /*
         $category = Category::where('id', $this->category_id)->first();
         //$kata_or_kumite = $category->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $category->gender == 1 ? 'M' : ($category->gender == 2 ? 'Ž' : 'M + Ž');
@@ -28,8 +29,11 @@ class TimeTableResource extends JsonResource
         $data = 'embeddable';
         if(str_contains($request->embed, 'groups')) {
             $data = $ekipno == null  ? $pools : $poolsTeam;
-        }
-
+        }*/
+        return [
+            'categoryId' => $this->category_id
+        ]
+        /*
         return [
             'id' => $this->id,
             'tatami' => 'Tatami ' . $this->tatami_no,
@@ -44,6 +48,6 @@ class TimeTableResource extends JsonResource
             'status' => $this->status,
             'groups' => $data  
 
-        ];
+        ];*/
     }
 }
