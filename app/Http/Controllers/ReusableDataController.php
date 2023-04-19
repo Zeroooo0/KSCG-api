@@ -151,10 +151,10 @@ class ReusableDataController extends Controller
         $roles->delete();
         return $this->success('', 'Uloga je obrisana!');
     }
-    public function clubsResults(Request $request,Club $club)
+    public function clubsResults(Request $request, Club $club)
     {
         $perPage = $request->per_page;
-        return ResultsResource::collection(Registration::where('club_id', $club->id)->paginate($perPage));
+        return ResultsResource::collection($club->registrations);
     }
     public function registeredClubs(Request $request) 
     {
