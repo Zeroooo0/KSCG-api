@@ -3,11 +3,8 @@
 namespace App\Http\Resources;
 
 use App\Models\Category;
-use App\Models\Compatition;
 use App\Models\Pool;
 use App\Models\PoolTeam;
-use App\Models\TimeTable;
-use App\Traits\LenghtOfCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TimeTableResource extends JsonResource
