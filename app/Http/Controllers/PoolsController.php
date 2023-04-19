@@ -10,6 +10,7 @@ use App\Models\Pool;
 use App\Models\PoolTeam;
 use App\Models\Registration;
 use App\Models\Team;
+use App\Models\TimeTable;
 use App\Traits\HttpResponses;
 use App\Traits\LenghtOfCategory;
 use Illuminate\Http\Request;
@@ -362,7 +363,8 @@ class PoolsController extends Controller
             }
         } 
         if($poolTeam->pool_type == 'FM' && $category->repesaz == 1) {
-            //
+            $timeTable = TimeTable::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id)->first();
+            
         }
         return new PoolsTeamResource($poolTeam);
     }
