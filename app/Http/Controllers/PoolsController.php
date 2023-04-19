@@ -184,7 +184,7 @@ class PoolsController extends Controller
                     $inputTeam['compatition_id'] = Arr::get($val, '0.0.compatition_id');
                     $inputTeam['category_id'] = Arr::get($val, '0.0.category_id');
                     $inputTeam['pool'] = $j;
-                    $inputTeam['pool_type'] = $groupType == 'G' ? $groupType . " $j": $groupType;
+                    $inputTeam['pool_type'] = $groupType;
                     $inputTeam['group'] = $i + 1;
                     $inputTeam['start_time'] = $timeTracking;
                     $inputTeam['status'] = 0;
@@ -264,7 +264,7 @@ class PoolsController extends Controller
                     $input['compatition_id'] = Arr::get($cleaned, '0.compatition_id');
                     $input['category_id'] = Arr::get($cleaned, '0.category_id');
                     $input['pool'] = $j;
-                    $input['pool_type'] = $groupType == 'G' ? $groupType . " $j": $groupType;
+                    $input['pool_type'] = $groupType;
                     $input['group'] =  $i + 1;
                     
                     $input['status'] = 0;

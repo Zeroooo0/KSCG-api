@@ -23,7 +23,7 @@ return new class extends Migration
             $table->tinyInteger('pool');
             $table->integer('group');
             //0=SCHEDULED 1=active 2=finished
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('state')->default(0);
             $table->time('start_time');
             $table->bigInteger('winner_id')->nullable()->references('id')->on('registrations')->nullOnDelete();
             $table->bigInteger('looser_id')->nullable()->references('id')->on('registrations')->nullOnDelete();

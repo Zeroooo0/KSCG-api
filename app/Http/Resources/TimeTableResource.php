@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use App\Models\Category;
 use App\Models\Compatition;
 use App\Models\Pool;
+use App\Models\PoolTeam;
+use App\Models\TimeTable;
 use App\Traits\LenghtOfCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,26 +26,23 @@ class TimeTableResource extends JsonResource
         $kata_or_kumite = $category->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $category->gender == 1 ? 'M' : ($category->gender == 2 ? 'Ž' : 'M + Ž');
         $ekipno = $category->solo_or_team  ? null : ' | Ekipno';
-        
+        $pool = $category->solo_or_team == 1 ? Pool::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->get() : PoolTeam::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->get();
+        $pools = PoolResource::collection($pool);
+        $poolsTeam = PoolsTeamResource::collection($pool);
+
         return [
             'id' => $this->id,
             'tatami' => 'Tatami ' . $this->tatami_no,
             'category' => [
                 'id' => $category->id,
-                'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $category->name . ' ' . $category->category_name  . $ekipno
-            ],
-            'competition' => [
-                'id' => $competition->id,
-                'name' => $competition->name,
-            ],
-            
+                'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $category->name . ' ' . $category->category_name  . $ekipno,   
+            ],              
             'etoStart' => date('H:m', strtotime($this->eto_start)),
             'etoFinish' => date('H:m', strtotime($this->eto_finish)),
             'startedAt' => $this->started_time != null ? date('H:m', strtotime($this->started_time)) : null,
             'finishedAt' => $this->finish_time != null ? date('H:m', strtotime($this->finish_time)) : null,
             'status' => $this->status,
-            'matches' => 'testing'
-      
+            'groups' => $ekipno == null  ? $pools : $poolsTeam     
 
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Pool;
 use App\Models\Registration;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,26 +23,53 @@ class PoolResource extends JsonResource
         $compatitorOneClub = $this->registration_one != null && Registration::where('id', $this->registration_one)->first()->club != null ? Registration::where('id', $this->registration_one)->first()->club->short_name : null;
         $compatitorTwoClub = $this->registration_two != null && Registration::where('id', $this->registration_two)->first()->club != null ? Registration::where('id', $this->registration_two)->first()->club->short_name : null;
         if($ekipno == null) {
+            $isWinnerOne = $compatitorOne != null ? ($compatitorOne->id == $this->winner_id ? true : false ) : null;
+            $isWinnerTwo = $compatitorTwo != null ? ($compatitorTwo->id == $this->winner_id ? true : false ) : null;
             $one = [
                 'registrationId' => $this->registration_one,
-                'name' => $compatitorOne != null ? "$compatitorOne->name $compatitorOne->last_name ($compatitorOneClub)" : null
+                'name' => $compatitorOne != null ? "$compatitorOne->name $compatitorOne->last_name ($compatitorOneClub)" : null,
+                'isWinner' => $isWinnerOne,
+                'resultText' => $isWinnerOne != null || $isWinnerOne ? 'Pobjeda' : 'Poraz',
             ];
             $two = [
                 'registrationId' => $this->registration_two,
-                'name' => $compatitorTwo != null ? "$compatitorTwo->name $compatitorTwo->last_name ($compatitorTwoClub)" : null
+                'name' => $compatitorTwo != null ? "$compatitorTwo->name $compatitorTwo->last_name ($compatitorTwoClub)" : null,
+                'isWinner' => $isWinnerTwo,
+                'resultText' => $isWinnerTwo != null || $isWinnerTwo ? 'Pobjeda' : 'Poraz',
             ];
         } else{
             $one = null;
             $two = null;
         }
+        $group = $this->group;
+        $pools = Pool::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id);
+        $name = null;
+        if($this->pool_type == 'G'){
+            $name = "Grupa";
+        }
+        if($this->pool_type == 'SF'){
+            $name = "Polufinale";
+        }
+        if($this->pool_type == 'FM'){
+            $name = "Finale";
+        }
 
+        
+        $nextPool = $this->pool + 1;
+
+        if($group % 2 == 0){
+            $nextMatchGroup = $group / 2;
+        }
+        else{
+            $nextMatchGroup = ($group + 1) / 2;
+        }
+        $nextMatchId = $this->pool_type != 'FM' ? $pools->where('pool', $nextPool)->where('group', $nextMatchGroup)->first()->id : null;
         return [
             'id' => (string)$this->id,
-            'poolType' => $this->pool_type,
-            'poolNo' => $this->pool,
-            'groupNo' => $this->group,
-            'winnerId' => $this->winner_id,
-            'looserId' => $this->winner_id,
+            'name' => $name,
+            'group' => $this->pool,
+            'match' => $this->group,
+            'nextMatchId' => $nextMatchId,
             'startTime' => $this->start_time,
             'competitorOne' => $one,
             'competitorTwo' => $two

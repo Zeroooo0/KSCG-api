@@ -53,8 +53,8 @@ trait LenghtOfCategory {
         }
         return [
             'categoryDuration' =>$totalTimePerCat,
-            'categoryGroupsFront' => $groups + 1,
-            'categoryPoolsFront' => $pools + 1,
+            'categoryGroupsFront' => $groups > 0 ? $groups + 1 : 0,
+            'categoryPoolsFront' => $pools > 0 ? $pools + 1 : 0,
             'categoryGroupsBack' => $groups,
             'categoryPoolsBack' => $pools,
         ];
