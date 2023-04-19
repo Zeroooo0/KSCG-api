@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PoolResource;
+use App\Http\Resources\PoolsTeamResource;
 use App\Models\Category;
 use App\Models\Compatition;
 use App\Models\Pool;
@@ -300,19 +301,32 @@ class PoolsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $compatition)
+    public function updatePool(Request $request, Pool $pool)
     {
-        $compatition = Compatition::where('id', $compatition)->first();
-        $pools = $compatition->pools->where('category_id', $request->categoryId);
-        $request_data = collect($request->all())->values();
-        foreach($request_data as $data) {
-            return response($pools->where('id', $data['id'])->first()->update(['pool' => 2]));
-            $pools->where('id', $data['id'])->update($data);
-            
+
+        $pool->update(['winner_id' => $request->winnerId]);
+        $request->looserId != 'null' ? $pool->update(['looser_id' => $request->looserId]) : null;
+        if($request->has('nextMatchId')) {
+            $nextMetch = Pool::where('id', $request->nextMatchId)->first();
+            $isOdd = $pool->group % 2 == 0 ? 1 : 0;
+ 
+            $isOdd == 0 ? $nextMetch->update(['registration_one' => $request->winnerId]) : $nextMetch->update(['registration_two' => $request->winnerId]);
         }
 
-        return $this->success('', $pools);
+        return new PoolResource($pool);
+    }
+    public function updatePoolTeam(Request $request, PoolTeam $poolTeam )
+    {
+        $poolTeam->update(['winner_id' => $request->winnerId]);
+        $request->looserId != 'null' ? $poolTeam->update(['looser_id' => $request->looserId]) : null;
+        if($request->has('nextMatchId')) {
+            $nextMetch = PoolTeam::where('id', $request->nextMatchId)->first();
+            $isOdd = $poolTeam->group % 2 == 0 ? 1 : 0;
+ 
+            $isOdd == 0 ? $nextMetch->update(['team_one' => $request->winnerId]) : $nextMetch->update(['team_two' => $request->winnerId]);
+        }
 
+        return new PoolsTeamResource($poolTeam);
     }
 
     /**

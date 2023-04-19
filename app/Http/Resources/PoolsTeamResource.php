@@ -34,13 +34,13 @@ class PoolsTeamResource extends JsonResource
                 'id' => $teamOne != null ? $teamOne->id : null,
                 'name' => $teamOne != null ? $teamOne->name . " ($cloubOneShortName)" : null,
                 'isWinner' => $isWinnerOne,
-                'resultText' => $isWinnerOne != null || $isWinnerOne ? 'Pobjeda' : 'Poraz'
+                'resultText' => $isWinnerOne != null ? ($isWinnerOne ? 'Pobjeda' : 'Poraz') : null
             ];
             $two = [
                 'id' => $teamTwo != null ? $teamTwo->id : null,
                 'name' => $teamTwo != null ? $teamTwo->name . " ($cloubTwoShortName)" : null,
                 'isWinner' => $isWinnerTwo,
-                'resultText' => $isWinnerTwo != null || $isWinnerTwo ? 'Pobjeda' : 'Poraz'
+                'resultText' => $isWinnerTwo != null  ? ($isWinnerTwo ? 'Pobjeda' : 'Poraz') : null 
             ];
 
         }

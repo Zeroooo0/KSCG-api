@@ -106,7 +106,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::resource('/teams', TeamsController::class);
     Route::resource('/registrations', RegistrationsController::class);
     //Pool table 
-    Route::resource('/pools', PoolsController::class);
+    Route::get('/pools', [PoolsController::class, 'index']);
+    Route::patch('/pools/{pool}', [PoolsController::class, 'updatePool']);
+    Route::patch('/team-pools/{poolTeam}', [PoolsController::class, 'updatePoolTeam']);
     //Route::put('/pools/{compatition}', [PoolsController::class, 'updateBatch']);
     Route::post('/pools-automated', [PoolsController::class, 'automatedStore']);
     //Timetable
