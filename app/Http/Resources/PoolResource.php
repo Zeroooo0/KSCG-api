@@ -29,13 +29,13 @@ class PoolResource extends JsonResource
                 'registrationId' => $this->registration_one,
                 'name' => $compatitorOne != null ? "$compatitorOne->name $compatitorOne->last_name ($compatitorOneClub)" : null,
                 'isWinner' => $isWinnerOne,
-                'resultText' => $isWinnerOne != null || $isWinnerOne ? 'Pobjeda' : 'Poraz',
+                'resultText' => $isWinnerOne != null ? ($isWinnerOne ? 'Pobjeda' : 'Poraz') : null ,
             ];
             $two = [
                 'registrationId' => $this->registration_two,
                 'name' => $compatitorTwo != null ? "$compatitorTwo->name $compatitorTwo->last_name ($compatitorTwoClub)" : null,
                 'isWinner' => $isWinnerTwo,
-                'resultText' => $isWinnerTwo != null || $isWinnerTwo ? 'Pobjeda' : 'Poraz',
+                'resultText' => $isWinnerTwo != null  ? ($isWinnerTwo ? 'Pobjeda' : 'Poraz') : null ,
             ];
         } else{
             $one = null;
