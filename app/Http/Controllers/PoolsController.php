@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Models\Compatition;
 use App\Models\Pool;
 use App\Models\PoolTeam;
+use App\Models\Registration;
+use App\Models\Team;
 use App\Traits\HttpResponses;
 use App\Traits\LenghtOfCategory;
 use Illuminate\Http\Request;
@@ -303,7 +305,6 @@ class PoolsController extends Controller
      */
     public function updatePool(Request $request, Pool $pool)
     {
-
         $pool->update(['winner_id' => $request->winnerId]);
         $request->looserId != 'null' ? $pool->update(['looser_id' => $request->looserId]) : null;
         if($request->has('nextMatchId')) {
@@ -312,6 +313,16 @@ class PoolsController extends Controller
  
             $isOdd == 0 ? $nextMetch->update(['registration_one' => $request->winnerId]) : $nextMetch->update(['registration_two' => $request->winnerId]);
         }
+        $category = Category::where('id', $pool->category_id)->first();
+       
+        if($pool->pool_type == 'SF' && $category->repesaz == 0) {
+            Registration::where('id', $request->looserId)->first()->update(['position' => 1]);
+            Registration::where('id', $request->winnerId)->first()->update(['position' => NULL]);
+        } 
+        if($pool->pool_type == 'FM' && $category->repesaz == 0) {
+            Registration::where('id', $request->winnerId)->first()->update(['position' => 3]);
+            Registration::where('id', $request->looserId)->first()->update(['position' => 2]);
+        } 
 
         return new PoolResource($pool);
     }
@@ -326,6 +337,33 @@ class PoolsController extends Controller
             $isOdd == 0 ? $nextMetch->update(['team_one' => $request->winnerId]) : $nextMetch->update(['team_two' => $request->winnerId]);
         }
 
+        $category = Category::where('id', $poolTeam->category_id)->first();
+       
+        if($poolTeam->pool_type == 'SF' && $category->repesaz == 0) {
+            $teamLooser = Team::where('id', $request->looserId)->first()->registrations;
+            $teamWinner = Team::where('id', $request->looserId)->first()->registrations;
+            foreach($teamLooser as $teamReg) {
+                $teamReg->update(['position' => 1]);
+            }
+            foreach($teamWinner as $teamReg) {
+                return $teamReg;
+                $teamReg->update(['position' => NULL]);
+            }
+            
+        } 
+        if($poolTeam->pool_type == 'FM' && $category->repesaz == 0) {
+            $teamLoose = Team::where('id', $request->winnerId)->first()->registrations;
+            $teamWin = Team::where('id', $request->win)->first()->registrations;
+            foreach($teamLoose as $teamReg) {
+                $teamLoose->update(['position' => 2]);
+            }
+            foreach($teamWin as $teamReg) {
+                $teamWin->update(['position' => 3]);
+            }
+        } 
+        if($poolTeam->pool_type == 'FM' && $category->repesaz == 1) {
+            //
+        }
         return new PoolsTeamResource($poolTeam);
     }
 
