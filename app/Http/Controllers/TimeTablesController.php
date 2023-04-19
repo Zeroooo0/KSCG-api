@@ -128,6 +128,7 @@ class TimeTablesController extends Controller
     }
     public function show(TimeTable $time_table) 
     {
+        return $time_table;
         return new TimeTableResource($time_table);
     }
 
