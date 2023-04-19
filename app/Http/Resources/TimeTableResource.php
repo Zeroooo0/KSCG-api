@@ -18,7 +18,6 @@ class TimeTableResource extends JsonResource
      */
     public function toArray($request)
     {
-        
         $category = Category::where('id', $this->category_id)->first();
         $kata_or_kumite = $category->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $category->gender == 1 ? 'M' : ($category->gender == 2 ? 'Ž' : 'M + Ž');
