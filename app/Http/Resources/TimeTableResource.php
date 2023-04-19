@@ -32,7 +32,7 @@ class TimeTableResource extends JsonResource
         }*/
         return [
             'categoryId' => $this->category_id
-        ]
+        ];
         /*
         return [
             'id' => $this->id,
