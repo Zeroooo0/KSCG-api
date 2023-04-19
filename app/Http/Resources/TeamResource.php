@@ -18,11 +18,11 @@ class TeamResource extends JsonResource
         $clubId = $this->registrations != null ? $this->registrations->first()->club_id : null;
         $club = $clubId != null ? Club::where('id', $clubId)->first() : null;
         $shortName = $club != null ? $club->short_name : null;
-
+        $teamsReg = str_contains($request->embed, 'teamsReg') ? RegistrationsResource::collection($this->registrations) : 'emeddable';
         return [
             'id' => $this->id,
             'name' => $this->name . " ($shortName)",
-            'registrations' => $this->registrations
+            'teamsReg' => $teamsReg
         ];
     }
 }
