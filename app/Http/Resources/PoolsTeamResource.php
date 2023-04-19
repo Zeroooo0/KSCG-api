@@ -28,8 +28,8 @@ class PoolsTeamResource extends JsonResource
             $teamTwoClubId = $this->team_two != null ? Team::where('id', $this->team_two)->first()->registrations->first()->club_id : null;
             $cloubOneShortName = $teamOneClubId != null ? Club::where('id', $teamOneClubId)->first()->short_name: null;
             $cloubTwoShortName = $teamTwoClubId != null ? Club::where('id', $teamTwoClubId)->first()->short_name: null;
-            $isWinnerOne = $teamOne != null ? ($teamOne->id == $this->winner_id ? true : false ) : null;
-            $isWinnerTwo = $teamTwo != null ? ($teamTwo->id == $this->winner_id ? true : false ) : null;
+            $isWinnerOne = $teamOne != null ? ( $this->winner_id == null ? null : ($this->team_one == $this->winner_id ? true : false )) : null;
+            $isWinnerTwo = $teamTwo != null ? ( $this->winner_id == null ? null : ($this->team_two == $this->winner_id ? true : false )) : null;
             $one = [
                 'id' => $teamOne != null ? $teamOne->id : null,
                 'name' => $teamOne != null ? $teamOne->name . " ($cloubOneShortName)" : null,
