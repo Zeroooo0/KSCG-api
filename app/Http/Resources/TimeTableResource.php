@@ -18,9 +18,8 @@ class TimeTableResource extends JsonResource
      */
     public function toArray($request)
     {
-        /*
         $category = Category::where('id', $this->category_id)->first();
-        //$kata_or_kumite = $category->kata_or_kumite ? 'Kate' : 'Kumite';
+        $kata_or_kumite = $category->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $category->gender == 1 ? 'M' : ($category->gender == 2 ? 'Ž' : 'M + Ž');
         $ekipno = $category->solo_or_team  ? null : ' | Ekipno';
         $pool = $category->solo_or_team == 1 ? Pool::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->get() : PoolTeam::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->get();
@@ -29,17 +28,14 @@ class TimeTableResource extends JsonResource
         $data = 'embeddable';
         if(str_contains($request->embed, 'groups')) {
             $data = $ekipno == null  ? $pools : $poolsTeam;
-        }*/
-        return [
-            'categoryId' => $this->category_id
-        ];
-        /*
+        }
+
         return [
             'id' => $this->id,
             'tatami' => 'Tatami ' . $this->tatami_no,
             'category' => [
                 'id' => $category->id,
-                'name' =>  ' | ' . $gender . ' | ' . $category->name . ' ' . $category->category_name  . $ekipno,   
+                'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $category->name . ' ' . $category->category_name  . $ekipno,   
             ],              
             'etoStart' => date('H:m', strtotime($this->eto_start)),
             'etoFinish' => date('H:m', strtotime($this->eto_finish)),
@@ -48,6 +44,6 @@ class TimeTableResource extends JsonResource
             'status' => $this->status,
             'groups' => $data  
 
-        ];*/
+        ];
     }
 }
