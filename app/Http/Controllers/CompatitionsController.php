@@ -90,16 +90,7 @@ class CompatitionsController extends Controller
         return RegistrationsResource::collection((new Collection($competition->registrations))->paginate($per_page));
 
     }
-    public function piblicClubsResults(Request $request, Compatition $competition) 
-    {
-        $per_page = $request->perPage;
-        $clubs = [];
-        foreach ($competition->registrations->countBy('club_id') as $club=>$val) {
-            $clubs[] = $club;
-        }
-        return ClubsOnCompatitionResource::collection(Club::whereIn('id', $clubs)->paginate($per_page));
-
-    }
+    
 
     /**
      * Store a newly created resource in storage.

@@ -43,17 +43,7 @@ class PoolResource extends JsonResource
         }
         $group = $this->group;
         $pools = Pool::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id);
-        $name = null;
-        if($this->pool_type == 'G'){
-            $name = "Grupa";
-        }
-        if($this->pool_type == 'SF'){
-            $name = "Polufinale";
-        }
-        if($this->pool_type == 'FM'){
-            $name = "Finale";
-        }
-
+        
         
         $nextPool = $this->pool + 1;
 
@@ -63,7 +53,36 @@ class PoolResource extends JsonResource
         else{
             $nextMatchGroup = ($group + 1) / 2;
         }
-        $nextMatchId = $this->pool_type != 'FM' ? $pools->where('pool', $nextPool)->where('group', $nextMatchGroup)->first()->id : null;
+        $nextGroup = $this->group + 1;
+        $nextMatchId = null;
+        switch($this->pool_type) {
+            case 'G':
+                $name = 'Grupa';
+                $nextMatchId = $pools->where('pool', $nextPool)->where('group', $nextMatchGroup)->first()->id;
+                break;
+            case 'SF':
+                $name = 'Polufinale';
+                $nextMatchId = $pools->where('pool', $nextPool)->where('group', $nextMatchGroup)->first()->id;
+                break;
+            case 'FM':
+                $name = "Finale";
+                $nextMatchId = null;
+                break;
+            case 'R':
+                $name = "Repesaž";
+                $nextMatchId = $pools->where('pool', $this->pool)->where('group', $nextGroup)->first()->id;
+                break;
+            case 'RSF':
+                $name = "Repesaž";
+                $nextMatchId = $pools->where('pool', $this->pool)->where('group', $nextGroup)->first()->id;
+                break;
+            case 'RFM':
+                $name = "Repesaž";
+                $nextMatchId = null;
+                break;
+            
+        }
+        
         return [
             'id' => (string)$this->id,
             'name' => $name,

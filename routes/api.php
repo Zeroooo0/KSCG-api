@@ -35,7 +35,7 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/competitions', [CompatitionsController::class, 'public']);
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'piblicCategories']);
     Route::get('/competition-results/{competition}', [CompatitionsController::class, 'piblicRegistrations']);
-    Route::get('/competition-clubs-results/{competition}', [CompatitionsController::class, 'piblicClubsResults']);
+    Route::get('/competition-clubs-results', [ReusableDataController::class, 'registeredClubs']);
     Route::get('/time-table/{competition}', [TimeTablesController::class, 'index']);
     Route::get('/time-table-one/{time_table}', [TimeTablesController::class, 'show']); 
     Route::get('/news', [PostsController::class, 'public']);

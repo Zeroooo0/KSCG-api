@@ -22,6 +22,7 @@ class ClubsOnCompatitionResource extends JsonResource
         $reg_compatitors = $this->registrations->where('compatition_id', $request->competitionId);
  
         $single_price = 0;
+        $team_price = 0;
         foreach ($reg_compatitors as $test=>$val) {
             $team_price = $val->compatition->price_team;
             $single_price = $val->compatition->price_single;
@@ -37,6 +38,7 @@ class ClubsOnCompatitionResource extends JsonResource
         if(Auth::user() == null){
             $totalPrice = null;
         }
+
         return [
             'id' => (string)$this->id,
             'name' => $this->name,

@@ -29,6 +29,16 @@ class TimeTableResource extends JsonResource
         if(str_contains($request->embed, 'groups')) {
             $data = $ekipno == null  ? $pools : $poolsTeam;
         }
+        $delay = 0;
+        $etoStart = 0;
+        if($this->finish_time == null && $this->started_time != null) {
+            $etoStart = strtotime($this->eto_start);
+            $startedAt = strtotime($this->started_time);
+            $delay = ($startedAt - $etoStart)/3600;
+        }
+        if($this->finish_time != null) {
+            //$delay = $this->eto_finish - $this->finish_time;
+        }
 
         return [
             'id' => $this->id,
@@ -40,6 +50,7 @@ class TimeTableResource extends JsonResource
             ],              
             'etoStart' => date('H:m', strtotime($this->eto_start)),
             'etoFinish' => date('H:m', strtotime($this->eto_finish)),
+            'delay' => $delay,
             'startedAt' => $this->started_time != null ? date('H:m', strtotime($this->started_time)) : null,
             'finishedAt' => $this->finish_time != null ? date('H:m', strtotime($this->finish_time)) : null,
             'status' => $this->status,

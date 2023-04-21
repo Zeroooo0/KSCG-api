@@ -38,6 +38,7 @@ class RegistrationsResource extends JsonResource
                 'kscgId' => $this->compatitor->kscg_compatitor_id,
                 'name' => $this->compatitor->name,
                 'lastName' => $this->compatitor->last_name,
+                'gender' => $this->compatitor->gender == 1 ? 'M' : 'Ž'
             ];
         }
         if($this->compatition != null) {
