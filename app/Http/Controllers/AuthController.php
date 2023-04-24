@@ -31,21 +31,16 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if(Auth::user()->status == 1) {
-            if(Auth::user()->user_type == 0) {
-                $token_ability = ['club'];
-            } 
-    
-            if(Auth::user()->user_type == 1) {
-                $token_ability = ['commission'];
-            }
-        } else {
-            $token_ability = [];
+        if(Auth::user()->user_type == 0) {
+            $token_ability = ['club'];
+        } 
+        if(Auth::user()->user_type == 1) {
+            $token_ability = ['commission'];
         }
-            
         if(Auth::user()->user_type == 2) {
             $token_ability = ['admin'];
         }
+        
 
         return $this->success([
             'user' => new UsersResource($user),
@@ -62,20 +57,7 @@ class AuthController extends Controller
             'last_name' => $request->lastName,
             'email' => $request->email,
             'password' => Hash::make($request->password)
-        ]);
-        if($user->user_type == 0) {
-            $token_ability = ['club'];
-        } 
-
-        if($user->user_type == 1) {
-            $token_ability = ['commission'];
-        }
-   
-            
-        if($user->user_type == 2) {
-            $token_ability = ['admin'];
-        }
-        
+        ]);       
 
 
         return $this->success([
