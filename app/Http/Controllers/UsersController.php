@@ -87,8 +87,8 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        if(Auth::user()->user_type != 2){
-            return $this->restricted('', 'Not alowed!', 403);
+        if(Auth::user()->user_type != 2 && $user->id != Auth::user()->id){
+            return $this->restricted('', 'Nedozvoljena akcija!', 403);
         }
         return new UsersResource($user);
     }

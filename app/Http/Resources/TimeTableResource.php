@@ -27,34 +27,41 @@ class TimeTableResource extends JsonResource
         $poolsTeam = PoolsTeamResource::collection($pool);
         $data = 'embeddable';
         if(str_contains($request->embed, 'groups')) {
-            $data = $ekipno == null  ? $pools : $poolsTeam;
+            $data = $ekipno == null  ? $pools->whereIn('pool_type', ['G', 'SF', 'FM']) : $poolsTeam->whereIn('pool_type', ['G', 'SF', 'FM']);
+            $repesaz = $ekipno == null  ? $pools->whereIn('pool_type', ['R', 'RSF', 'RFM']) : $poolsTeam->whereIn('pool_type', ['R', 'RSF', 'RFM']);
         }
         $delay = 0;
         $etoStart = 0;
         if($this->finish_time == null && $this->started_time != null) {
             $etoStart = strtotime($this->eto_start);
             $startedAt = strtotime($this->started_time);
-            $delay = ($startedAt - $etoStart)/3600;
+            $delay = ($startedAt - $etoStart)/60;
         }
         if($this->finish_time != null) {
-            //$delay = $this->eto_finish - $this->finish_time;
+            $delay = $this->eto_finish - $this->finish_time;
+            $etoFinish = strtotime($this->eto_finish);
+            $finishTime = strtotime($this->finish_time);
+            $delay = ($finishTime - $etoFinish)/60;
         }
 
         return [
             'id' => $this->id,
             'tatami' => 'Tatami ' . $this->tatami_no,
+            'tatamiNo' => $this->tatami_no,
             'category' => [
                 'id' => $category->id,
                 'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $category->name . ' ' . $category->category_name  . $ekipno,
-                'isTeam' => (boolean)!$category->solo_or_team
+                'isTeam' => (boolean)!$category->solo_or_team,
+                'haveRematch' => (boolean)$category->repesaz,
             ],              
-            'etoStart' => date('H:m', strtotime($this->eto_start)),
-            'etoFinish' => date('H:m', strtotime($this->eto_finish)),
-            'delay' => $delay,
-            'startedAt' => $this->started_time != null ? date('H:m', strtotime($this->started_time)) : null,
-            'finishedAt' => $this->finish_time != null ? date('H:m', strtotime($this->finish_time)) : null,
+            'etoStart' => date('H:i', strtotime($this->eto_start)),
+            'etoFinish' => date('H:i', strtotime($this->eto_finish)),
+            'delay' => -$delay,
+            'startedAt' => $this->started_time != null ? date('H:i', strtotime($this->started_time)) : null,
+            'finishedAt' => $this->finish_time != null ? date('H:i', strtotime($this->finish_time)) : null,
             'status' => $this->status,
-            'groups' => $data  
+            'groups' => $data,
+            'rematch' => $repesaz
 
         ];
     }

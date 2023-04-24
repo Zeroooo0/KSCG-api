@@ -17,23 +17,9 @@ class ResultsResource extends JsonResource
         $kata_or_kumite = $this->category->kata_or_kumite ? 'Kate' : 'Kumite';
         $gender = $this->category->gender == 1 ? 'M' : ($this->category->gender == 2 ? 'Ž' : 'M + Ž');
         $ekipno = $this->category->solo_or_team == 0 ? ' | Ekipno' : null;
-        $position = $this->position;
-        $medal = '';
-        if(is_null($position)) {
-            $medal = 'Registrovan na takmičenje';
-        }
-        if($position == 0) {
-            $medal = 'Učešće';
-        }
-        if($position == 1) {
-            $medal = 'Bronza';
-        }
-        if($position == 2) {
-            $medal = 'Srebro';
-        }
-        if($position == 3) {
-            $medal = 'Zlato';
-        }
+
+
+
         return [
             'id' => (string)$this->id,
             'competition' => $this->compatition->name,
@@ -46,7 +32,7 @@ class ResultsResource extends JsonResource
                 'genderStr' => $this->compatitor->gender == 1 ? 'M' : 'Ž',
             ],
             'category' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
-            'position' => $medal,
+            'position' => $this->position,
             'date' => Date('Y-m-d', strtotime($this->compatition->start_time_date))
         ];
     }

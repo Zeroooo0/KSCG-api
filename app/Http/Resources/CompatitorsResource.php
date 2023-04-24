@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Belt;
+use App\Models\Registration;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,6 +46,10 @@ class CompatitorsResource extends JsonResource
                 $results =  'Ne postoje prijave!';
             }
         }
+        $registrations = Registration::where('compatitor_id', $this->id)->get();
+        $gold = $registrations->where('position', 3)->count();
+        $silver = $registrations->where('position', 2)->count();
+        $bronze = $registrations->where('position', 1)->count();
 
         return [
             'id' => (string)$this->id,
@@ -65,6 +70,11 @@ class CompatitorsResource extends JsonResource
                 'id' => (string)$this->club->id,
                 'name' => $this->club->name,
                 'shortName' => $this->club->short_name,
+            ],
+            'medals' => [
+                'gold' => $gold,
+                'silver' => $silver,
+                'bronze' => $bronze,
             ],
             'documents' => $documents,
             'results' => $results

@@ -76,28 +76,29 @@ class TimeTablesController extends Controller
       
                 $timePerCategory = $category->where('id', $data['categoryId'])->first()->match_lenght ?? 0;
                 $repesaz = $category->where('id', $data['categoryId'])->first()->repesaz == true ? 2 * $timePerCategory : 0;
+                $kateOrKumite = $category->where('id', $data['categoryId'])->first()->kata_or_kumite;
                 $totalTimePerCat = 0;
                 
                 switch($registrations) {
                     case $registrations == 0:
                         break;
                     case $registrations <= 2:
-                        $totalTimePerCat = ($registrations - ( 2 - $registrations)) / 2 * $timePerCategory;
+                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 2 - $registrations)) : $registrations) / 2 * $timePerCategory;
                         break;
                     case $registrations <= 4:
-                        $totalTimePerCat = ($registrations - ( 4 - $registrations)) / 2 * $timePerCategory + $timePerCategory + $repesaz;
+                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 4 - $registrations)) : $registrations) / 2 * $timePerCategory + $timePerCategory + $repesaz;
                         break;
                     case $registrations <= 8:
-                        $totalTimePerCat = ($registrations - ( 8 - $registrations)) / 2 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 2 * $repesaz;
+                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 8 - $registrations)) : $registrations) / 2 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 2 * $repesaz;
                         break;
                     case $registrations <= 16:
-                        $totalTimePerCat = ($registrations - ( 16 - $registrations)) / 2 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 3 * $repesaz;
+                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 16 - $registrations)) : $registrations) / 2 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 3 * $repesaz;
                         break;
                     case $registrations <= 32:
-                        $totalTimePerCat = ($registrations - ( 32 - $registrations)) / 2 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 4 * $repesaz;
+                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 32 - $registrations)) : $registrations) / 2 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 4 * $repesaz;
                         break;
                     case $registrations <= 64:
-                        $totalTimePerCat = ($registrations - ( 64 - $registrations)) / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
+                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 64 - $registrations)) : $registrations) / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
                         break;
                         
                 }

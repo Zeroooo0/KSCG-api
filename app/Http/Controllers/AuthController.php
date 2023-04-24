@@ -79,8 +79,7 @@ class AuthController extends Controller
 
 
         return $this->success([
-            'user' => new UsersResource($user),
-            'authToken' => $user->createToken('API token of ' . $user->name . ' '. $user->last_name, $token_ability)->plainTextToken
+            'user' => new UsersResource($user)
         ], 'Uspješno ste registrovani!');
 
     }
