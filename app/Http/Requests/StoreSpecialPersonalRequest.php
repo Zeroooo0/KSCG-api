@@ -29,7 +29,7 @@ class StoreSpecialPersonalRequest extends FormRequest
             'country' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'string', 'max:1'],
+            'gender' => ['required','integer'],
             'image' => ['image', 'mimes:,jpeg,svg,gif.png', 'max:2048'],
             'clubId' => ['integer', 'exists:clubs,id']
         ];

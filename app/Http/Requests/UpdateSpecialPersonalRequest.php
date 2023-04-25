@@ -29,7 +29,7 @@ class UpdateSpecialPersonalRequest extends FormRequest
             'country' => ['string', 'max:255'],
             'email' => ['string', 'max:255'],
             'phone' => ['string', 'max:255'],
-            'gender' => ['string', 'max:1'],
+            'gender' => ['integer'],
             'image' => ['image', 'mimes:,jpeg,svg,gif.png', 'max:2048']
         ];
     }

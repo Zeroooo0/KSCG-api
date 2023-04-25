@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('last_name');
             $table->string('email');
-            $table->string('gender');
+            $table->tinyInteger('gender');
             $table->string('country');
             $table->string('phone_number');
             //0=Nema zvanje 1=Sudija 2=Trener
