@@ -351,7 +351,7 @@ class PoolsController extends Controller
                 $getPool->where('pool_type','like',  "%R%")->delete();
             }
             $countLoosers = $getLoosers->count();
-            return
+
             $repesazData = [];
             for($i = 2; $i <= $countLoosers; $i++){
                 switch($i) {
