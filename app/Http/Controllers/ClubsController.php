@@ -84,7 +84,7 @@ class ClubsController extends Controller
             return $this->restricted('', 'Not alowed!', 403);
         }
         $request->validated($request->all());
-
+        $status = Auth::user()->user_type == 0 ? 0 : $request->status;
         $club = Club::create([
             'user_id' => Auth::user()->user_type == 0 ? Auth::user()->id : $request->userId,
             'name' => $request->name,
@@ -95,7 +95,7 @@ class ClubsController extends Controller
             'pib' => $request->pib,
             'email' => $request->email,
             'phone_number' => $request->phoneNumber,
-            'status' => $request->status
+            'status' => $status
         ]);
         if($request->image != null) {
             $path = Storage::putFile('club-image', $request->image);
@@ -147,7 +147,7 @@ class ClubsController extends Controller
         if(Auth::user()->user_type == 0 && Auth::user()->club->id != $club->id) {
             return $this->restricted('', 'Ovaj korisnik moze mijenjati samo podatke za klub: '. Auth::user()->club->name, 403);
         }
-        $club->update($request->except(['shortName', 'phoneNumber', 'userId']));
+        $club->update($request->except(['shortName', 'phoneNumber', 'userId', 'status']));
 
         $request->has('shortName')  ? $club->update(['short_name' => $request->shortName]) : null;
         $request->has('phoneNumber') ? $club->update(['phone_number' => $request->phoneNumber]) : null;
@@ -159,7 +159,14 @@ class ClubsController extends Controller
             } else {
                 return $this->restricted('', 'Not promited to change user id!', 403);
             }
+        }
 
+        if($request->has('status')) {
+            if(Auth::user()->user_type == 0) {
+                $club->update(['status' => 0]);
+            } else {
+                $club->update(['status']);
+            }
         }
 
         return new ClubsResource($club);
