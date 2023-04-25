@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('pib');
             $table->string('email');
             $table->string('phone_number');
+            $table->boolean('status');
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained()

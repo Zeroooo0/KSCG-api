@@ -16,7 +16,8 @@ class ClubsFilter {
         'email' => ['eq', 'like'],
         'phoneNumber' => ['eq', 'like'],
         'userId' => ['eq'],
-        'id' => ['eq']
+        'id' => ['eq'],
+        'status' => ['eq']
     ];
 
     protected $columnsMap = [

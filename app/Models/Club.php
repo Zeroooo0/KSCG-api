@@ -18,7 +18,8 @@ class Club extends Model
         'pib',
         'email',
         'phone_number',
-        'user_id'
+        'user_id',
+        'status'
     ];
 
     public function user() 

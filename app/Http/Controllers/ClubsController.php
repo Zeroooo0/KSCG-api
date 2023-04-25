@@ -94,7 +94,8 @@ class ClubsController extends Controller
             'address' => $request->address,
             'pib' => $request->pib,
             'email' => $request->email,
-            'phone_number' => $request->phoneNumber
+            'phone_number' => $request->phoneNumber,
+            'status' => $request->status
         ]);
         if($request->image != null) {
             $path = Storage::putFile('club-image', $request->image);
