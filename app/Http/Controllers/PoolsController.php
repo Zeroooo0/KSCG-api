@@ -352,7 +352,7 @@ class PoolsController extends Controller
             $countLoosers = $getLoosers->count();
 
             $repesazData = [];
-            for($i = 2; $i <= $countLoosers; $i++){
+            for($i = 2; $i <= $countLoosers; $i++) {
                 switch($i) {
                     case $i == $countLoosers -1:
                         $poolType = 'RSF';
@@ -380,7 +380,7 @@ class PoolsController extends Controller
                 $input['registration_two'] = $getLoosers[$otherCompetitors]->looser_id;
                 $input['start_time'] = Date("H:i:s", strtotime("$lastPoolTime + $timeTracking minutes"));
                 $repesazData[] = $input;  
-                }
+            }
 
 
           

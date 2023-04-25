@@ -67,6 +67,7 @@ class SpecialPersonalsResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone_number,
             'role' => $role,
+            'gender' => $this->gender,
             'status' => (boolean)$this->status,
             'image' => $path,
             'documents' => $documents,
