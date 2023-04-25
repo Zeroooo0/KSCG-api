@@ -23,7 +23,7 @@ class RolesResource extends JsonResource
         if($specialPersonal->image != null) {
             $path =  $storage_url . $specialPersonal->image->url;
         } else {
-            if($specialPersonal->gender == 'M') {
+            if($specialPersonal->gender == 1) {
                 $path = $storage_url . 'default/default-m-user.jpg';
             } else{
                 $path = $storage_url . 'default/default-f-user.jpg';
