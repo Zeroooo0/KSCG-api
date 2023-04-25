@@ -344,7 +344,6 @@ class PoolsController extends Controller
             }
         } 
         if($pool->pool_type == 'FM' && $category->repesaz == 1 && $request->winnerId != 'null' && $request->looserId != 'null' ) {
-            
             $getPool = Pool::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id);
             $getLoosers = Pool::where('winner_id', $winnerId)->where('looser_id', '!=', null)->orderBy('pool', 'asc')->get();
             if($getPool->where('pool_type','like',  "%R%")->get()->count() > 0){
@@ -381,8 +380,12 @@ class PoolsController extends Controller
                 $input['registration_two'] = $getLoosers[$otherCompetitors]->looser_id;
                 $input['start_time'] = Date("H:i:s", strtotime("$lastPoolTime + $timeTracking minutes"));
                 $repesazData[] = $input;  
-            }            
+                }
+            return count($repesazData) == ($countLoosers - 1);
+          
             Pool::insert($repesazData);
+            
+            
         }
         if($pool->pool_type == 'RSF') {
             $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
