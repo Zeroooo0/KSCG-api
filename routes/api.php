@@ -73,6 +73,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     
     //get
     Route::get('/competitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
+    Route::get('/special-personnel-documents/{specialPersonal}', [FileController::class, 'specialPersonalDocuments']);
     //Delete
     Route::post('/document-delete/{document}', [FileController::class, 'deleteDocument']);
 
@@ -119,9 +120,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
 
 
     Route::post('/time-table-update/{time_table}', [TimeTablesController::class, 'updateTime']);
-
+    //Roles
     //Roles delete
     Route::delete('/role/{roles}', [ReusableDataController::class, 'deleteRole']);
+    //Roles get
+    Route::get('/special-personal-competition/{specPersonnels}', [ReusableDataController::class, 'specPersonnelCompetitionRoles']);
+    Route::get('/special-personal-other-roles/{specPersonnels}', [ReusableDataController::class, 'specPersonnelRoles']);
     //Compatition
     Route::post('/competition-personal/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Posts

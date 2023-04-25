@@ -269,9 +269,7 @@ class FileController extends Controller
     public function specialPersonalDocuments(Request $request, SpecialPersonal $specialPersonal)
     {
         $per_page = $request->perPage;
-        if(Auth::user()->user_type == 0 && $specialPersonal->club_id != Auth::user()->club->id) {
-            return $this->error('', 'Nije vam dozvoljeno da brisete dokumenta takmicara koji nisu u vasem klubu!', 403);
-        }
+
         return DocumentsResource::collection($specialPersonal->document()->paginate($per_page));
     }
 

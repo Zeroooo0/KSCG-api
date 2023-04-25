@@ -197,4 +197,18 @@ class ReusableDataController extends Controller
         return $this->success(new RolesResource($role), 'Uspjesno dodata slika');
     }
 
+    public function specPersonnelCompetitionRoles(SpecialPersonal $specPersonnels, Request $request)
+    {
+        $per_page = $request->perPage;
+        $roles = Roles::where('special_personals_id', $specPersonnels->id)->where('roleable_type', 'App\Models\Compatition');
+
+        return RolesResource::collection($roles->paginate($per_page));
+    }
+    public function specPersonnelRoles(SpecialPersonal $specPersonnels, Request $request)
+    {
+        $per_page = $request->perPage;
+        $roles = Roles::where('special_personals_id', $specPersonnels->id)->where('roleable_type', '!=', 'App\Models\Compatition');
+
+        return RolesResource::collection($roles->paginate($per_page));
+    }
 }
