@@ -26,6 +26,7 @@ class TimeTableResource extends JsonResource
         $pools = PoolResource::collection($pool);
         $poolsTeam = PoolsTeamResource::collection($pool);
         $data = 'embeddable';
+        $repesaz = [];
         if(str_contains($request->embed, 'groups')) {
             $data = $ekipno == null  ? $pools->whereIn('pool_type', ['G', 'SF', 'FM']) : $poolsTeam->whereIn('pool_type', ['G', 'SF', 'FM']);
             $repesaz = $ekipno == null  ? $pools->whereIn('pool_type', ['R', 'RSF', 'RFM']) : $poolsTeam->whereIn('pool_type', ['R', 'RSF', 'RFM']);
@@ -60,8 +61,8 @@ class TimeTableResource extends JsonResource
             'startedAt' => $this->started_time != null ? date('H:i', strtotime($this->started_time)) : null,
             'finishedAt' => $this->finish_time != null ? date('H:i', strtotime($this->finish_time)) : null,
             'status' => $this->status,
-            'groups' => $data,
-            'rematch' => $repesaz
+            'groups' => $data->toArray(),
+            'rematch' => $repesaz->toArray()
 
         ];
     }
