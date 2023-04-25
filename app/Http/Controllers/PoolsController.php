@@ -381,7 +381,8 @@ class PoolsController extends Controller
                 $input['start_time'] = Date("H:i:s", strtotime("$lastPoolTime + $timeTracking minutes"));
                 $repesazData[] = $input;  
                 }
-            return count($repesazData) == ($countLoosers - 1);
+
+
           
             Pool::insert($repesazData);
             
