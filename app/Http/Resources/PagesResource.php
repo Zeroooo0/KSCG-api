@@ -16,7 +16,7 @@ class PagesResource extends JsonResource
     {
         date_default_timezone_set('Europe/Amsterdam');
         $userData = $this->user_id;
-        if($this->user_id != null) {
+        if($this->user != null) {
             $userData = [
                 'id' => (string)$this->user->id,
                 'name' => $this->user->name,
