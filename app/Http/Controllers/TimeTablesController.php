@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\TimeTableFilter;
 use App\Http\Requests\StoreTimeTableMassRequest;
 use App\Http\Requests\UpdateTimeTableRequest;
 use App\Http\Resources\TimeTableResource;
@@ -22,14 +23,14 @@ class TimeTablesController extends Controller
     public function index(Request $request, Compatition $competition)
     {
 
-        //$filter = new SpecialPersonalsFilter();
-        //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $per_page = $request->perPage;
-        $timeTable = TimeTable::orderBy('tatami_no', 'asc')->orderBy('order_no', 'asc')->where('compatition_id', $competition->id);
-        
+        $per_page = $request->perPage; 
+        $filter = new TimeTableFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+        $timeTable = TimeTable::orderBy($sort, $sortDirection)->where('compatition_id', $competition->id);
 
-
-        return TimeTableResource::collection($timeTable->paginate($per_page));
+        return TimeTableResource::collection($timeTable->where($queryItems)->paginate($per_page));
     }
 
     /**

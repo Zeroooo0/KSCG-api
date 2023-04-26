@@ -58,10 +58,9 @@ class PostsController extends Controller
      */
     public function store(StorePostsRequest $request)
     {
-        $request->validated($request->all());
-
+        $request->validated($request->except('slug'));
         $news = Post::create([
-            'slug' => $request->slug,
+            'slug' => str_replace(' ', '-', strtolower(trim($request->title, '.'))),
             'title' => $request->title,
             'content' => $request->content,
             'gallery' => $request->gallery == null ? false : $request->gallery,

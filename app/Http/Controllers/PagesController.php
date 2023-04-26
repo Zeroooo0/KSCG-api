@@ -48,7 +48,7 @@ class PagesController extends Controller
         $request->validated($request->all());
 
         $page = Page::create([
-            'slug' => $request->slug,
+            'slug' => str_replace(' ', '-', strtolower(trim($request->title, '.'))),
             'title' => $request->title,
             'content' => $request->content,
             'excerpt' => $request->excerpt,
