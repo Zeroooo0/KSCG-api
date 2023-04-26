@@ -65,13 +65,16 @@ class PostsController extends Controller
             'excerpt' => $request->excerpt,
             'user_id' => Auth::user()->id
         ]);
-        $path = Storage::putFile('post-image', $request->image);
-        $image = $news->images()->create([
-            'url' => $path
-        ]);
-        $news->update([
-            'cover_image' => $image->id
-        ]);
+        if($request->has('image')){
+            $path = Storage::putFile('post-image', $request->image);
+            $image = $news->images()->create([
+                'url' => $path
+            ]);
+            $news->update([
+                'cover_image' => $image->id
+            ]);
+        }
+
 
         return new PostsResource($news);
        
