@@ -135,14 +135,14 @@ class FileController extends Controller
     {
         
         $request->safe()->except('coverImage');
-
+       
         $path = Storage::putFile('post-image', $request->image);
         
         $image = $news->images()->create([
             'url' => $path
         ]);
         
-        if($request->has('coverImage') && $request->coverImage == 'true') {
+        if($request->has('coverImage') && $request->coverImage == 'true' || $request->coverImage == 1) {
             $news->update([
                 'cover_image' => $image->id
             ]);
