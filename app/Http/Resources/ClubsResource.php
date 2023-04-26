@@ -23,7 +23,7 @@ class ClubsResource extends JsonResource
         } else{
             $path = $storage_url . 'default/default-club.jpg';
         }
-        if($this->user_id == null) {
+        if($this->user == null) {
             $user_info = 'Connect to user!';
         } else{
             $user_info = [
