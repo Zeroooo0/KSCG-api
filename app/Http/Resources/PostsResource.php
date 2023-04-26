@@ -28,7 +28,9 @@ class PostsResource extends JsonResource
         if($this->images != []) {
            $image = ImageResource::collection($this->images);
         }
-        $cover_image = $storage_url . 'default/default-news-poster.jpg';
+        $cover_image = [
+            'url' => $storage_url . 'default/default-news-poster.jpg'
+        ];
         if($this->cover_image != null) {
             $cover_image = new ImageResource($this->images->where('id', $this->cover_image)->first());
         }
