@@ -44,8 +44,6 @@ class PostsController extends Controller
         $sort = $request->sort == null ? 'id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $news = Post::orderBy($sort, $sortDirection);
-        $per_page = $request->perPage;
-
 
         return PostsResource::collection($news->where($queryItems)->paginate($per_page));
     }
