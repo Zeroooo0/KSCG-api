@@ -26,10 +26,10 @@ class StorePostsRequest extends FormRequest
         return [
             'title' => ['required', 'string'],
             'slug' => ['string', 'not_regex:/([A-Z])| |\.|\/n/'],
-            'content' => ['required','string'],
-            'excerpt' => ['required','string'],
+            'content' => ['string'],
+            'excerpt' => ['string'],
             'gallery' => ['boolean'],
-            'image' => ['required','image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480'],
+            'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480'],
         ];
     }
 }

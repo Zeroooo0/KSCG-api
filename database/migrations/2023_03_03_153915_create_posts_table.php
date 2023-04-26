@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('slug')->unique();
             $table->string('title');
-            $table->mediumText('content');
-            $table->text('excerpt');
+            $table->mediumText('content')->nullable();
+            $table->text('excerpt')->nullable();
             $table->boolean('gallery')->default(0);
             $table->unsignedBigInteger('cover_image')->nullable();
             $table->foreignId('user_id')->nullable()->references('id')->on('users')->nullOnDelete();
