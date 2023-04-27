@@ -42,7 +42,7 @@ class PagesResource extends JsonResource
             'user' => $userData,
             'coverImage' => $cover_image,
             'images' => $image,
-            'components' => ComponentResource::collection($this->components)
+            'components' => ComponentResource::collection($this->components->sortBy('order_number'))
         ];
     }
 }

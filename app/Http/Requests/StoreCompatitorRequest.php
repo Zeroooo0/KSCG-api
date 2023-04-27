@@ -25,7 +25,6 @@ class StoreCompatitorRequest extends FormRequest
     public function rules()
     {
         return [
-            'kscgId' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'country' => ['required', 'string', 'max:255'],
             'lastName' => ['required', 'string', 'max:255'],
@@ -36,7 +35,8 @@ class StoreCompatitorRequest extends FormRequest
             'weight' => ['required', 'numeric'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif.png', 'max:2048'],
             'clubId' => ['integer'],
-            'status' => ['boolean']
+            'status' => ['boolean'],
+            'document' => ['required', 'mimes:doc,docx,pdf,xml,html', 'max:20480']
         ];
     }
 }

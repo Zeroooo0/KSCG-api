@@ -83,14 +83,16 @@ class CompatitorsController extends Controller
      */
     public function store(StoreCompatitorRequest $request)
     {
-        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
-            return $this->restricted('', 'Not alowed!', 403);
-        }
+
+        $kscgNo = "100000";
+
         $request->validated($request->all());
-        
+        if(Auth::user()->user_type != 0 && $request->has('clubId') == 0) {
+            return $this->error('','Morate unijeti id kluba', 403);
+        }
         $compatitor = Compatitor::create([
             'club_id' => Auth::user()->user_type == 0 ? Auth::user()->club->id : $request->clubId,
-            'kscg_compatitor_id' => $request->kscgId,
+            'kscg_compatitor_id' => $kscgNo,
             'name' => $request->name,
             'last_name' => $request->lastName,
             'gender' => $request->gender,
@@ -101,6 +103,18 @@ class CompatitorsController extends Controller
             'country' => $request->country,
             'status' => Auth::user()->user_type == 0 ? 0 : 1
         ]);
+        if($compatitor->country == 'Crna Gora') {
+            $country = 'MNE';
+            $kscgNewNo = $compatitor->kscg_compatitor_id + $compatitor->id;
+            $kscgId = $country . substr($kscgNewNo, 1);
+            $compatitor->update(['kscg_compatitor_id'=> $kscgId]);
+        }
+        $docPath = Storage::putFile('compatitors-docs', $request->document);
+        $compatitor->document()->create([
+            'name' => 'Licni dokument',
+            'doc_link' => $docPath
+        ]);
+
         if($request->has('image')) {
             $path = Storage::putFile('compatitor-image', $request->image);
             $compatitor->image()->create([

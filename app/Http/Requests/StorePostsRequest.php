@@ -25,7 +25,7 @@ class StorePostsRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string'],
-            'slug' => ['string', 'not_regex:/([A-Z])| |\.|\/n/'],
+            'slug' => ['string', 'not_regex:/([A-Z])| |\.|\/n/', 'unique:posts,slug'],
             'content' => ['string'],
             'excerpt' => ['string'],
             'gallery' => ['boolean'],
