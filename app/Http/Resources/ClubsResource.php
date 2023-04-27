@@ -48,7 +48,7 @@ class ClubsResource extends JsonResource
             'id' => (string)$this->id,
             'name' => $this->name,
             'shortName' => $this->short_name,
-            'status' => $this->status,
+            'status' => (boolean)$this->status,
             'pib' => $pib,
             'email' => $this->email,
             'phone' => $this->phone_number,

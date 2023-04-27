@@ -111,8 +111,14 @@ class UsersController extends Controller
                 return $this->restricted('', 'Not alowed!', 403);
             }
         }
-        $user->update($request->except(['password']));
-        if ($request->has('password')) {
+        $user->update($request->except(['password', 'status']));
+        if($request->has('status')) {
+            $user->update(['status' => $request->status]);
+            if($user->club != null) {
+                $user->club->update(['status' => $request->status]);
+            }
+        }
+        if($request->has('password')) {
             if(Auth::user()->user_type == 2) {
                 $user->update([
                     'password' => Hash::make($request->password)

@@ -162,11 +162,10 @@ class ClubsController extends Controller
         }
 
         if($request->has('status')) {
-            if(Auth::user()->user_type == 0) {
-                $club->update(['status' => 0]);
-            } else {
-                $club->update(['status']);
-            }
+            $club->update(['status'=> $request->status]);
+            if($club->user != null) {
+                $club->user->update(['status' => $request->status]);
+            } 
         }
 
         return new ClubsResource($club);

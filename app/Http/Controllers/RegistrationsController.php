@@ -6,6 +6,7 @@ use App\Http\Requests\StoreRegistrationRequest;
 use App\Http\Resources\CompatitorsResource;
 use App\Http\Resources\RegistrationsResource;
 use App\Models\Category;
+use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\Compatitor;
 use App\Models\Registration;
@@ -44,7 +45,7 @@ class RegistrationsController extends Controller
     public function store(StoreRegistrationRequest $request)
     {
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
-            return $this->restricted('', 'Not alowed!', 403);
+            return $this->restricted('', 'Vaš nalog nije aktivan, kontaktirajte Karate Savez!', 403);
         }
         
         $arr = [];
@@ -62,16 +63,16 @@ class RegistrationsController extends Controller
         foreach($request->all() as $key) {
             $data = $key;
             $compatition = Compatition::where('id', $data['competitionId'])->get()->first();
-            
-           
-            if( $compatition->registration_status == 0) {
-                return $this->error('', 'Registracija je trenutno neaktivna!', 403);
+            $clubId = Compatitor::where('id', $data['competitorId'])->first()->club_id;
+            $club = Club::where('id', $clubId)->first();
+            if($club->status == 0) {
+                return $this->error('', 'Vaš klub je trenutno neaktivan, pokušajte kasnije!', 403);
             }
             
             
             $categories = $compatition->categories->where('id', $data['categoryId'])->first();
             if($categories == null){
-                return $this->error('', 'Odabrana je ne postojeća kategorija na ovom takmičenju!', 403);
+                return $this->error('', 'Odabrana je nepostojeća kategorija na ovom takmičenju!', 403);
             }
             $team_or_solo = $categories->solo_or_team;
             $kata_or_kumite = $categories->kata_or_kumite;           
@@ -84,7 +85,7 @@ class RegistrationsController extends Controller
             }
 
             $input['compatition_id'] = $data['competitionId'];
-            $input['club_id'] = Compatitor::where('id', $data['competitorId'])->first()->club_id;
+            $input['club_id'] = $clubId;
             $input['compatitor_id'] = $data['competitorId'];
             $input['category_id'] = $data['categoryId'];
             $input['team_id'] = $data['teamId'] == null ? null : $data['teamId'];

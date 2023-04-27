@@ -77,13 +77,14 @@ class ReusableDataController extends Controller
         if($spec_personal->role == 1) {
             return $this->error('', 'Sudije ne mogu biti registrovane kao uprava Kluba!', 403);
         }
+        /*
         if($spec_personal->role == 2 && Auth::user()->user_type == 0) {
             return $this->error('', 'Trener moze dodati samo administrator!', 403);
         }
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->error('', 'Nalog je suspendovan!', 403);
         }
-
+        */
         $rolesExistance = Roles::where([['special_personals_id',  $request->specialPersonalId], ['roleable_type', 'App\Models\Club']])->count() >= 1 ? true : false;
 
         if($rolesExistance) {
@@ -194,7 +195,7 @@ class ReusableDataController extends Controller
             'title' => $request->title,
             'role' => $specialPersonal->role
         ]);
-        return $this->success(new RolesResource($role), 'Uspjesno dodata slika');
+        return $this->success(new RolesResource($role), 'Uspjesno dodata uloga');
     }
 
     public function specPersonnelCompetitionRoles(SpecialPersonal $specPersonnels, Request $request)
