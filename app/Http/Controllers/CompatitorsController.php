@@ -109,8 +109,9 @@ class CompatitorsController extends Controller
             $kscgId = $country . substr($kscgNewNo, 1);
             $compatitor->update(['kscg_compatitor_id'=> $kscgId]);
         }
-        $docPath = Storage::putFile('compatitors-docs', $request->document);
+        
         if($request->has('document')) {
+            $docPath = Storage::putFile('compatitors-docs', $request->document);
             $compatitor->document()->create([
                 'name' => 'Licni dokument',
                 'doc_link' => $docPath
@@ -225,12 +226,16 @@ class CompatitorsController extends Controller
         if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Brisanje nije dozvoljeno!', 403);
         }
+
         foreach($competitor->image()->get() as $image) {
             Storage::delete($image->url);
         }
+
         foreach($competitor->document()->get() as $document) {
-            Storage::delete($document->url);
+            Storage::delete($document->doc_link);
+            
         }
+        
         $competitor->image()->delete();
         $competitor->document()->delete();
         $competitor->delete();
