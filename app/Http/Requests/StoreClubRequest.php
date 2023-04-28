@@ -33,8 +33,7 @@ class StoreClubRequest extends FormRequest
             'email' => ['required', 'string', 'max:255'],
             'phoneNumber' => ['required', 'string', 'max:255'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif.png', 'max:2048'],
-            'userId' => ['integer', 'unique:clubs,user_id'],
-            'status' => ['required','boolean']
+            'userId' => ['integer', 'unique:clubs,user_id']
         ];
     }
 }
