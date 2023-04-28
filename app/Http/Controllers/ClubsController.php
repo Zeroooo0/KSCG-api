@@ -193,7 +193,7 @@ class ClubsController extends Controller
                 ]);
             }
         }
-
+    
         $club->roles()->delete();
         $club->image()->delete();
         $club->delete();

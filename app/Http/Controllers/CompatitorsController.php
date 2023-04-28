@@ -110,10 +110,13 @@ class CompatitorsController extends Controller
             $compatitor->update(['kscg_compatitor_id'=> $kscgId]);
         }
         $docPath = Storage::putFile('compatitors-docs', $request->document);
-        $compatitor->document()->create([
-            'name' => 'Licni dokument',
-            'doc_link' => $docPath
-        ]);
+        if($request->has('document')) {
+            $compatitor->document()->create([
+                'name' => 'Licni dokument',
+                'doc_link' => $docPath
+            ]);
+    
+        }
 
         if($request->has('image')) {
             $path = Storage::putFile('compatitor-image', $request->image);
