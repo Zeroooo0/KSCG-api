@@ -80,7 +80,7 @@ class ClubsController extends Controller
      */
     public function store(StoreClubRequest $request)
     {
-        if(Auth::user()->user_type != 2 && Auth::user()->club != stringValue()) {
+        if(Auth::user()->user_type != 2 && Auth::user()->club != null) {
             return $this->restricted('', 'Not alowed!', 403);
         }
         $request->validated($request->all());
