@@ -146,7 +146,10 @@ class UsersController extends Controller
             return $this->restricted('', 'Nije vam dozvoljeno da obrišete Administratora!', 403);
         }
         if($user->user_type == 0 && $user->club != null) {
-            $user->club->update(['user_id'=> null]);
+            $user->club->update([
+                'user_id'=> null,
+                'status'=> 0
+            ]);
         }
         $user->delete();
 

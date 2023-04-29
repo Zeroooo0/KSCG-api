@@ -44,10 +44,11 @@ class RegistrationsController extends Controller
      */
     public function store(StoreRegistrationRequest $request)
     {
+        /*
         if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Vaš nalog nije aktivan, kontaktirajte Karate Savez!', 403);
         }
-        
+        */
         $arr = [];
         $compatitionCheck = Compatition::where('id', $request[0]['competitionId'])->get()->first();
         if($compatitionCheck->registration_status == 1){
