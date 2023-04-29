@@ -32,7 +32,7 @@ class StoreClubRequest extends FormRequest
             'pib' => ['required', 'string'],
             'email' => ['required', 'string', 'max:255'],
             'phoneNumber' => ['required', 'string', 'max:255'],
-            'image' => ['image', 'mimes:jpg,jpeg,svg,gif.png', 'max:2048'],
+            'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:2048'],
             'userId' => ['integer', 'unique:clubs,user_id']
         ];
     }
