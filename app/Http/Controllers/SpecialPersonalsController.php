@@ -7,6 +7,8 @@ use App\Http\Requests\StoreSpecialPersonalRequest;
 use App\Http\Requests\UpdateSpecialPersonalRequest;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Club;
+use App\Models\Compatition;
+use App\Models\Component;
 use App\Models\Roles;
 use App\Models\SpecialPersonal;
 use App\Traits\HttpResponses;
@@ -69,10 +71,21 @@ class SpecialPersonalsController extends Controller
     {
         $request->validated($request->all());
 
-        if(Auth::user()->user_type == 0) {
-            $role = 0; 
-        } else{
-            $role = $request->has('role') ? $role = $request->role : $role = 0;
+        if(Auth::user()->user_type == 0 && $request->role == 2) {
+            return $this->error('', 'Nije moguće dodati sudiju u klub!', 403);
+        }
+
+        $role = $request->role;
+        switch($role) {
+            case 0:
+                $roleText = 'Uprava';
+                break;
+            case 1:
+                $roleText = 'Trener';
+                break;
+            case 2:
+                $roleText = 'Sudija';
+                break;
         }
 
         $special_personal = SpecialPersonal::create([
@@ -85,15 +98,23 @@ class SpecialPersonalsController extends Controller
             'gender' => $request->gender,
         ]);
         
-        if($request->has(['clubId', 'title'])) {
-            $club = Club::where('id', $request->clubId)->first();
-            $title = 'Trener' ;
+        if($request->has(['clubId','title'])) {
+            $club = Auth::user()->user_type == 0 && Auth::user()->club != null ? Auth::user()->club : Club::where('id', $request->clubId)->first();
+            $title = $roleText;
             $club->roles()->create([
                 'special_personals_id' => $special_personal->id,
                 'title' => $title,
                 'role' => $role
             ]);
-
+        }
+        if($request->has(['componentId','title'])) {
+            $component = Component::where('id', $request->clubId)->first();
+            $title = 'Trener';
+            $component->roles()->create([
+                'special_personals_id' => $special_personal->id,
+                'title' => $title,
+                'role' => $role
+            ]);
         }
 
         if($request->image != null){
@@ -131,20 +152,21 @@ class SpecialPersonalsController extends Controller
             $role = $special_personnel->role; 
         } else{
             $role = $request->role;
-
-            
         }
+
         $special_personnel->update($request->except('lastName', 'role', 'status'));
         if($request->has('lastName')){ 
             $special_personnel->update([
                 'last_name' => $request->lastName
             ]);
         }
+
         if($request->has('role')){ 
             $special_personnel->update([
                 'role' => $role
             ]);
         }
+
         if($request->has('status')){ 
             if(Auth::user()->user_type != 0){
                 $special_personnel->update([
