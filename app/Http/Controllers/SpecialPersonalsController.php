@@ -100,7 +100,7 @@ class SpecialPersonalsController extends Controller
         
         if($request->has(['clubId','title'])) {
             $club = Auth::user()->user_type == 0 && Auth::user()->club != null ? Auth::user()->club : Club::where('id', $request->clubId)->first();
-            $title = $roleText;
+            $title = $role == 0 ? $request->title : $roleText;
             $club->roles()->create([
                 'special_personals_id' => $special_personal->id,
                 'title' => $title,
@@ -109,7 +109,7 @@ class SpecialPersonalsController extends Controller
         }
         if($request->has(['componentId','title'])) {
             $component = Component::where('id', $request->clubId)->first();
-            $title = 'Trener';
+            $title = $request->title;
             $component->roles()->create([
                 'special_personals_id' => $special_personal->id,
                 'title' => $title,
