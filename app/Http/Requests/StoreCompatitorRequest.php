@@ -33,7 +33,7 @@ class StoreCompatitorRequest extends FormRequest
             'belt' => ['required', 'integer'],
             'dateOfBirth' => ['required', 'date'],
             'weight' => ['required', 'numeric'],
-            'image' => ['image', 'mimes:jpg,jpeg,svg,gif.png', 'max:2048'],
+            'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:2048'],
             'clubId' => ['integer'],
             'status' => ['boolean'],
             'document' => [ 'mimes:doc,docx,pdf,xml,html', 'max:20480']
