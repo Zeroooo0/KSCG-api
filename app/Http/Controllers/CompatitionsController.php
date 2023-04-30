@@ -206,22 +206,35 @@ class CompatitionsController extends Controller
     public function specialPersonalOnCompatition(Compatition $competition, Request $request) 
     {
         $specialPersonal = SpecialPersonal::where('id', $request->specPersonId)->first();
-        $title = $request->title;
+        $title = $request->has('title') ? $request->title : 'Trener';
+        $position = 'osoba';
+        switch($specialPersonal->role){
+            case 1:
+                $position = 'sudija';
+                break;
+            case 2:
+                $position = 'trener';
+                break;
+        }
+    
+        
         if($specialPersonal->role == 1 && Auth::user()->user_type == 0) {
             return $this->error('', 'Sudije mogu dodati samo administratori!', 403);
         }
-        if($competition->roles->where('special_personals_id', $specialPersonal->id)->count() > 0) {
-            return $this->error('', 'Ovaj sudija je već dodat!', 422);
+        
+        if($competition->roles->where('special_personals_id', $specialPersonal->id)->count() >= 1) {
+            return $this->error('', "Ovaj $position je već dodat!", 422);
         }
         if(Auth::user()->user_type == 0 && $specialPersonal->role == 2) {
             $clubName = Auth::user()->club->name;
             $title = "$clubName Trener";
         }
+    
         $competition->roles()->create([
             'special_personals_id' => $request->specPersonId,
             'title' => $title,
             'role' => $specialPersonal->role
         ]);
-        return $this->success('', "Uspješno ste dodali $title!");
+        return $this->success('', "Uspješno dodat $title!");
     }
 }
