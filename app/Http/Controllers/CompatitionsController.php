@@ -68,9 +68,9 @@ class CompatitionsController extends Controller
         $search = '%'. $request->search . '%';
         //return response('alo');
         if($per_page == 0) {
-            return CategoriesResource::collection((new Collection($competition->categories))->get());
+            return CategoriesResource::collection((new Collection($competition->categories->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search))));
         }
-        return CategoriesResource::collection((new Collection($competition->categories))->paginate($per_page));
+        return CategoriesResource::collection((new Collection($competition->categories->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)))->paginate($per_page));
         
     }
     public function piblicCategories(Request $request, Compatition $competition) {

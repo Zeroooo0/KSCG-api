@@ -32,7 +32,7 @@ class CategoriesController extends Controller
         $paginate = $request->perPage;
         $category = Category::orderBy($sort, $sortDirection);
         $search = '%'. $request->search . '%';
-        return CategoriesResource::collection($category->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name)'), 'like', $search)->paginate($paginate));
+        return CategoriesResource::collection($category->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->paginate($paginate));
     }
 
     /**
