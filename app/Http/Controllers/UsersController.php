@@ -42,7 +42,7 @@ class UsersController extends Controller
        
             $user->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->whereNotIn('id', $clubs_used)->get();
         }
-        if(Auth::user()->user_type != 2){
+        if(Auth::user()->user_type != 2) {
             return UsersResource::collection(
                 $user->where('id', Auth::user()->id)->get()
             );

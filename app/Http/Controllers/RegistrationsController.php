@@ -31,7 +31,7 @@ class RegistrationsController extends Controller
         $competitionId = $compatition->id;
     
         if(Auth::user() != null){
-            if(Auth::user()->user_type == 0 && Auth::user()->club != null) {
+            if(Auth::user()->user_type == 0) {
                 $clubId = Auth::user()->club->id;
                 return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
             }
