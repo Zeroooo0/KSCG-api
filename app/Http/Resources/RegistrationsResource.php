@@ -38,7 +38,9 @@ class RegistrationsResource extends JsonResource
                 'kscgId' => $this->compatitor->kscg_compatitor_id,
                 'name' => $this->compatitor->name,
                 'lastName' => $this->compatitor->last_name,
-                'gender' => $this->compatitor->gender == 1 ? 'M' : 'Ž'
+                'gender' => $this->compatitor->gender,
+                'birthDay' => date($this->compatitor->date_of_birth),
+                'belt' => new BeltResource($this->compatitor->belt),
             ];
         }
         if($this->compatition != null) {

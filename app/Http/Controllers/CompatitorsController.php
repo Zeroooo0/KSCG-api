@@ -109,6 +109,12 @@ class CompatitorsController extends Controller
             $kscgId = $country . substr($kscgNewNo, 1);
             $compatitor->update(['kscg_compatitor_id'=> $kscgId]);
         }
+        if($compatitor->country != 'Crna Gora') {
+            $world = 'WKF';
+            $kscgNewNo = $compatitor->kscg_compatitor_id + $compatitor->id;
+            $kscgId = $world . substr($kscgNewNo, 1);
+            $compatitor->update(['kscg_compatitor_id'=> $kscgId]);
+        }
         
         if($request->has('document')) {
             $docPath = Storage::putFile('compatitors-docs', $request->document);
