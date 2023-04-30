@@ -64,12 +64,12 @@ class UsersController extends Controller
         if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
-        $user_type = Auth::user()->user_type == 2 ? $request->user_type : 0;
+        $user_type = Auth::user()->user_type == 2 ? $request->userType : 0;
         $request->validated($request->all());
 
         $user = User::create([
             'name' => $request->name,
-            'last_name' => $request->last_name,
+            'last_name' => $request->lastName,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'user_type' => $user_type,
