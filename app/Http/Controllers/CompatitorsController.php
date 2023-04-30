@@ -230,7 +230,7 @@ class CompatitorsController extends Controller
     public function destroy(Compatitor $competitor)
     {
         if(Auth::user()->user_type != 2){
-            return $this->restricted('', 'Brisanje nije dozvoljeno!', 403);
+            $competitor->update(['club_id' => null]);
         }
 
         foreach($competitor->image()->get() as $image) {
