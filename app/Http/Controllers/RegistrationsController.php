@@ -25,15 +25,29 @@ class RegistrationsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, Compatition $compatition)
     {
         $per_page = $request->perPage;
-        if(Auth::user()->user_type != 0 || Auth::user()->user_type == 1 && Auth::user()->status == 1){
-            return RegistrationsResource::collection(Registration::paginate($per_page));
+        $competitionId = $compatition->id;
+    
+        if(Auth::user() != null){
+            if(Auth::user()->user_type == 0 && Auth::user()->club != null) {
+                $clubId = Auth::user()->club->id;
+                return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
+            }
+
+            if(Auth::user()->user_type == 0 && Auth::user()->club == null){
+                return $this->error('', 'Molimo vas da prvo kreirate klub!',403);
+            }
+            if(Auth::user()->user_type != 0) {                   
+                return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->paginate($per_page));
+            }
+        } 
+        if(Auth::user() == null) {
+            return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->paginate($per_page));
         }
-        if(Auth::user()->user_type == 0 && Auth::user()->status == 1) {
-            return RegistrationsResource::collection(Registration::where('club_id', Auth::user()->club_id)->paginate($per_page));
-        }
+      
+       
     }
 
     /**
@@ -42,6 +56,70 @@ class RegistrationsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function newStore(Request $request, Compatition $competition) 
+    {
+        $category = $competition->categories->where('id',$request->categoryId)->first();
+        $isItSingle = $category->solo_or_team;
+        $isItKata = $category->kata_or_kumite;
+        $competitorsIds = $request->competitors;
+        $competitiors = Compatitor::whereIn('id',$competitorsIds)->get();
+        $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
+        $arrayOfRegistrations = [];
+        $responseErrorMessage = [];
+        if(!$isItSingle) {
+            $team = $competition->teams()->create([
+                'name' => $request->teamName
+            ]);
+        }
+        
+  
+        foreach($competitiors as $competitor) {
+            $isItError = false;
+            $categoryError = false;
+            if($isItSingle && $registrations->where('compatitor_id',$competitor->id)->count() >= 2) {
+                $isItError = true;
+            }
+            if($registrations->where('compatitor_id', $competitor->id)->where('category_id', $category->id)->count() >= 1) {
+                $categoryError = true;
+            }
+
+            if($isItError == false && $categoryError == false) {
+                $input['compatition_id'] = $competition->id;
+                $input['club_id'] = $competitor->club_id != null ? $competitor->club->id : null;
+                $input['compatitor_id'] = $competitor->id;
+                $input['category_id'] = $category->id;
+                $input['team_id'] = $isItSingle ? null : $team->id;
+                $input['team_or_single'] = $category->solo_or_team;
+                $input['kata_or_kumite'] = $category->kata_or_kumite;
+                $input['created_at'] = date("Y:m:d H:i:s");
+                $input['updated_at'] = date("Y:m:d H:i:s");
+                $input['status'] = 1;
+                $arrayOfRegistrations[] = $input;
+            } 
+            if ($isItError == true) {
+                $limitedCount = $isItSingle ? '2 prijave' : '1 prijavu';
+                $singleOrTeam = $isItSingle ? 'pojedinčnom' :'timskom';
+                $kateOrKumite = $isItKata ? 'kate' : 'kumite';
+                $name = $competitor->name;
+                $lastName = $competitor->last_name;
+                $input['message'] = "Takmičar $name $lastName ima $limitedCount u $singleOrTeam nastupu $kateOrKumite!";
+                $input['competitorId'] = (string)$competitor->id;
+                $responseErrorMessage[] = $input;
+            }
+            if ($categoryError == true) {
+                $name = $competitor->name;
+                $lastName = $competitor->last_name;
+                $input['message'] = "Takmičar $name $lastName je već prijavljen u ovoj kategoriji!";
+                $input['competitorId'] = (string)$competitor->id;
+                $responseErrorMessage[] = $input;
+            }
+        }
+        if(count($responseErrorMessage) == 0) {
+            Registration::insert($arrayOfRegistrations);
+            return $this->success('', 'Registracija uspješna!');
+        }
+        return $this->error($responseErrorMessage, 'Provjerite podatke!', 403);
+    }
     public function store(StoreRegistrationRequest $request)
     {
         /*

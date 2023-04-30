@@ -105,7 +105,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::resource('/users', UsersController::class);
     //Registration of compatitiors on compatition
     Route::resource('/teams', TeamsController::class);
-    Route::resource('/registrations', RegistrationsController::class);
+  
+    Route::get('/competition-aplications/{competition}', [RegistrationsController::class, 'index']);
+    Route::post('/competition-aplications/{competition}', [RegistrationsController::class, 'newStore']);
     //Pool table 
     Route::get('/pools', [PoolsController::class, 'index']);
     Route::patch('/pools/{pool}', [PoolsController::class, 'updatePool']);
@@ -127,7 +129,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/special-personal-competition/{specPersonnels}', [ReusableDataController::class, 'specPersonnelCompetitionRoles']);
     Route::get('/special-personal-other-roles/{specPersonnels}', [ReusableDataController::class, 'specPersonnelRoles']);
     //Compatition
-    Route::post('/competition-personal/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
+    Route::post('/competition-personnel/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Posts
     Route::resource('/news', PostsController::class);
     //Pages

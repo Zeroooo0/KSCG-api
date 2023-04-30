@@ -36,6 +36,10 @@ class Compatition extends Model
     {
         return $this->hasMany(Registration::class);
     }
+    public function teams()
+    {
+        return $this->hasMany(Team::class);
+    }
     public function pools()
     {
         return $this->hasMany(Pool::class);
