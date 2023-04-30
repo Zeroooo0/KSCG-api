@@ -71,9 +71,7 @@ class SpecialPersonalsController extends Controller
     {
         $request->validated($request->all());
 
-        if(Auth::user()->user_type == 0 && $request->role == 1) {
-            return $this->error('', 'Nije moguće dodati sudiju u klub!', 403);
-        }
+
 
         $role = $request->role;
         switch($role) {
@@ -100,7 +98,7 @@ class SpecialPersonalsController extends Controller
         
         if($request->has(['clubId','title'])) {
             $club = Auth::user()->user_type == 0 && Auth::user()->club != null ? Auth::user()->club : Club::where('id', $request->clubId)->first();
-            $title = $role == 0 || $role == 2 ? $request->title : $roleText;
+            $title = $role == 0 || $role == 1 ? $request->title : $roleText;
             $club->roles()->create([
                 'special_personals_id' => $special_personal->id,
                 'title' => $title,
