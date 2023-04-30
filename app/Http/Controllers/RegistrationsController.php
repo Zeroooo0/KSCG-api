@@ -25,11 +25,11 @@ class RegistrationsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Compatition $compatition)
+    public function index(Request $request, Compatition $competition)
     {
         $per_page = $request->perPage;
-        $competitionId = $compatition->id;
-    
+        $competitionId = $competition->id;
+
         if(Auth::user() != null){
             if(Auth::user()->user_type == 0) {
                 $clubId = Auth::user()->club->id;
