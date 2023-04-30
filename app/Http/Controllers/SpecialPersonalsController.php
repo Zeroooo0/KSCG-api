@@ -71,7 +71,7 @@ class SpecialPersonalsController extends Controller
     {
         $request->validated($request->all());
 
-        if(Auth::user()->user_type == 0 && $request->role == 2) {
+        if(Auth::user()->user_type == 0 && $request->role == 1) {
             return $this->error('', 'Nije moguće dodati sudiju u klub!', 403);
         }
 
@@ -80,10 +80,10 @@ class SpecialPersonalsController extends Controller
             case 0:
                 $roleText = 'Uprava';
                 break;
-            case 1:
+            case 2:
                 $roleText = 'Trener';
                 break;
-            case 2:
+            case 1:
                 $roleText = 'Sudija';
                 break;
         }
