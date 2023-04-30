@@ -67,8 +67,11 @@ class CompatitionsController extends Controller
       
         $search = '%'. $request->search . '%';
         //return response('alo');
-   
+        if($per_page == 0) {
+            return CategoriesResource::collection((new Collection($competition->categories))->get());
+        }
         return CategoriesResource::collection((new Collection($competition->categories))->paginate($per_page));
+        
     }
     public function piblicCategories(Request $request, Compatition $competition) {
         $filter = new CategoriesFilter();
@@ -194,6 +197,9 @@ class CompatitionsController extends Controller
 
         if($competition->registrations()->count() > 0 || $request->forceDelete == true){
             return $this->error('', 'Ovo takmičenje već ima registracije pa nije moguće obrisati ili pošaljite parametar [forceDelete=true]!', 403);
+        }
+        if(Auth::user()->user_type != 2) {
+            return $this->error('', 'Nije dozvoljeno brisati takmičenje!', 403);
         }
         $competition->roles()->delete();
         $competition->image()->delete();
