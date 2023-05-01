@@ -31,7 +31,7 @@ class CategoriesResource extends JsonResource
             'name' => $this->name,
             'kataOrKumite' => $kata_or_kumite,
             'categoryName' => $this->category_name,
-            'gender' => $gender, 
+            'gender' => $this->gender, 
             'soloOrTeam' => $soloOrTeam,
             'dateFrom' => date($this->date_from),
             'dateTo' => date($this->date_to),
