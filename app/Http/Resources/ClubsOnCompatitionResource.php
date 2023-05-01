@@ -45,13 +45,14 @@ class ClubsOnCompatitionResource extends JsonResource
         foreach($roles as $person) {
             $arrayOfRoles[] = $person->special_personals_id;
         }
-        $getCompetitionTrainers = Roles::whereIn('special_personals_id', $arrayOfRoles)->where('roleable_type','App\Models\Compatition')->where('roleable_id', $request->competitionId)->get('id');
+        $getCompetitionTrainers = Roles::whereIn('special_personals_id', $arrayOfRoles)->where('roleable_type','App\Models\Compatition')->where('roleable_id', $request->competitionId)->get('special_personals_id');
         $registeredTrainers = [];
+       
         foreach($getCompetitionTrainers as $trainer) {
-            $registeredTrainers[] = $trainer->id;
+            $registeredTrainers[] = $trainer->special_personals_id;
         }
         $registeredPersonnal = new SpecialPersonalsResource(SpecialPersonal::whereIn('id',$registeredTrainers)->first());
-
+        //return ['test' => $registeredTrainers];
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
