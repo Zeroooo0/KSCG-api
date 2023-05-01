@@ -108,6 +108,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
   
     Route::get('/competition-aplications/{competition}', [RegistrationsController::class, 'index']);
     Route::post('/competition-aplications/{competition}', [RegistrationsController::class, 'newStore']);
+    Route::delete('/competition-aplications/{registration}', [RegistrationsController::class, 'destroy']);
     //Pool table 
     Route::get('/pools', [PoolsController::class, 'index']);
     Route::patch('/pools/{pool}', [PoolsController::class, 'updatePool']);
