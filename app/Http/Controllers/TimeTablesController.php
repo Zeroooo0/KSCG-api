@@ -26,8 +26,8 @@ class TimeTablesController extends Controller
         $per_page = $request->perPage; 
         $filter = new TimeTableFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+        $sort = $request->sort == null ? 'tatami_no' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
         $timeTable = TimeTable::orderBy($sort, $sortDirection)->where('compatition_id', $competition->id);
 
         return TimeTableResource::collection($timeTable->where($queryItems)->paginate($per_page));
