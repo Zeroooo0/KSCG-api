@@ -25,12 +25,11 @@ class TimeTableResource extends JsonResource
         $pool = $category->solo_or_team == 1 ? Pool::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->get() : PoolTeam::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->get();
         $pools = PoolResource::collection($pool);
         $poolsTeam = PoolsTeamResource::collection($pool);
-        $data = 'embeddable';
-        $repesaz = [];
-        if(str_contains($request->embed, 'groups')) {
-            $data = $ekipno == null  ? $pools->whereIn('pool_type', ['G', 'SF', 'FM']) : $poolsTeam->whereIn('pool_type', ['G', 'SF', 'FM']);
-            $repesaz = $ekipno == null  ? $pools->whereIn('pool_type', ['R', 'RSF', 'RFM']) : $poolsTeam->whereIn('pool_type', ['R', 'RSF', 'RFM']);
-        }
+ 
+        
+        $data = $ekipno == null  ? $pools->whereIn('pool_type', ['G', 'SF', 'FM']) : $poolsTeam->whereIn('pool_type', ['G', 'SF', 'FM']);
+        $repesaz = $ekipno == null  ? $pools->whereIn('pool_type', ['R', 'RSF', 'RFM']) : $poolsTeam->whereIn('pool_type', ['R', 'RSF', 'RFM']);
+
         $delay = 0;
         $etoStart = 0;
         if($this->finish_time == null && $this->started_time != null) {
