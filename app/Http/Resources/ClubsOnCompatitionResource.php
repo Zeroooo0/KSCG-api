@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Club;
+use App\Models\Roles;
 use App\Models\SpecialPersonal;
 use App\Models\Team;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -39,12 +40,17 @@ class ClubsOnCompatitionResource extends JsonResource
         if(Auth::user() == null){
             $totalPrice = null;
         }
-        $roles = $this->roles->where('roleable_type', 'App\Models\Compatition')->where('roleable_id', $request->competitionId);
+        $roles = $this->roles;
         $arrayOfRoles = [];
         foreach($roles as $person) {
             $arrayOfRoles[] = $person->special_personals_id;
         }
-        $registeredPersonnal = SpecialPersonal::whereIn('id',$arrayOfRoles)->get();
+        $getCompetitionTrainers = Roles::whereIn('special_personals_id', $arrayOfRoles)->where('roleable_type','App\Models\Compatition')->where('roleable_id', $request->competitionId)->get('id');
+        $registeredTrainers = [];
+        foreach($getCompetitionTrainers as $trainer) {
+            $registeredTrainers[] = $trainer->id;
+        }
+        $registeredPersonnal = new SpecialPersonalsResource(SpecialPersonal::whereIn('id',$registeredTrainers)->first());
 
         return [
             'id' => (string)$this->id,
