@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Club;
+use App\Models\SpecialPersonal;
 use App\Models\Team;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +39,12 @@ class ClubsOnCompatitionResource extends JsonResource
         if(Auth::user() == null){
             $totalPrice = null;
         }
+        $roles = $this->roles->where('roleable_type', 'App\Models\Compatition')->where('roleable_id', $request->competitionId);
+        $arrayOfRoles = [];
+        foreach($roles as $person) {
+            $arrayOfRoles[] = $person->special_personals_id;
+        }
+        $registeredPersonnal = SpecialPersonal::whereIn('id',$arrayOfRoles)->get();
 
         return [
             'id' => (string)$this->id,
@@ -50,8 +57,10 @@ class ClubsOnCompatitionResource extends JsonResource
             'silver' => $reg_compatitors->where('position', 2)->count(),
             'bronze' => $reg_compatitors->where('position', 1)->count(),
             'points' => $reg_compatitors->sum('position'),
+            'officialTrainer' => $registeredPersonnal,
             'teamsList' => $request->has('embed') && str_contains($request->embed, 'teamsList') ? TeamsRegistrationsResource::collection($teamCollection->get()) : 'embedable',
-            'singlesList' => $request->has('embed') && str_contains($request->embed, 'singlesList') ? RegistratedCompatitorsSingleResource::collection($registration_single) : 'embedable'
+            'singlesList' => $request->has('embed') && str_contains($request->embed, 'singlesList') ? RegistratedCompatitorsSingleResource::collection($registration_single) : 'embedable',
+            
         ];
     }
 }
