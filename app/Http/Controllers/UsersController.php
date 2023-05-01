@@ -111,7 +111,7 @@ class UsersController extends Controller
                 return $this->restricted('', 'Not alowed!', 403);
             }
         }
-        $user->update($request->except(['password', 'status']));
+        $user->update($request->except(['password', 'status', 'userType']));
         if($request->has('status')) {
             $user->update(['status' => $request->status]);
             if($user->club != null) {
@@ -125,6 +125,12 @@ class UsersController extends Controller
                 ]);
             } 
             return $this->restricted('', 'Not alowed!', 403);
+        }
+        if($request->has('userType')) {
+            if($user->user_type == 2) {
+                return $this->error('','Nije moguće degradirati administratora!',403);
+            }
+            $user->update(['user_type' => $request->userType]);
         }
         
         

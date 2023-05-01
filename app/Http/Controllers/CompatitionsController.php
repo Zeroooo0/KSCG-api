@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Filters\CategoriesFilter;
 use App\Filters\CompatitionsFilter;
+use App\Filters\CompatitorsFilter;
 use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CategoriesResource;
@@ -12,6 +13,8 @@ use App\Http\Resources\CompatitionsResource;
 use App\Http\Resources\RegistrationsResource;
 use App\Models\Club;
 use App\Models\Compatition;
+use App\Models\Compatitor;
+use App\Models\Registration;
 use App\Models\SpecialPersonal;
 use Illuminate\Http\Request;
 use App\Support\Collection;
@@ -85,12 +88,23 @@ class CompatitionsController extends Controller
     public function piblicRegistrations(Request $request, Compatition $competition) {
         //$filter = new CategoriesFilter();
         //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        
+        $filter = new CompatitorsFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
+        $competitionResoults = Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competition->id);
+        $quertCount = count($queryItems);
         $per_page = $request->perPage;
         $search = '%'. $request->search . '%';
+        $searchedCompetitors = [];
+        if($request->has('search') || $quertCount > 0) {
+            $competitiors = Compatitor::where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->where($queryItems)->get('id');
+            foreach($competitiors as $competitor){
+                $searchedCompetitors[] = $competitor->id;
+            }
+        }
 
-
-        return RegistrationsResource::collection((new Collection($competition->registrations))->paginate($per_page));
+        return RegistrationsResource::collection($competitionResoults->whereIn('compatitor_id', $searchedCompetitors)->paginate($per_page));
 
     }
     
