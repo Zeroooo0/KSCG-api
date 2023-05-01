@@ -39,7 +39,6 @@ class TimeTableResource extends JsonResource
             $delay = ($startedAt - $etoStart)/60;
         }
         if($this->finish_time != null) {
-            $delay = $this->eto_finish - $this->finish_time;
             $etoFinish = strtotime($this->eto_finish);
             $finishTime = strtotime($this->finish_time);
             $delay = ($finishTime - $etoFinish)/60;
