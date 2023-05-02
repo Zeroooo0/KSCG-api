@@ -45,14 +45,8 @@ class ClubsOnCompatitionResource extends JsonResource
         foreach($roles as $person) {
             $arrayOfRoles[] = $person->special_personals_id;
         }
-        $getCompetitionTrainers = Roles::whereIn('special_personals_id', $arrayOfRoles)->where('roleable_type','App\Models\Compatition')->where('roleable_id', $request->competitionId)->get('special_personals_id');
-        $registeredTrainers = [];
-       
-        foreach($getCompetitionTrainers as $trainer) {
-            $registeredTrainers[] = $trainer->special_personals_id;
-        }
-        $registeredPersonnal = new SpecialPersonalsResource(SpecialPersonal::whereIn('id',$registeredTrainers)->first());
-        //return ['test' => $registeredTrainers];
+    
+        
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
@@ -65,7 +59,6 @@ class ClubsOnCompatitionResource extends JsonResource
             'silver' => $reg_compatitors->where('position', 2)->count(),
             'bronze' => $reg_compatitors->where('position', 1)->count(),
             'points' => $reg_compatitors->sum('position'),
-            'officialTrainer' => $registeredPersonnal,
             'teamsList' => $request->has('embed') && str_contains($request->embed, 'teamsList') ? TeamsRegistrationsResource::collection($teamCollection->get()) : 'embedable',
             'singlesList' => $request->has('embed') && str_contains($request->embed, 'singlesList') ? RegistratedCompatitorsSingleResource::collection($registration_single) : 'embedable',
             

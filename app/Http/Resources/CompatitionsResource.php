@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\Club;
 use App\Models\Compatition;
+use App\Models\SpecialPersonal;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CompatitionsResource extends JsonResource
@@ -35,8 +36,20 @@ class CompatitionsResource extends JsonResource
                 $documents =  'Nema dokumenta';
             }
         }
+        $registeredPersonnal = null;
+        if($request->has('clubId')) {
+            $requestedClub = Club::where('id', $request->clubId)->first()->roles;
+            $clubRoles = [];
+            foreach($requestedClub as $role) {
+                $clubRoles[] = $role->special_personals_id;
+            }
+            $testRole = $this->roles->whereIn('special_personals_id', $clubRoles)->first();
+            if($testRole != null) {
+                $registeredPersonnal = new SpecialPersonalsResource(SpecialPersonal::where('id', $testRole->special_personals_id)->first());
+            } 
+        }
 
-
+ 
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
@@ -53,6 +66,7 @@ class CompatitionsResource extends JsonResource
             'status' => (boolean)$this->status,
             'registrationStatus' => (boolean)$this->registration_status,
             'tatamiNumber' => $this->tatami_no,
+            'officialTrainer' => $registeredPersonnal,
             'registrations' => [
                 'clubs' => $this->registrations->countBy('club_id')->count(),
                 'compatitor' => $this->registrations->countBy('compatitor_id')->count(),
