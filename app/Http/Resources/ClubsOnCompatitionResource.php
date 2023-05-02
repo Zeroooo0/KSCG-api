@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Club;
+use App\Models\Compatition;
 use App\Models\Roles;
 use App\Models\SpecialPersonal;
 use App\Models\Team;
@@ -22,7 +22,7 @@ class ClubsOnCompatitionResource extends JsonResource
 
 
         $reg_compatitors = $this->registrations->where('compatition_id', $request->competitionId);
- 
+        $competition = Compatition::where('id', $request->competitionId)->first();
         $single_price = 0;
         $team_price = 0;
         foreach ($reg_compatitors as $test=>$val) {
@@ -56,6 +56,7 @@ class ClubsOnCompatitionResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
+            'competitionName' => $competition->name,
             'totalRegistrationNo' => $reg_compatitors->count(),
             'singleRegistrationNo' => $registration_single->count(),
             'teamRegistrationNo' => $registration_team->count(),

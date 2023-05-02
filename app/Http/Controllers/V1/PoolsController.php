@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\PoolResource;
 use App\Http\Resources\PoolsTeamResource;
 use App\Models\Category;

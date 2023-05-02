@@ -1,19 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
-use App\Http\Requests\StoreRegistrationRequest;
-use App\Http\Resources\CompatitorsResource;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\RegistrationsResource;
-use App\Models\Category;
-use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\Compatitor;
 use App\Models\Registration;
-use App\Models\SpecialPersonal;
 use App\Traits\HttpResponses;
-use ArrayObject;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

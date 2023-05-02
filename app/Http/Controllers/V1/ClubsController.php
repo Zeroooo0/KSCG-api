@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
+use App\Http\Controllers\Controller;
 use App\Filters\ClubsFilter;
 use App\Http\Requests\StoreClubRequest;
 use App\Http\Resources\ClubsResource;

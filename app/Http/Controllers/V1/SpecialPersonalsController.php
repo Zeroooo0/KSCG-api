@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
+use App\Http\Controllers\Controller;
 use App\Filters\SpecialPersonalsFilter;
 use App\Http\Requests\StoreSpecialPersonalRequest;
 use App\Http\Requests\UpdateSpecialPersonalRequest;

@@ -1,21 +1,21 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoriesController;
-use App\Http\Controllers\ClubsController;
-use App\Http\Controllers\ComponentController;
-use App\Http\Controllers\CompatitorsController;
-use App\Http\Controllers\CompatitionsController;
-use App\Http\Controllers\FileController;
-use App\Http\Controllers\PagesController;
-use App\Http\Controllers\PoolsController;
-use App\Http\Controllers\PostsController;
-use App\Http\Controllers\RegistrationsController;
-use App\Http\Controllers\ReusableDataController;
-use App\Http\Controllers\SpecialPersonalsController;
-use App\Http\Controllers\TeamsController;
-use App\Http\Controllers\TimeTablesController;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\V1\AuthController;
+use App\Http\Controllers\V1\CategoriesController;
+use App\Http\Controllers\V1\ClubsController;
+use App\Http\Controllers\V1\ComponentController;
+use App\Http\Controllers\V1\CompatitorsController;
+use App\Http\Controllers\V1\CompatitionsController;
+use App\Http\Controllers\V1\FileController;
+use App\Http\Controllers\V1\PagesController;
+use App\Http\Controllers\V1\PoolsController;
+use App\Http\Controllers\V1\PostsController;
+use App\Http\Controllers\V1\RegistrationsController;
+use App\Http\Controllers\V1\ReusableDataController;
+use App\Http\Controllers\V1\SpecialPersonalsController;
+use App\Http\Controllers\V1\TeamsController;
+use App\Http\Controllers\V1\TimeTablesController;
+use App\Http\Controllers\V1\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

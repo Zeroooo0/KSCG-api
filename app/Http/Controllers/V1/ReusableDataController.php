@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
+use App\Filters\ClubsFilter;
+use App\Http\Controllers\Controller;
 use App\Filters\CompatitorsFilter;
 use App\Http\Requests\BulkBeltsStoreRequest;
 use App\Http\Requests\StoreClubAdministration;
@@ -159,6 +161,10 @@ class ReusableDataController extends Controller
     }
     public function registeredClubs(Request $request) 
     {
+        $filter = new ClubsFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $sort = $request->sort == null ? 'id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         if(!$request->has('competitionId'))
         {
             return $this->error('', 'Mora da postoji parametar competitionId={id}', 422);
@@ -173,7 +179,7 @@ class ReusableDataController extends Controller
 
         $clubs = Club::whereIn('id', array_filter($clubs));
 
-        return ClubsOnCompatitionResource::collection($clubs->paginate($per_page));
+        return ClubsOnCompatitionResource::collection($clubs->orderBy($sort, $sortDirection)->where($queryItems)->paginate($per_page));
     }
     public function competitionRoles(Compatition $competition, Request $request)
     {
