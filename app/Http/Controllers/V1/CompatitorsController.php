@@ -218,7 +218,7 @@ class CompatitorsController extends Controller
             $competitor->update([
                 'status' => 0
             ]);
-            return $this->success('', 'Uspješno obrisan takmičar!');
+
         }
         return new CompatitorsResource($competitor);
     }
@@ -233,6 +233,7 @@ class CompatitorsController extends Controller
     {
         if(Auth::user()->user_type != 2){
             $competitor->update(['club_id' => null]);
+            return $this->success('', 'Uspješno obrisan takmičar!');
         }
 
         foreach($competitor->image()->get() as $image) {
