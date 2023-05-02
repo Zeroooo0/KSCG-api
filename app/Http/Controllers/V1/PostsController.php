@@ -58,6 +58,7 @@ class PostsController extends Controller
     public function store(StorePostsRequest $request)
     {
         $request->validated($request->except('slug'));
+
         $news = Post::create([
             'slug' => str_replace(' ', '-', strtolower(trim($request->title, '.'))),
             'title' => $request->title,
@@ -66,6 +67,9 @@ class PostsController extends Controller
             'excerpt' => $request->excerpt,
             'user_id' => Auth::user()->id
         ]);
+
+        $news->update(['slug' => $news->slug . '-' . $news->id]);
+
         if($request->has('image')){
             $path = Storage::putFile('post-image', $request->image);
             $image = $news->images()->create([
