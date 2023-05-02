@@ -218,6 +218,7 @@ class CompatitorsController extends Controller
             $competitor->update([
                 'status' => 0
             ]);
+            return $this->success('', 'Uspješno obrisan takmičar!');
         }
         return new CompatitorsResource($competitor);
     }
