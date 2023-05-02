@@ -138,6 +138,6 @@ class RegistrationsController extends Controller
     public function destroy(Registration $registration)
     {
         $registration->delete();
-        $this->success('', 'Uspješno obrisana registracija!');
+        return $this->success('', 'Uspješno obrisana registracija!');
     }
 }
