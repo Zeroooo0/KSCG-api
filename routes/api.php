@@ -140,6 +140,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('page-component/{page}', [ComponentController::class, 'storePageComponent']);
     Route::post('news-component/{news}', [ComponentController::class, 'storePostComponent']);
     Route::delete('component/{component}', [ComponentController::class, 'destroy']);
+    Route::patch('component/{component}', [ComponentController::class, 'update']);
     //component file managament
     Route::post('component-document/{component}', [FileController::class, 'storeComponentDocs']);
     Route::post('component-roles/{component}', [ReusableDataController::class, 'storeComponentRole']);
