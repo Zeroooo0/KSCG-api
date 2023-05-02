@@ -23,8 +23,8 @@ return new class extends Migration
             $table->tinyInteger('gender');
             $table->date('date_from');
             $table->date('date_to');
-            $table->decimal('weight_from', 5, 2);
-            $table->decimal('weight_to', 5, 2);
+            $table->decimal('weight_from')->nullable();
+            $table->decimal('weight_to')->nullable();
             // 0=Solo 1=Team 
             $table->boolean('solo_or_team');
             $table->integer('match_lenght');

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('jmbg');
             $table->string('country');
             $table->date('date_of_birth');
-            $table->decimal('weight', 6, 2);
+            $table->decimal('weight');
             $table->boolean('status')->default(false);
             $table->foreignId('club_id')
                 ->nullable()

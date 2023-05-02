@@ -36,7 +36,7 @@ class StoreCompatitorRequest extends FormRequest
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:2048'],
             'clubId' => ['integer'],
             'status' => ['boolean'],
-            'document' => [ 'mimes:doc,docx,pdf,xml,html', 'max:20480']
+            'document' => [ 'mimes:doc,docx,pdf,xml,html,jpg,jpeg,svg,gif,png', 'max:20480']
         ];
     }
 }

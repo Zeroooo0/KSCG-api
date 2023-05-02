@@ -251,7 +251,26 @@ class CompatitionsController extends Controller
             $clubName = Auth::user()->club->name;
             $title = "$clubName Trener";
         }
-    
+        
+        if(Auth::user()->user_type == 0 && Auth::user()->club != null) {
+            $clubId = Auth::user()->club;
+            $clubData = Club::where('id', $clubId->id)->first();
+            $clubRoles = [];
+            foreach($clubData->roles as $role){
+
+                if($competition->roles->where('special_personals_id', $role->special_personals_id)->first() != null ) {
+                    $clubRoles[] = $role->special_personals_id;
+                }
+            }
+            $foundRoles = $competition->roles->whereIn('special_personals_id', $clubRoles);
+            foreach($foundRoles as $oneRole) {
+                $oneRole->delete();
+            }
+
+        }
+
+        
+
         $competition->roles()->create([
             'special_personals_id' => $request->specPersonId,
             'title' => $title,
