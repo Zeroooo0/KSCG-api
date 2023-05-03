@@ -116,7 +116,7 @@ class ReusableDataController extends Controller
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $clubRolles = $club->roles();
         $clubsRollesIds = [];
-        foreach($clubRolles as $data){  
+        foreach($clubRolles as $data){
             $clubsRollesIds[] = $data->special_personals_id;
         }
         //return $clubsRollesIds;
