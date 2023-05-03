@@ -232,7 +232,7 @@ class CompatitorsController extends Controller
     public function destroy(Compatitor $competitor)
     {
         if(Auth::user()->user_type != 2){
-            $competitor->update(['club_id' => null]);
+            $competitor->update(['club_id' => null, 'status' => 0]);            
             return $this->success('', 'Uspješno obrisan takmičar!');
         }
 
