@@ -66,10 +66,10 @@ class CompatitorsResource extends JsonResource
             'image' => $path,
             'createAt' => date($this->created_at),
             'updatedAt' => date($this->updated_at),
-            'club' => $this->club != null ??[
-                'id' => (string)$this->club->id,
-                'name' => $this->club->name,
-                'shortName' => $this->club->short_name,
+            'club' =>  [
+                'id' => $this->club != null ? (string)$this->club->id : "Nije dodijeljen klub",
+                'name' => $this->club != null ? $this->club->name : "Nije dodijeljen klub",
+                'shortName' => $this->club != null ? $this->club->short_name : "Nije dodijeljen klub",
             ],
             'medals' => [
                 'gold' => $gold,
