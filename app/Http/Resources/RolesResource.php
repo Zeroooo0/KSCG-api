@@ -31,9 +31,10 @@ class RolesResource extends JsonResource
         }
         $role = 'Uprava';
         $val = 'clubName';
+        $val = 'competitionName';
         if($this->role == 1) {
             $role = 'Sudija';
-            $val = 'competitionName';
+      
         }
         if($this->role == 2) {
             $role = 'Trener';
@@ -47,7 +48,8 @@ class RolesResource extends JsonResource
             'role' => $role,
             'status' => (boolean)$specialPersonal->status,
             'image' => $path,
-            $val => $this->roleable->name,
+            'clubName' => $this->role == 1 ? null : $this->roleable->name,
+            'competitionName' => $this->role != 1 ? null : $this->roleable->name,
             'registeredOn' => date('Y-m-d H:m:s', strtotime($this->roleable->created_at))
         ];
     }
