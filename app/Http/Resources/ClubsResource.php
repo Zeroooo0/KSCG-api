@@ -62,8 +62,8 @@ class ClubsResource extends JsonResource
             'gold' => $dataTeamGold + $dataSingleGold,
             'silver' => $dataTeamSilver + $dataSingleSilver,
             'bronze' => $dataTeamBronze + $dataSingleBronze,
-            'roles' => RolesResource::collection($this->roles->where('roles', 0)),
-            'coachList' => RolesResource::collection($this->roles->where('roles', 2))
+            'roles' => RolesResource::collection($this->roles->where('role', 0)),
+            'coachList' => RolesResource::collection($this->roles->where('role', 2))
         ];
     }
 }
