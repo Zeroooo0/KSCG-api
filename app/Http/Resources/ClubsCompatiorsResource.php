@@ -16,12 +16,10 @@ class ClubsCompatiorsResource extends JsonResource
     {
         return [
             'id' => (string)$this->id,
-            'name' => $this->name,
-            'lastName' => $this->last_name,        
-            'status' => (boolean)$this->status,
-            'belt' => $this->belt,
-            'brthDay' => date($this->date_of_birth),
-            'weight' => $this->weight
+            'name' => $this->name . ' ' . $this->last_name,   
+            'kscgId' => $this->kscg_compatitor_id,
+            'brthDay' => date($this->date_of_birth),      
+            'belt' => $this->belt
         ];
     }
 }

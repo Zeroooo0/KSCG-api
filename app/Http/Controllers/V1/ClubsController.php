@@ -114,7 +114,7 @@ class ClubsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show_public(Club $club)
+    public function show_public(Club $club, Request $request)
     {
         return new ClubsResource($club);
     }

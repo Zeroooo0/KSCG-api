@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Compatitor;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,6 +44,21 @@ class ClubsResource extends JsonResource
         $dataSingleGold = $this->registrations->where('team_or_single', 1)->where('position', 3)->count();
         $dataSingleSilver = $this->registrations->where('team_or_single', 1)->where('position', 2)->count();
         $dataSingleBronze = $this->registrations->where('team_or_single', 1)->where('position', 1)->count();
+ 
+        $clubAdministration = [
+            'title' => 'Uprava kluba',
+            'roles' => RolesResource::collection($this->roles->where('role', 0))
+        ];
+        $clubCoachList = [
+            'title' => 'Treneri',
+            'roles' => RolesResource::collection($this->roles->where('role', 2))
+        ];
+        $clubCompetitors = [
+            'title' => 'Takmičari',
+            'roles' => ClubsCompatiorsResource::collection(Compatitor::where('club_id', $this->id)->paginate($request->perPage))
+         
+        ];
+
 
         return [
             'id' => (string)$this->id,
@@ -63,7 +79,8 @@ class ClubsResource extends JsonResource
             'silver' => $dataTeamSilver + $dataSingleSilver,
             'bronze' => $dataTeamBronze + $dataSingleBronze,
             'roles' => RolesResource::collection($this->roles->where('role', 0)),
-            'coachList' => RolesResource::collection($this->roles->where('role', 2))
+            'coachList' => RolesResource::collection($this->roles->where('role', 2)),
+            'components' => [$clubAdministration, $clubCoachList, $clubCompetitors ]
         ];
     }
 }
