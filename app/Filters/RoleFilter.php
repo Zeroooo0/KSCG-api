@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 class RoleFilter {
     protected $safeParms = [
         'role' => ['eq','neq'],
-        'status' => ['eq'],
     ];
 
     protected $columnsMap = [
