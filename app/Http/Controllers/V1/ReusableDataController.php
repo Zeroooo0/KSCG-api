@@ -116,12 +116,8 @@ class ReusableDataController extends Controller
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $clubRolles = $club->roles();
         $clubsRollesIds = [];
-        foreach($clubRolles as $data){
-            $specPersonel = SpecialPersonal::where('id', $data->special_personals_id)->first();
-            return $specPersonel->status;
-            if($specPersonel->status == 1) {
+        foreach($clubRolles as $data){  
                 $clubsRollesIds[] = $data->special_personals_id;
-            }
         }
         //return $clubsRollesIds;
         return RolesResource::collection(Roles::whereIn('special_personals_id', $clubsRollesIds)->where('roleable_type', 'App\Models\Club')->where('roleable_id', $club->id)->where($queryItems)->paginate($request->perPage));
