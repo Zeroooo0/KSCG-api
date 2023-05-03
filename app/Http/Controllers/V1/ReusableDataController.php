@@ -118,7 +118,7 @@ class ReusableDataController extends Controller
         $clubsRollesIds = [];
         foreach($clubRolles as $data){
             $specialPersonal = SpecialPersonal::where('id', $data->special_personals_id)->first();
-            if($request->removeInactive == 'true'){
+            if($request->removeInactive == 1){
                 if($specialPersonal->status == 1) {
                     $clubsRollesIds[] = $data->special_personals_id;
                 }
