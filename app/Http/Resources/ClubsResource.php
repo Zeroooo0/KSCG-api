@@ -46,21 +46,32 @@ class ClubsResource extends JsonResource
         $dataSingleBronze = $this->registrations->where('team_or_single', 1)->where('position', 1)->count();
         $haseComponents = str_contains($request->embed, 'components');
 
-        
-        $clubAdministration = [
-            'title' => 'Uprava kluba',
-            'roles' => RolesResource::collection($this->roles->where('role', 0))
-        ];
-        $clubCoachList = [
-            'title' => 'Treneri',
-            'roles' => RolesResource::collection($this->roles->where('role', 2))
-        ];
-        $clubCompetitors = [
-            'title' => 'Takmičari',
-            'roles' => ClubsCompatiorsResource::collection(Compatitor::where('club_id', $this->id)->paginate($request->perPage))
-         
-        ];
+        $rolesAdministration = RolesResource::collection($this->roles->where('role', 0));
+        $rolesCoach = RolesResource::collection($this->roles->where('role', 2));
+        $competitors = ClubsCompatiorsResource::collection(Compatitor::where('club_id', $this->id)->paginate($request->perPage));
 
+        $rolesArray = [];
+        if(!$rolesAdministration->isEmpty()) {
+            $rolesArray[] =[
+                'title' => 'Uprava kluba',
+                'roles' => $rolesAdministration
+            ];
+        }
+        if(!$rolesCoach->isEmpty()) {
+            $rolesArray[] =[
+                'title' => 'Treneri',
+                'roles' => $rolesCoach
+            ];
+        }
+        if(!$competitors->isEmpty()) {
+            $rolesArray[] =[
+                'title' => 'Takmičari',
+                'roles' => $competitors
+             
+            ];
+        }
+
+      
 
         return [
             'id' => (string)$this->id,
@@ -80,7 +91,7 @@ class ClubsResource extends JsonResource
             'gold' => $dataTeamGold + $dataSingleGold,
             'silver' => $dataTeamSilver + $dataSingleSilver,
             'bronze' => $dataTeamBronze + $dataSingleBronze,
-            'components' => !$haseComponents ? "ebeddable" : [$clubAdministration, $clubCoachList, $clubCompetitors ]
+            'components' => !$haseComponents ? "ebeddable" : $rolesArray
         ];
     }
 }
