@@ -100,7 +100,7 @@ class CompatitorsController extends Controller
             'jmbg' => $request->jmbg,
             'belt_id' => $request->belt,
             'date_of_birth' => $request->dateOfBirth,
-            'weight' => $request->weight,
+            'weight' => $request->has('weight') ? $request->weight : NULL,
             'country' => $request->country,
             'status' => Auth::user()->user_type == 0 ? 0 : 1
         ]);

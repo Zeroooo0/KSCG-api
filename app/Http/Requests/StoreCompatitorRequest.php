@@ -32,7 +32,7 @@ class StoreCompatitorRequest extends FormRequest
             'jmbg' => ['required', 'numeric'],
             'belt' => ['required', 'integer'],
             'dateOfBirth' => ['required', 'date'],
-            'weight' => ['required', 'numeric'],
+            'weight' => ['numeric'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:2048'],
             'clubId' => ['integer'],
             'status' => ['boolean'],
