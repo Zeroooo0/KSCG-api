@@ -13,7 +13,7 @@ class SpecialPersonalsFilter {
         'email' => ['eq', 'like'],
         'gender' => ['eq'],
         'country' => ['eq', 'like'],
-        'role' => ['eq']
+        'role' => ['eq', 'neq']
     ];
 
     protected $columnsMap = [
@@ -22,6 +22,7 @@ class SpecialPersonalsFilter {
 
     protected $operatorMap = [
         'eq' => '=',
+        'neq' => '!=',
         'like' => 'like'
     ];
 
