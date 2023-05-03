@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Filters\ClubsFilter;
 use App\Http\Controllers\Controller;
 use App\Filters\CompatitorsFilter;
+use App\Filters\RoleFilter;
 use App\Http\Requests\BulkBeltsStoreRequest;
 use App\Http\Requests\StoreClubAdministration;
 use App\Http\Resources\BeltResource;
@@ -111,13 +112,15 @@ class ReusableDataController extends Controller
 
     public function getClubsAdministration(Request $request, Club $club)
     {
+        $filter = new RoleFilter();
+        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $clubRolles = $club->roles()->get();
         $clubsRollesIds = [];
         foreach($clubRolles as $data){
             $clubsRollesIds[] = $data->special_personals_id;
         }
         //return $clubsRollesIds;
-        return RolesResource::collection(Roles::whereIn('special_personals_id', $clubsRollesIds)->where('roleable_type', 'App\Models\Club')->where('roleable_id', $club->id)->paginate($request->perPage));
+        return RolesResource::collection(Roles::whereIn('special_personals_id', $clubsRollesIds)->where('roleable_type', 'App\Models\Club')->where('roleable_id', $club->id)->where($queryItems)->paginate($request->perPage));
     }
 
 
