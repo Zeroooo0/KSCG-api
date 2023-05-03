@@ -118,6 +118,7 @@ class ReusableDataController extends Controller
         $clubsRollesIds = [];
         foreach($clubRolles as $data){
             $specPersonel = SpecialPersonal::where('id', $data->special_personals_id)->first();
+            return $specPersonel->status;
             if($specPersonel->status == 1) {
                 $clubsRollesIds[] = $data->special_personals_id;
             }
