@@ -27,7 +27,7 @@ return new class extends Migration
             $table->tinyInteger('tatami_no');
             $table->boolean('registration_status')->default(1);
             $table->string('host_name');
-            $table->integer('points_multiplier');
+            $table->integer('points_multiplier')->nullable();
             $table->timestamps();
         });
     }

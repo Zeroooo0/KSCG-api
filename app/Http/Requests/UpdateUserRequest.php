@@ -28,7 +28,8 @@ class UpdateUserRequest extends FormRequest
             'name' => ['string', 'max:255'],
             'last_name' => ['string', 'max:255'],
             'email' => ['string', 'max:255', 'unique:users'],
-            'password' => [ 'confirmed'],
+            'password' => [ 'min:6','required_with:passwordConfirmation', 'same:passwordConfirmation', Rules\Password::defaults()],
+            'passwordConfirmation' => ['min:6'],
             'user_type' => ['integer', 'max:2']
         ];
     }

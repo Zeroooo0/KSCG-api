@@ -122,10 +122,11 @@ class UsersController extends Controller
         if($request->has('password')) {
             if(Auth::user()->user_type == 2) {
                 $user->update([
-                    'password' => Hash::make($request->password)
+                    'password' => Hash::make($request->password),
+                    'passwordConfirmation' => Hash::make($request->passwordConfirmation)
                 ]);
             } 
-            return $this->restricted('', 'Not alowed!', 403);
+            return $this->success('', 'Uspješno izmjenjen korisnik!');
         }
         if($request->has('userType')) {
             if($user->user_type == 2) {
