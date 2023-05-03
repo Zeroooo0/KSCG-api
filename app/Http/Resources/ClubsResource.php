@@ -44,7 +44,9 @@ class ClubsResource extends JsonResource
         $dataSingleGold = $this->registrations->where('team_or_single', 1)->where('position', 3)->count();
         $dataSingleSilver = $this->registrations->where('team_or_single', 1)->where('position', 2)->count();
         $dataSingleBronze = $this->registrations->where('team_or_single', 1)->where('position', 1)->count();
- 
+        $haseComponents = str_contains($request->embed, 'components');
+
+        
         $clubAdministration = [
             'title' => 'Uprava kluba',
             'roles' => RolesResource::collection($this->roles->where('role', 0))
@@ -78,9 +80,7 @@ class ClubsResource extends JsonResource
             'gold' => $dataTeamGold + $dataSingleGold,
             'silver' => $dataTeamSilver + $dataSingleSilver,
             'bronze' => $dataTeamBronze + $dataSingleBronze,
-            'roles' => RolesResource::collection($this->roles->where('role', 0)),
-            'coachList' => RolesResource::collection($this->roles->where('role', 2)),
-            'components' => [$clubAdministration, $clubCoachList, $clubCompetitors ]
+            'components' => !$haseComponents ? "ebeddable" : [$clubAdministration, $clubCoachList, $clubCompetitors ]
         ];
     }
 }
