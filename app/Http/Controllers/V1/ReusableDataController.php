@@ -118,7 +118,7 @@ class ReusableDataController extends Controller
         $clubsRollesIds = [];
         foreach($clubRolles as $data){
             $specPersonel = SpecialPersonal::where('id', $data->special_personals_id)->first();
-            $specPersonel->status ? $clubsRollesIds[] = $data->special_personals_id : NULL;
+            (boolean)$specPersonel->status ? $clubsRollesIds[] = $data->special_personals_id : NULL;
         }
         //return $clubsRollesIds;
         return RolesResource::collection(Roles::whereIn('special_personals_id', $clubsRollesIds)->where('roleable_type', 'App\Models\Club')->where('roleable_id', $club->id)->where($queryItems)->paginate($request->perPage));
