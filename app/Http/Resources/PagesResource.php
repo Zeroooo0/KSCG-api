@@ -32,22 +32,40 @@ class PagesResource extends JsonResource
             $cover_image = new ImageResource($this->images->where('id', $this->cover_image)->first());
         }
         $components = $this->components->sortBy('order_number');
-        $assambly = [
-            'title'=> 'SKUPŠTINA',
-            'roles' => [],
-            'components' => ComponentResource::collection($components->where('type', 'tab-assembly')),
-        ];
+        $assamblyComponents = ComponentResource::collection($components->where('type', 'tab-assembly'));
         $componentsCollection =  ComponentResource::collection($components->where('type', 'tab-roles'));
-        $commission = [
-            'title'=> 'SKUPŠTINA',
-            'roles' => [],
-            'components' => ComponentResource::collection($components->where('type', 'tab-commission')),
-        ];
-        $judes = [
-            'title'=> 'SKUPŠTINA',
-            'roles' => [],
-            'components' => ComponentResource::collection($components->where('type', 'tab-judicial-organization')),
-        ];
+        $commission = ComponentResource::collection($components->where('type', 'tab-commission'));
+        $judes = ComponentResource::collection($components->where('type', 'tab-judicial-organization'));
+
+        $componentsArray = [];
+        if(!$assamblyComponents->isEmpty()) {
+            $componentsArray[] = [
+                'title'=> 'SKUPŠTINA',
+                'roles' => [],
+                'components' => $assamblyComponents,
+            ];
+        }
+        if(!$componentsCollection->isEmpty()){
+            $newComponents = $components->where('type', 'tab-roles');
+            foreach($newComponents as $newComp) {
+                $componentsArray[] = new ComponentResource($newComp);
+            }
+        }
+        if(!$commission->isEmpty()) {
+            $componentsArray[] = [
+                'title'=> 'KOMISIJE',
+                'roles' => [],
+                'components' => $commission,
+            ];
+        }
+        if(!$judes->isEmpty()) {
+            $componentsArray[] = [
+                'title'=> 'SUDIJE',
+                'roles' => [],
+                'components' => $judes,
+            ];
+        }
+
         return [
             'id' => (string)$this->id,
             'slug' => $this->slug,
@@ -59,7 +77,7 @@ class PagesResource extends JsonResource
             'user' => $userData,
             'coverImage' => $cover_image,
             'images' => $image,
-            'components' => [$assambly, $componentsCollection, $commission, $judes],
+            'components' => $componentsArray != [] ? $componentsArray :  ComponentResource::collection($components),
 
         ];
     }
