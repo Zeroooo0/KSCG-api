@@ -40,6 +40,7 @@ class PagesResource extends JsonResource
         $componentsArray = [];
         if(!$assamblyComponents->isEmpty()) {
             $componentsArray[] = [
+                'id'=> '16',
                 'title'=> 'SKUPŠTINA',
                 'roles' => [],
                 'components' => $assamblyComponents,
@@ -53,6 +54,7 @@ class PagesResource extends JsonResource
         }
         if(!$commission->isEmpty()) {
             $componentsArray[] = [
+                'id'=> '17',
                 'title'=> 'KOMISIJE',
                 'roles' => [],
                 'components' => $commission,
@@ -60,6 +62,7 @@ class PagesResource extends JsonResource
         }
         if(!$judes->isEmpty()) {
             $componentsArray[] = [
+                'id'=> '18',
                 'title'=> 'SUDIJE',
                 'roles' => [],
                 'components' => $judes,
