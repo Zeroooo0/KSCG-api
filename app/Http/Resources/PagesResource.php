@@ -31,6 +31,7 @@ class PagesResource extends JsonResource
         if($this->cover_image != null) {
             $cover_image = new ImageResource($this->images->where('id', $this->cover_image)->first());
         }
+        $components = $this->components->sortBy('order_number');
         return [
             'id' => (string)$this->id,
             'slug' => $this->slug,
@@ -42,7 +43,10 @@ class PagesResource extends JsonResource
             'user' => $userData,
             'coverImage' => $cover_image,
             'images' => $image,
-            'components' => ComponentResource::collection($this->components->sortBy('order_number'))
+            'assambly' => ComponentResource::collection($components->where('type', 'tab-assembly')),
+            'components' => ComponentResource::collection($components->where('type', 'tab-roles')),
+            'commission' => ComponentResource::collection($components->where('type', 'tab-commission')),
+            'judes' => ComponentResource::collection($components->where('type', 'tab-judicial-organization')),
         ];
     }
 }
