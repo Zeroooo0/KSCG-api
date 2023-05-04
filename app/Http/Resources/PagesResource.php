@@ -32,6 +32,22 @@ class PagesResource extends JsonResource
             $cover_image = new ImageResource($this->images->where('id', $this->cover_image)->first());
         }
         $components = $this->components->sortBy('order_number');
+        $assambly = [
+            'title'=> 'SKUPŠTINA',
+            'roles' => [],
+            'components' => ComponentResource::collection($components->where('type', 'tab-assembly')),
+        ];
+        $componentsCollection =  ComponentResource::collection($components->where('type', 'tab-roles'));
+        $commission = [
+            'title'=> 'SKUPŠTINA',
+            'roles' => [],
+            'components' => ComponentResource::collection($components->where('type', 'tab-commission')),
+        ];
+        $judes = [
+            'title'=> 'SKUPŠTINA',
+            'roles' => [],
+            'components' => ComponentResource::collection($components->where('type', 'tab-judicial-organization')),
+        ];
         return [
             'id' => (string)$this->id,
             'slug' => $this->slug,
@@ -43,10 +59,8 @@ class PagesResource extends JsonResource
             'user' => $userData,
             'coverImage' => $cover_image,
             'images' => $image,
-            'assambly' => ComponentResource::collection($components->where('type', 'tab-assembly')),
-            'components' => ComponentResource::collection($components->where('type', 'tab-roles')),
-            'commission' => ComponentResource::collection($components->where('type', 'tab-commission')),
-            'judes' => ComponentResource::collection($components->where('type', 'tab-judicial-organization')),
+            'components' => [$assambly, $componentsCollection, $commission, $judes],
+
         ];
     }
 }
