@@ -66,7 +66,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Documents
     //Set
     Route::post('/competitor-documents/{compatitor}', [FileController::class, 'addDocumentCompatitor']);
-    Route::post('/special-personel-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
+    Route::post('/special-personnel-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
     Route::post('/competition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
     Route::post('/page-documents/{page}', [FileController::class, 'addDocumentPage']);
     Route::post('/news-documents/{news}', [FileController::class, 'addDocumentPost']);
