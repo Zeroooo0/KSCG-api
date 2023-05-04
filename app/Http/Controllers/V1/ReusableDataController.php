@@ -225,8 +225,8 @@ class ReusableDataController extends Controller
     public function specPersonnelRoles(SpecialPersonal $specPersonnels, Request $request)
     {
         $per_page = $request->perPage;
-        $roles = Roles::where('special_personals_id', $specPersonnels->id)->where('roleable_type', '!=', 'App\Models\Compatition');
+        $roles = Roles::where('special_personals_id', $specPersonnels->id);
 
-        return RolesResource::collection($roles->paginate($per_page));
+        return RolesResource::collection($roles->orderBy('id', 'desc')->paginate($per_page));
     }
 }

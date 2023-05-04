@@ -128,7 +128,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::delete('/role/{roles}', [ReusableDataController::class, 'deleteRole']);
     //Roles get
     Route::get('/special-personal-competition/{specPersonnels}', [ReusableDataController::class, 'specPersonnelCompetitionRoles']);
-    Route::get('/special-personal-other-roles/{specPersonnels}', [ReusableDataController::class, 'specPersonnelRoles']);
+    Route::get('/special-personal-roles/{specPersonnels}', [ReusableDataController::class, 'specPersonnelRoles']);
     //Compatition
     Route::post('/competition-personnel/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Posts
