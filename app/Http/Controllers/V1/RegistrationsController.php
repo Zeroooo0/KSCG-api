@@ -10,6 +10,7 @@ use App\Models\Registration;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Mockery\Undefined;
 
 class RegistrationsController extends Controller
 {
@@ -88,7 +89,8 @@ class RegistrationsController extends Controller
             if($category->gender != 3 && $category->gender != $competitor->gender) {
                 $genderError = true;
             }
-            if($isItKata && $category->belts != []) {
+          
+            if($isItKata && !$category->belts->isEmpty()) {
                 $corrector = false;
                 foreach($category->belts as $belt) {
                     if($belt->id == $competitor->belt_id) {
