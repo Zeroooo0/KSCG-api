@@ -66,6 +66,7 @@ class CompatitionsResource extends JsonResource
             'status' => (boolean)$this->status,
             'registrationStatus' => (boolean)$this->registration_status,
             'tatamiNumber' => $this->tatami_no,
+            'aplicationsLimit' => $this->aplications_limit,
             'officialTrainer' => $registeredPersonnal,
             'registrations' => [
                 'clubs' => $this->registrations->countBy('club_id')->count(),

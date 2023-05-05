@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCompatitionRequest extends FormRequest
@@ -34,6 +35,7 @@ class UpdateCompatitionRequest extends FormRequest
             'city' => ['string', 'max:255'],
             'address' => ['string', 'max:255'],
             'status' => ['boolean'],
+            'applicationLimits' => [ 'integer', 'max:3'], Rule::in([1, 2]),
             'registrationStatus' => ['boolean'],
             'categories' => ['string', 'max:255'],
         ];

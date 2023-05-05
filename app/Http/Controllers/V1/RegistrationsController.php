@@ -52,9 +52,11 @@ class RegistrationsController extends Controller
      */
     public function newStore(Request $request, Compatition $competition) 
     {
+        $applicationLimit = $competition->application_limits;
         $category = $competition->categories->where('id',$request->categoryId)->first();
         $isItSingle = $category->solo_or_team;
         $isItKata = $category->kata_or_kumite;
+        $dateFrom = $category->date_from;
         $competitorsIds = $request->competitors;
         $competitiors = Compatitor::whereIn('id',$competitorsIds)->get();
         $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
@@ -65,19 +67,30 @@ class RegistrationsController extends Controller
                 'name' => $request->teamName
             ]);
         }
+
         
   
         foreach($competitiors as $competitor) {
             $isItError = false;
             $categoryError = false;
-            if($isItSingle && $registrations->where('compatitor_id',$competitor->id)->count() >= 2) {
+            $olderCategoryError = false;
+            $genderError = false;
+            if($isItSingle && $registrations->where('compatitor_id',$competitor->id)->count() >= $applicationLimit) {
                 $isItError = true;
             }
             if($registrations->where('compatitor_id', $competitor->id)->where('category_id', $category->id)->count() >= 1) {
                 $categoryError = true;
             }
+            if($isItKata && $competitor->date_of_birth < $dateFrom && $competitor->belt->id < 7 ) {
+                $olderCategoryError = true;
+            }
+            if($category->gender != 3 && $category->gender != $competitor->gender) {
+                $genderError = true;
+            }
+         
+            //return $competitor->belt  ;
 
-            if($isItError == false && $categoryError == false) {
+            if($isItError == false && $categoryError == false && $olderCategoryError = false && $genderError = false) {
                 $input['compatition_id'] = $competition->id;
                 $input['club_id'] = $competitor->club_id != null ? $competitor->club->id : null;
                 $input['compatitor_id'] = $competitor->id;
@@ -104,6 +117,20 @@ class RegistrationsController extends Controller
                 $name = $competitor->name;
                 $lastName = $competitor->last_name;
                 $input['message'] = "Takmičar $name $lastName je već prijavljen u ovoj kategoriji!";
+                $input['competitorId'] = (string)$competitor->id;
+                $responseErrorMessage[] = $input;
+            }
+            if ($olderCategoryError == true) {
+                $name = $competitor->name;
+                $lastName = $competitor->last_name;
+                $input['message'] = "Samo takmičar $name $lastName u apsolutnom nivou se samo moze prijaviti u starijem godištu!";
+                $input['competitorId'] = (string)$competitor->id;
+                $responseErrorMessage[] = $input;
+            }
+            if ($genderError == true) {
+                $name = $competitor->name;
+                $lastName = $competitor->last_name;
+                $input['message'] = "Pol takmičara $name $lastName nije adekvatan za ovu kategoriju!";
                 $input['competitorId'] = (string)$competitor->id;
                 $responseErrorMessage[] = $input;
             }

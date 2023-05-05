@@ -33,6 +33,26 @@ class CategoriesController extends Controller
         $paginate = $request->perPage;
         $category = Category::orderBy($sort, $sortDirection);
         $search = '%'. $request->search . '%';
+        
+        if($request->has('belts')) {
+            $categoryWithBeltId = [];
+            $getCategory = $category->get();
+            foreach($getCategory as $cat) {
+                $doesHaveBelt = false;
+                foreach($cat->belts as $belt) {
+                    if($belt->id == $request->belts){
+                        $doesHaveBelt = true;
+                    }
+                }
+                if($doesHaveBelt == true) {
+                    $categoryWithBeltId[] = $cat->id;
+                }
+            }
+            if($categoryWithBeltId != []) {
+                $category = Category::orderBy($sort, $sortDirection)->whereIn('id', $categoryWithBeltId);
+            }
+        }
+
         return CategoriesResource::collection($category->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->paginate($paginate));
     }
 

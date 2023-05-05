@@ -35,6 +35,7 @@ class CategoriesResource extends JsonResource
             'soloOrTeam' => $soloOrTeam,
             'dateFrom' => date($this->date_from),
             'dateTo' => date($this->date_to),
+            'dateToPlusYear' => date('Y-m-d', strtotime($this->date_to. ' +1 year' )),
             'weightFrom' => $this->weight_from,
             'weightTo' => $this->weight_to,
             'soloOrTeam' => $this->solo_or_team,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCompatitionRequest extends FormRequest
@@ -36,6 +37,7 @@ class StoreCompatitionRequest extends FormRequest
             'status' => ['boolean', 'max:255'],
             'categories' =>['required', 'string'],
             'tatamiNo' =>['required', 'numeric'],
+            'applicationLimits' => ['required', 'integer', 'max:3'], Rule::in([1, 2]),
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480'],
             'document' => ['mimes:doc,docx,pdf,xml,html', 'max:20480' ]
         ];

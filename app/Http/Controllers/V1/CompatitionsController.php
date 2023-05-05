@@ -142,7 +142,8 @@ class CompatitionsController extends Controller
             'address' => $request->address,
             'tatami_no' => $request->tatamiNo,
             'status'=> $status,
-            'registration_status' => $registrationStatus
+            'registration_status' => $registrationStatus,
+            'application_limits' => $request->applicationLimits,
         ]);
         if($request->image != null) {
             $path = Storage::putFile('compatition-image', $request->image);
@@ -193,6 +194,7 @@ class CompatitionsController extends Controller
         $request->has('priceTeam') ? $competition->update(['price_team' => $request->priceTeam]) : null;
         $request->has('registrationStatus') ? $competition->update(['registration_status' => $request->registrationStatus]) : null;
         $request->has('status') && Auth::user()->user_type != 0 ? $competition->update(['status' => $request->status]) : null;
+        $request->has('applicationLimits')? $competition->update(['application_limits' => $request->applicationLimits]) : null;
 
         if($request->has('categories')) {
             $categories = array_filter(explode(',', $request->categories));
