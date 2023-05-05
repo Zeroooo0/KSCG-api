@@ -57,7 +57,7 @@ class RegistrationsController extends Controller
         $category = $competition->categories->where('id',$request->categoryId)->first();
         $isItSingle = $category->solo_or_team;
         $isItKata = $category->kata_or_kumite;
-        $dateFrom = $category->date_from;
+        $dateTo = $category->date_to;
         $competitorsIds = $request->competitors;
         $competitiors = Compatitor::whereIn('id',$competitorsIds)->get();
         $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
@@ -83,7 +83,7 @@ class RegistrationsController extends Controller
             if($registrations->where('compatitor_id', $competitor->id)->where('category_id', $category->id)->count() >= 1) {
                 $categoryError = true;
             }
-            if($isItKata && $competitor->date_of_birth < $dateFrom && $competitor->belt->id < 7 ) {
+            if($isItKata && $competitor->date_of_birth > $dateTo && $competitor->belt->id < 7 ) {
                 $olderCategoryError = true;
             }
             if($category->gender != 3 && $category->gender != $competitor->gender) {
