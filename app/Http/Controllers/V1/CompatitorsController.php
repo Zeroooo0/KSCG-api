@@ -52,6 +52,10 @@ class CompatitorsController extends Controller
         $compatitior = Compatitor::orderBy($sort, $sortDirection);
 
         $search = '%'. $request->search . '%';
+        if($request->has('belts')) {
+            $beltsArray = explode(',', $request->belts);
+            $compatitior = Compatitor::orderBy($sort, $sortDirection)->whereIn('belt_id', $beltsArray);
+        }
 
         if(Auth::user()->user_type == 0) {
             if($per_page == 0) {

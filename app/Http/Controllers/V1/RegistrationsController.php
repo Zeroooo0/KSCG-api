@@ -75,6 +75,7 @@ class RegistrationsController extends Controller
             $categoryError = false;
             $olderCategoryError = false;
             $genderError = false;
+            $beltError = false;
             if($isItSingle && $registrations->where('compatitor_id',$competitor->id)->count() >= $applicationLimit) {
                 $isItError = true;
             }
@@ -87,10 +88,20 @@ class RegistrationsController extends Controller
             if($category->gender != 3 && $category->gender != $competitor->gender) {
                 $genderError = true;
             }
-         
+            if($isItKata && $category->belts != []) {
+                $corrector = false;
+                foreach($category->belts as $belt) {
+                    if($belt->id == $competitor->belt_id) {
+                        $corrector = true;
+                    }
+                }
+                if($corrector == false) {
+                    $beltError = true;
+                }
+            }
             //return $competitor->belt  ;
 
-            if($isItError == false && $categoryError == false && $olderCategoryError = false && $genderError = false) {
+            if(!$isItError && !$categoryError && !$olderCategoryError && !$genderError && !$beltError) {
                 $input['compatition_id'] = $competition->id;
                 $input['club_id'] = $competitor->club_id != null ? $competitor->club->id : null;
                 $input['compatitor_id'] = $competitor->id;
@@ -103,7 +114,7 @@ class RegistrationsController extends Controller
                 $input['status'] = 1;
                 $arrayOfRegistrations[] = $input;
             } 
-            if ($isItError == true) {
+            if ($isItError) {
                 $limitedCount = $isItSingle ? '2 prijave' : '1 prijavu';
                 $singleOrTeam = $isItSingle ? 'pojedinčnom' :'timskom';
                 $kateOrKumite = $isItKata ? 'kate' : 'kumite';
@@ -113,24 +124,31 @@ class RegistrationsController extends Controller
                 $input['competitorId'] = (string)$competitor->id;
                 $responseErrorMessage[] = $input;
             }
-            if ($categoryError == true) {
+            if ($categoryError) {
                 $name = $competitor->name;
                 $lastName = $competitor->last_name;
                 $input['message'] = "Takmičar $name $lastName je već prijavljen u ovoj kategoriji!";
                 $input['competitorId'] = (string)$competitor->id;
                 $responseErrorMessage[] = $input;
             }
-            if ($olderCategoryError == true) {
+            if ($olderCategoryError) {
                 $name = $competitor->name;
                 $lastName = $competitor->last_name;
                 $input['message'] = "Samo takmičar $name $lastName u apsolutnom nivou se samo moze prijaviti u starijem godištu!";
                 $input['competitorId'] = (string)$competitor->id;
                 $responseErrorMessage[] = $input;
             }
-            if ($genderError == true) {
+            if ($genderError) {
                 $name = $competitor->name;
                 $lastName = $competitor->last_name;
                 $input['message'] = "Pol takmičara $name $lastName nije adekvatan za ovu kategoriju!";
+                $input['competitorId'] = (string)$competitor->id;
+                $responseErrorMessage[] = $input;
+            }
+            if ($beltError) {
+                $name = $competitor->name;
+                $lastName = $competitor->last_name;
+                $input['message'] = "Takmičara $name $lastName nema adekvatan pojas za ovu kategoriju!";
                 $input['competitorId'] = (string)$competitor->id;
                 $responseErrorMessage[] = $input;
             }
