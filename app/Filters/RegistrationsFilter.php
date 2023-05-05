@@ -7,23 +7,20 @@ use Illuminate\Http\Request;
 
 class RegistrationsFilter {
     protected $safeParms = [
-        'tatamiNo' => ['eq'],
-        'etoStart' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'status' => ['eq'],
+        'id' => ['eq'],
+        'clubId' => ['eq'],
+        'competitionId' => ['eq'],
+        'competitiorId' => ['eq'],
     ];
 
     protected $columnsMap = [
-        'tatamiNo' => 'tatami_no',
-        'etoStart' => 'eto_start'
+        'clubId' => 'club_id',
+        'competitionId' => 'compatition_id',
+        'competitiorId' => 'compatitior_id',
     ];
 
     protected $operatorMap = [
-        'eq' => '=',
-        'lt' => '<',
-        'lte' => '<=',
-        'gt' => '>',
-        'gte' => '>=',
-        'lorg' => '<>',
+        'eq' => '='
     ];
 
     public function transform(Request $request) {

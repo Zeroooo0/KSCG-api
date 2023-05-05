@@ -63,7 +63,7 @@ class PagesResource extends JsonResource
         if(!$judes->isEmpty()) {
             $componentsArray[] = [
                 'id'=> '18',
-                'title'=> 'SUDIJE',
+                'title'=> 'SUDIJSKA ORGANIZACIJA',
                 'roles' => [],
                 'components' => $judes,
             ];

@@ -24,7 +24,7 @@ class RegistrationsController extends Controller
     {
         $per_page = $request->perPage;
         $competitionId = $competition->id;
-
+        
         if(Auth::user() != null){
             if(Auth::user()->user_type == 0) {
                 $clubId = Auth::user()->club->id;
