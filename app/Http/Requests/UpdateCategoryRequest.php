@@ -30,8 +30,6 @@ class UpdateCategoryRequest extends FormRequest
             'gender' => ['integer', 'min:1', 'max:3'],
             'dateFrom' => ['date_format:Y-m-d'],
             'dateTo' => ['date_format:Y-m-d'],
-            'weightFrom' => [ 'numeric'],
-            'weightTo' => ['numeric'],
             'matchLenght' => ['numeric'], 
             'soloOrTeam' => ['boolean'],
             'status' => ['boolean'],

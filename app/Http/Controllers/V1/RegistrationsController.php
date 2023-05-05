@@ -136,7 +136,7 @@ class RegistrationsController extends Controller
             if ($olderCategoryError) {
                 $name = $competitor->name;
                 $lastName = $competitor->last_name;
-                $input['message'] = "Samo takmičar $name $lastName u apsolutnom nivou se samo moze prijaviti u starijem godištu!";
+                $input['message'] = "Takmičar $name $lastName nije u apsolutnom nivou pa se ne moze prijaviti u starijem godištu!";
                 $input['competitorId'] = (string)$competitor->id;
                 $responseErrorMessage[] = $input;
             }

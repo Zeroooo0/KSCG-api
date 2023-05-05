@@ -16,8 +16,6 @@ class Category extends Model
         'gender',
         'date_from',
         'date_to',
-        'weight_from',
-        'weight_to',
         'solo_or_team',
         'status',
         'match_lenght'

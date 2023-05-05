@@ -104,7 +104,6 @@ class CompatitorsController extends Controller
             'jmbg' => $request->jmbg,
             'belt_id' => $request->belt,
             'date_of_birth' => $request->dateOfBirth,
-            'weight' => $request->has('weight') ? $request->weight : NULL,
             'country' => $request->country,
             'status' => Auth::user()->user_type == 0 ? 0 : 1
         ]);
@@ -193,7 +192,7 @@ class CompatitorsController extends Controller
                 'date_of_birth' => $request->dateOfBirth
             ]);
         }
-        if ($request->has('belt')) {
+        if ($request->has('belt') && Auth::user()->user_type != 0) {
             $competitor->update([
                 'belt_id' => $request->belt
             ]);

@@ -30,8 +30,6 @@ class StoreCategoryRequest extends FormRequest
             'gender' => ['required', 'integer', 'min:1', 'max:3'],
             'dateFrom' => ['required', 'date'],
             'dateTo' => ['required', 'date'],
-            'weightFrom' => ['required', 'numeric'],
-            'weightTo' => ['required', 'numeric'],
             'matchLenght' => ['required', 'numeric'], 
             'soloOrTeam' => ['required', 'boolean']
         ];

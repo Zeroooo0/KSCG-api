@@ -76,8 +76,6 @@ class CategoriesController extends Controller
             'gender' => $request->gender, //1=Male 2=Femail 3=M+F
             'date_from' => $request->dateFrom,
             'date_to' => $request->dateTo,
-            'weight_from' => $request->weightFrom,
-            'weight_to' => $request->weightTo,
             'solo_or_team' => $request->soloOrTeam, //0=solo 1=team
             'match_lenght' => $request->matchLenght,      
             'status' => 1    
@@ -117,12 +115,10 @@ class CategoriesController extends Controller
         }
         $request->validated($request->all());
         
-        $category->update($request->except(['kateOrKumite', 'dateFrom', 'dateTo', 'weightFrom', 'weightTo']));
+        $category->update($request->except(['kateOrKumite', 'dateFrom', 'dateTo']));
         $request->has('kataOrKumite') ? $category->update(['kata_or_kumite' => $request->kataOrKumite]) : null;
         $request->has('dateFrom') ? $category->update(['date_from' => $request->dateFrom])  : null;
         $request->has('dateTo') ? $category->update(['date_to' => $request->dateTo])  : null;
-        $request->has('weightFrom') ? $category->update(['weight_from' => $request->weightFrom])  : null;
-        $request->has('weightTo') ? $category->update(['weight_to' => $request->weightTo])  : null;
         $request->has('soloOrTeam') ? $category->update(['solo_or_team' => $request->soloOrTeam])  : null;
         $request->has('matchLenght') ? $category->update(['match_lenght' => $request->matchLenght])  : null;
 

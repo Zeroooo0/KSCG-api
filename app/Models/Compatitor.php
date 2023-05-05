@@ -19,7 +19,6 @@ class Compatitor extends Model
         'jmbg',
         'belt_id',
         'date_of_birth',
-        'weight',
         'status',
         'country'
     ];

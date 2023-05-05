@@ -14,8 +14,6 @@ class CategoriesFilter {
         'gender' => ['eq', 'gt', 'gte', 'lt', 'lte', 'lorg'],
         'dateFrom' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'dateTo' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'weightFrom' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'weightTo' => ['eq', 'gt', 'gte', 'lt', 'lte'],
         'soloOrTeam' => ['eq'],
         'status' => ['eq'],
         'belts' => ['eq'],
@@ -26,8 +24,6 @@ class CategoriesFilter {
         'categoryName' => 'category_name',
         'dateFrom' => 'date_from',
         'dateTo' => 'date_to',
-        'weightFrom' => 'weight_from',
-        'weightTo' => 'weight_to',
         'soloOrTeam' => 'solo_or_team', 
     ];
 

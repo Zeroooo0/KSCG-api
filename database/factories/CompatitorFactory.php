@@ -31,8 +31,7 @@ class CompatitorFactory extends Factory
             'status' => $this->faker->randomElement([true, false]),
             'date_of_birth' => $this->faker->dateTimeBetween($startDate = '-13 years', $endsDate = '-7 years'),
             'kscg_compatitor_id' => $compatitor_id,
-            'belt_id' => Belt::all()->random()->id,
-            'weight' => $this->faker->numberBetween(20, 99)
+            'belt_id' => Belt::all()->random()->id
         ];
     }
 }

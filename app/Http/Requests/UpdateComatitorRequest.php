@@ -33,7 +33,6 @@ class UpdateComatitorRequest extends FormRequest
             'jmbg' => ['integer'],
             'belt' => ['integer'],
             'dateOfBirth' => ['date'],
-            'weight' => ['decimal:2'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:2048'],
             'clubId' => ['integer'],
             'status' => ['boolean']
