@@ -22,7 +22,8 @@ class Compatition extends Model
         'host_name',
         'registration_status',
         'tatami_no',
-        'document'
+        'document',
+        'application_limits'
     ];
     public function categories() 
     {

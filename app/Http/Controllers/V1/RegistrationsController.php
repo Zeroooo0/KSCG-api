@@ -69,14 +69,15 @@ class RegistrationsController extends Controller
             ]);
         }
 
-        
-  
         foreach($competitiors as $competitor) {
             $isItError = false;
             $categoryError = false;
             $olderCategoryError = false;
             $genderError = false;
             $beltError = false;
+            $generationError = false;
+
+
             if($isItSingle && $registrations->where('compatitor_id',$competitor->id)->count() >= $applicationLimit) {
                 $isItError = true;
             }
@@ -101,9 +102,12 @@ class RegistrationsController extends Controller
                     $beltError = true;
                 }
             }
+            if($isItKata && $competitor->date_of_birth > $dateTo && $applicationLimit == 1) {
+                $generationError = true;
+            }
             //return $competitor->belt  ;
 
-            if(!$isItError && !$categoryError && !$olderCategoryError && !$genderError && !$beltError) {
+            if(!$isItError && !$categoryError && !$olderCategoryError && !$genderError && !$beltError && !$generationError) {
                 $input['compatition_id'] = $competition->id;
                 $input['club_id'] = $competitor->club_id != null ? $competitor->club->id : null;
                 $input['compatitor_id'] = $competitor->id;
@@ -151,6 +155,13 @@ class RegistrationsController extends Controller
                 $name = $competitor->name;
                 $lastName = $competitor->last_name;
                 $input['message'] = "Takmičara $name $lastName nema adekvatan pojas za ovu kategoriju!";
+                $input['competitorId'] = (string)$competitor->id;
+                $responseErrorMessage[] = $input;
+            }
+            if ($generationError) {
+                $name = $competitor->name;
+                $lastName = $competitor->last_name;
+                $input['message'] = "Takmičara $name $lastName moze da se prijavi samo u jednom godištu!";
                 $input['competitorId'] = (string)$competitor->id;
                 $responseErrorMessage[] = $input;
             }

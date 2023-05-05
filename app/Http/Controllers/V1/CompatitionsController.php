@@ -196,7 +196,7 @@ class CompatitionsController extends Controller
         $request->has('status') && Auth::user()->user_type != 0 ? $competition->update(['status' => $request->status]) : null;
         $request->has('applicationLimits')? $competition->update(['application_limits' => $request->applicationLimits]) : null;
 
-        if($request->has('categories')) {
+        if($request->has('categories') && $competition->registrations->count() == 0) {
             $categories = array_filter(explode(',', $request->categories));
             $competition->categories()->sync($categories);
         }
