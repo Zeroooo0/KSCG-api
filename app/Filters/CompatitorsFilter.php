@@ -13,7 +13,7 @@ class CompatitorsFilter {
         'status' => ['eq'],
         'beltId' => ['eq'],
         'birthDay' => ['eq', 'gt', 'gte', 'lt', 'lte'],
-        'weight' => ['eq', 'gt', 'gte', 'lt', 'lte'],
+
         'clubId' => ['eq'],
         'country' => ['eq', 'like'],
         'gender' => ['eq', 'lorg']
