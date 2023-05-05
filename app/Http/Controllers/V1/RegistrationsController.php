@@ -26,9 +26,20 @@ class RegistrationsController extends Controller
         $competitionId = $competition->id;
 
         if(Auth::user() != null){
-
-            $clubId = Auth::user()->club != null ? Auth::user()->club->id : $request->clubId;
-            return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
+            if(Auth::user()->user_type == 0) {
+                $clubId = Auth::user()->club->id;
+                return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
+            }
+            if(Auth::user()->user_type != 0 && $request->has('clubId')) {   
+                $clubId = $request->clubId;
+                return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
+            }
+            if(Auth::user()->user_type == 0 && Auth::user()->club == null){
+                return $this->error('', 'Molimo vas da prvo kreirate klub!',403);
+            }
+            if(Auth::user()->user_type != 0) {                   
+                return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->paginate($per_page));
+            }
         } 
         if(Auth::user() == null) {
             return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->paginate($per_page));
