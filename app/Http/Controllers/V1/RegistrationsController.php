@@ -210,10 +210,12 @@ class RegistrationsController extends Controller
         if($registration->solo_or_team == 0) {
             $teamId = $registration->team_id;
             $teamDelete = Registration::where('team_id', $teamId)->get();
-            foreach($teamDelete as $teamMember) {
-                $teamMember->delete();
+            if($teamDelete->count() - 1 < 3) {
+                foreach($teamDelete as $teamMember) {
+                    $teamMember->delete();
+                }
+                return $this->success('', 'Uspješno obrisana ekipa!');
             }
-            return $this->success('', 'Uspješno obrisana ekipa!');
         }
         $registration->delete();
         return $this->success('', 'Uspješno obrisana registracija!');
