@@ -26,7 +26,7 @@ class StoreCategoryRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'kataOrKumite' => ['required', 'boolean'],
-            'categoryName' => [ 'string', 'max:255'],
+            'categoryName' => [  'max:255'],
             'gender' => ['required', 'integer', 'min:1', 'max:3'],
             'dateFrom' => ['required', 'date'],
             'dateTo' => ['required', 'date'],
