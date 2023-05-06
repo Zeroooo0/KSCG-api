@@ -114,7 +114,7 @@ class RegistrationsController extends Controller
                     $beltError = true;
                 }
             }
-            if($isItKata && $competitor->date_of_birth > $dateTo && $applicationLimit == 1) {
+            if($isItSingle && ($isItKata || !$isItKata) && $competitor->date_of_birth > $dateTo && $applicationLimit == 1) {
                 $generationError = true;
             }
 
