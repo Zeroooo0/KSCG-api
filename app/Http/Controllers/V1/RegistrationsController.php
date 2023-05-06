@@ -103,7 +103,7 @@ class RegistrationsController extends Controller
                 $genderError = true;
             }
           
-            if($isItKata && !$category->belts->isEmpty()) {
+            if($isItSingle && $isItKata && !$category->belts->isEmpty()) {
                 $corrector = false;
                 foreach($category->belts as $belt) {
                     if($belt->id == $competitor->belt_id) {
@@ -207,6 +207,14 @@ class RegistrationsController extends Controller
      */
     public function destroy(Registration $registration)
     {
+        if($registration->solo_or_team == 0) {
+            $teamId = $registration->team_id;
+            $teamDelete = Registration::where('team_id', $teamId)->get();
+            foreach($teamDelete as $teamMember) {
+                $teamMember->delete();
+            }
+            return $this->success('', 'Uspješno obrisana ekipa!');
+        }
         $registration->delete();
         return $this->success('', 'Uspješno obrisana registracija!');
     }
