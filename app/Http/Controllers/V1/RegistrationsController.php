@@ -60,6 +60,8 @@ class RegistrationsController extends Controller
         $category = $competition->categories->where('id',$request->categoryId)->first();
         $isItSingle = $category->solo_or_team;
         $isItKata = $category->kata_or_kumite;
+        $isItMale = $category->gender == 1;
+        $isItFemale = $category->gender == 2;
         $dateTo = $category->date_to;
         $competitorsIds = $request->competitors;
         $competitiors = Compatitor::whereIn('id',$competitorsIds)->get();
@@ -71,7 +73,14 @@ class RegistrationsController extends Controller
                 'name' => $request->teamName
             ]);
         }
-
+        if(!$isItSingle && $isItKata && ($isItMale || $isItFemale) && ($competitiors->count() < 3 || $competitiors->count() > 4)) {
+            $team ['message'] =  "Nema dovoljno takmičara u ekipi, minimum 3 a maksimum 4 takmičara!";
+            $responseErrorMessage [] =  $team;
+        }
+        if(!$isItSingle && !$isItKata && $isItMale && ($competitiors->count() < 5 || $competitiors->count() > 6)) {
+            $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 3 a maksimum 4 takmičara!";
+            $responseErrorMessage [] =  $team;
+        }
         foreach($competitiors as $competitor) {
             $isItError = false;
             $categoryError = false;
@@ -81,13 +90,13 @@ class RegistrationsController extends Controller
             $generationError = false;
 
 
-            if($isItSingle && $registrations->where('compatitor_id',$competitor->id)->count() >= $applicationLimit) {
+            if($isItSingle && $registrations->where('compatitor_id',$competitor->id)->where('kata_or_kumite', $isItKata)->count() >= $applicationLimit) {
                 $isItError = true;
             }
             if($registrations->where('compatitor_id', $competitor->id)->where('category_id', $category->id)->count() >= 1) {
                 $categoryError = true;
             }
-            if($isItKata && $competitor->date_of_birth > $dateTo && $competitor->belt->id < 7 ) {
+            if($isItSingle && $isItKata && $competitor->date_of_birth > $dateTo && $competitor->belt->id < 7 ) {
                 $olderCategoryError = true;
             }
             if($category->gender != 3 && $category->gender != $competitor->gender) {
@@ -108,7 +117,7 @@ class RegistrationsController extends Controller
             if($isItKata && $competitor->date_of_birth > $dateTo && $applicationLimit == 1) {
                 $generationError = true;
             }
-            //return $competitor->belt  ;
+
 
             if(!$isItError && !$categoryError && !$olderCategoryError && !$genderError && !$beltError && !$generationError) {
                 $input['compatition_id'] = $competition->id;
