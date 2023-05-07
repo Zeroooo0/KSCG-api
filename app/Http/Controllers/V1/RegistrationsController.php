@@ -82,11 +82,11 @@ class RegistrationsController extends Controller
                 'name' => $request->teamName
             ]);
         }
-        if(!$isItSingle && $isItKata && ($isItMale || $isItFemale) && ($competitiors->count() < 3 || $competitiors->count() > 4)) {
+        if(!$isItSingle && !$isItKata && ($isItMale || $isItFemale) && ($competitiors->count() < 3 || $competitiors->count() > 4)) {
             $team ['message'] =  "Nema dovoljno takmičara u ekipi, minimum 3 a maksimum 4 takmičara!";
             $responseErrorMessage [] =  $team;
         }
-        if(!$isItSingle && !$isItKata && $isItMale && ($competitiors->count() < 5 || $competitiors->count() > 6)) {
+        if(!$isItSingle && $isItKata && $isItMale && ($competitiors->count() < 5 || $competitiors->count() > 6)) {
             $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 3 a maksimum 4 takmičara!";
             $responseErrorMessage [] =  $team;
         }
