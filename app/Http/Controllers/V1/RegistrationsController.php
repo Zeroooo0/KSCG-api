@@ -221,7 +221,7 @@ class RegistrationsController extends Controller
             $teamId = $registration->team_id;
             $categoryGender = $category->gender;
             $teamDelete = Registration::where('team_id', $teamId)->get();
-            if($category->kata_or_kumite == 1 && $categoryGender == 1 && $teamDelete->count() - 1 < 5) {
+            if($category->kata_or_kumite == 0 && $categoryGender == 1 && $teamDelete->count() - 1 < 5) {
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();
                 }
