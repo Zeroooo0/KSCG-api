@@ -4,13 +4,13 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RegistrationsResource;
+use App\Models\Category;
 use App\Models\Compatition;
 use App\Models\Compatitor;
 use App\Models\Registration;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Mockery\Undefined;
 
 class RegistrationsController extends Controller
 {
@@ -24,8 +24,11 @@ class RegistrationsController extends Controller
     {
         $per_page = $request->perPage;
         $competitionId = $competition->id;
-        
+
         if(Auth::user() != null){
+            if($competition->registration_deadline >= now()){
+                $competition->update(['registration_status' => 0]);
+            }
             if(Auth::user()->user_type == 0) {
                 $clubId = Auth::user()->club->id;
                 return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
@@ -42,6 +45,9 @@ class RegistrationsController extends Controller
             }
         } 
         if(Auth::user() == null) {
+            if($competition->registration_deadline >= now()){
+                $competition->update(['registration_status' => 0]);
+            }
             return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->paginate($per_page));
         }
       
@@ -68,6 +74,9 @@ class RegistrationsController extends Controller
         $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
         $arrayOfRegistrations = [];
         $responseErrorMessage = [];
+        if($competition->registration_status == 0) {
+            $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
+        }
         if(!$isItSingle) {
             $team = $competition->teams()->create([
                 'name' => $request->teamName
@@ -173,7 +182,7 @@ class RegistrationsController extends Controller
             if ($generationError) {
                 $name = $competitor->name;
                 $lastName = $competitor->last_name;
-                $input['message'] = "Takmičara $name $lastName moze da se prijavi samo u jednom godištu!";
+                $input['message'] = "Takmičara $name $lastName moze da se prijavi samo u svom godištu!";
                 $input['competitorId'] = (string)$competitor->id;
                 $responseErrorMessage[] = $input;
             }
@@ -207,9 +216,24 @@ class RegistrationsController extends Controller
      */
     public function destroy(Registration $registration)
     {
-        if($registration->solo_or_team == 0) {
+        $category = Category::where('id', $registration->category_id)->first();
+        if($registration->solo_or_team == 0 ) {
             $teamId = $registration->team_id;
+            $categoryGender = $category->gender;
             $teamDelete = Registration::where('team_id', $teamId)->get();
+            if($category->kata_or_kumite == 1 && $categoryGender == 1 && $teamDelete->count() - 1 < 5) {
+                foreach($teamDelete as $teamMember) {
+                    $teamMember->delete();
+                }
+                return $this->success('', 'Uspješno obrisana ekipa!');
+            }
+            if($teamDelete->count() - 1 < 3) {
+                
+                foreach($teamDelete as $teamMember) {
+                    $teamMember->delete();
+                }
+                return $this->success('', 'Uspješno obrisana ekipa!');
+            }
             if($teamDelete->count() - 1 < 3) {
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();
