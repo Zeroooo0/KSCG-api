@@ -87,7 +87,7 @@ class RegistrationsController extends Controller
             $responseErrorMessage [] =  $team;
         }
         if(!$isItSingle && $isItKata && $isItMale && ($competitiors->count() < 5 || $competitiors->count() > 6)) {
-            $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 3 a maksimum 4 takmičara!";
+            $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 5 a maksimum 6 takmičara!";
             $responseErrorMessage [] =  $team;
         }
         foreach($competitiors as $competitor) {
