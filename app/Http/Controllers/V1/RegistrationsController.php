@@ -241,11 +241,18 @@ class RegistrationsController extends Controller
                 $responseErrorMessage[] = $error;
                 $noErrors = false;
             }
+            if($registrations->where('category_id', $category->id)){
+                $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u ovoj kategoriji!";
+                $error['category'] = (string)$category->id;
+                $responseErrorMessage[] = $error;
+                $noErrors = false;
+            }
             if($isItKata){
                 $kateRealCount = $kataCount;
                 $kataCount = $kataCount + 1;
+                $katText = $kateRealCount == 1 ? 'kategoriji' : 'kategorije';
                 if($kataCount > $applicationLimit) {
-                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kateRealCount kategorije Kate!";
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kateRealCount $katText Kate!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
@@ -254,9 +261,9 @@ class RegistrationsController extends Controller
             if(!$isItKata){
                 $kumiteRealCount = $kumiteCount;
                 $kumiteCount = $kumiteCount + 1;
-                
+                $katText = $kumiteRealCount == 1 ? 'kategoriji' : 'kategorije';
                 if($kumiteCount > $applicationLimit) {
-                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kumiteRealCount kategorije Kumite!";
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kumiteRealCount $katText Kumite!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
