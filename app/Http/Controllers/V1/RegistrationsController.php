@@ -70,7 +70,7 @@ class RegistrationsController extends Controller
             $allowedCategories = [];
 
             if($compatitorsYears >= 14) {
-                $competitorsCategory = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>=', $compatitorsYears) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
+                $competitorsCategory = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>', $compatitorsYears) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
                 $nextCategoriesKata = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 1) :$competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from')->where('kata_or_kumite', 1);
                 $nextCategoriesKumite = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 0) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from')->where('kata_or_kumite', 0);
                 foreach($competitorsCategory as $allowedCat) {
@@ -92,6 +92,7 @@ class RegistrationsController extends Controller
                 $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
                 $olderCategoryKata = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
                 $olderCategoryKumite = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
+                return $competitorsCategory;
                 foreach($competitorsCategory as $allowedCat) {
                     $allowedCategories[] = $allowedCat->id;
                 }
@@ -106,6 +107,8 @@ class RegistrationsController extends Controller
                     }
                 }
             }
+
+
 
 
             return CategoriesResource::collection((new Collection($competition->categories->whereIn('id', $allowedCategories)))->paginate($request->perPage));
