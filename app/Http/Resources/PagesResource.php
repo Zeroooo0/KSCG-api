@@ -39,6 +39,13 @@ class PagesResource extends JsonResource
         $judes = ComponentResource::collection($components->where('type', 'tab-judicial-organization'));
         $sudije = SpecPersonRoleResource::collection(SpecialPersonal::where('status', 1)->where('role', 1)->get());
         $componentsArray = [];
+
+        $newComponent = [ 
+            'id' => 3333,
+            'title' => 'Sudije',
+            'type' => 'tab-judicial-organization',
+            'roles' => $sudije
+        ];
         if(!$assamblyComponents->isEmpty()) {
             $componentsArray[] = [
                 'id'=> '16',
@@ -62,13 +69,15 @@ class PagesResource extends JsonResource
             ];
         }
         if(!$judes->isEmpty()) {
+            
             $componentsArray[] = [
                 'id'=> '18',
                 'title'=> 'SUDIJSKA ORGANIZACIJA',
                 'roles' => [],
-                'components' => $judes,
+                'components' => [$judes->first(), $newComponent]
             ];
         }
+
 
         return [
             'id' => (string)$this->id,
