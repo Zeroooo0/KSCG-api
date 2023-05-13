@@ -9,6 +9,7 @@ use App\Models\Compatition;
 use App\Models\Compatitor;
 use App\Models\Registration;
 use App\Traits\HttpResponses;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,6 +61,168 @@ class RegistrationsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function store(Request $request, Compatition $competition)
+    {
+        //competition limits and data
+        $applicationLimit = $competition->application_limits;
+        $catTimeSpan = $competition->category_start_point;
+        $competitionStartTime = new DateTime($competition->start_time_date);
+
+        //competitior data
+        $competitor = Compatitor::where('id', $request->competitorId)->first();
+        $compatitorsBhirtDay = new DateTime($competitor->date_of_birth);
+        $compatitorsYears = $compatitorsBhirtDay->diff($competitionStartTime)->y;
+
+        $categories = $competition->categories->whereIn('id', $request->categories);
+        
+
+        //$registrations = $competition->registrations->where('compatitor_id', $competitor->id);
+        $allowedCategories = [];
+
+
+        $arrayOfRegistrations = [];
+        $responseErrorMessage = [];
+        
+       
+        if($compatitorsYears >= 14) {
+            $competitorsCategory = $catTimeSpan ? $competition->categories->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>=', $compatitorsYears) : $competition->categories->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
+            $nextCategories = $competition->categories->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from');
+            foreach($competitorsCategory as $allowedCat) {
+                $allowedCategories[] = $allowedCat->id;
+            }
+            if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                foreach($nextCategories as $nextAllowedCat) {
+                    $allowedCategories[] = $nextAllowedCat->id;
+                }
+            }
+        }
+        if($catTimeSpan && $compatitorsYears < 14) {
+            $competitorsCategory = $competition->categories->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
+            $nextCategories = $competition->categories->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
+            $olderCategory = $competition->categories->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to);
+             foreach($competitorsCategory as $allowedCat) {
+                $allowedCategories[] = $allowedCat->id;
+            }
+            if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                foreach($olderCategory as $nextAllowedCat) {
+                    $allowedCategories[] = $nextAllowedCat->id;
+                }
+            }
+        }
+        
+
+
+    
+        $kataCount = 0;
+        $kumiteCount = 0;
+        $dateKumiteFrom = date(now());
+
+        foreach($categories as $category) {
+            $isItSingle = $category->solo_or_team;
+            $isItKata = $category->kata_or_kumite;
+            $gender = $category->gender != 3 ? $category->gender : $competitor->gender;
+            $dateFrom = $catTimeSpan && $category->years_to != null ? date('Y-m-d', strtotime($competition->start_time_date . " -$category->years_to years" )) : $category->date_from;
+            $dateTo = $catTimeSpan && $category->years_from != null ? date('Y-m-d', strtotime($competition->start_time_date . " -$category->years_from years - 1 day" )) : $category->date_to;
+            $belts = $category->belts;
+            $genderLetter = $gender == 1 ? 'M' : 'Ž';
+            $categoryName = $category->name;
+            $categoryLevel = $category->category_name;
+            $noErrors = true;
+            
+                
+         
+            if($applicationLimit == 2 && !in_array($category->id, $allowedCategories)) {
+                $error['message'] = "Takmičaru $competitor->name $competitor->last_name ova kategorija nije dozvoljena!";
+                $error['category'] = (string)$category->id;
+                $responseErrorMessage[] = $error;
+                $noErrors = false;
+            }
+
+            if(!$isItSingle) {
+                $error['message'] = "Ekipne kategorije ne mogu biti prijavljene ovom metodom prijava!";
+                $error['category'] = (string)$category->id;
+                $responseErrorMessage[] = $error;
+                $noErrors = false;
+            }
+            if($applicationLimit == 1 && ($dateFrom > $competitor->date_of_birth || $competitor->date_of_birth > $dateTo)) {
+                $error['message'] = "Takmičar $competitor->name $competitor->last_name se ne može prijaviti u kategoriji: $genderLetter $categoryName $categoryLevel!";
+                $error['category'] = (string)$category->id;
+                $responseErrorMessage[] = $error;
+                $noErrors = false;
+            }
+            if(!$belts->isEmpty()){
+                $beltChecker = true;
+                foreach($belts as $belt) {
+                    if($belt->id == $competitor->belt->id) {
+                        $beltChecker = false;
+                    }
+                }
+                if($beltChecker) {
+                    $genderLetter = $gender == 1 ? 'M' : 'Ž';
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne posjeduje adekvatan pojas za kategoriju: $genderLetter $category->name $category->category_name!";
+                    $error['category'] = (string)$category->id;
+                    $responseErrorMessage[] = $error;
+                    $noErrors = false;
+                }
+            }
+            if($competitor->gender != $gender) {
+                $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u $genderLetter kategoriju!";
+                $error['category'] = (string)$category->id;
+                $responseErrorMessage[] = $error;
+                $noErrors = false;
+            }
+            if($isItKata){
+                $kataCount = $kataCount + 1;
+                if($kataCount > $applicationLimit) {
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $applicationLimit kategorije Kate!";
+                    $error['category'] = (string)$category->id;
+                    $responseErrorMessage[] = $error;
+                    $noErrors = false;
+                }
+            }
+            if(!$isItKata){
+                $kumiteCount = $kumiteCount + 1;
+                
+                if($kumiteCount > $applicationLimit) {
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $applicationLimit kategorije Kumite!";
+                    $error['category'] = (string)$category->id;
+                    $responseErrorMessage[] = $error;
+                    $noErrors = false;
+                }   
+                if($dateKumiteFrom == $category->date_from) {
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu!";
+                    $error['category'] = (string)$category->id;
+                    $responseErrorMessage[] = $error;
+                    $noErrors = false;
+                }   
+                $dateKumiteFrom = $category->date_from;
+            }
+            if($noErrors) {
+                $input['compatition_id'] = $competition->id;
+                $input['club_id'] = $competitor->club_id != null ? $competitor->club->id : null;
+                $input['compatitor_id'] = $competitor->id;
+                $input['category_id'] = $category->id;
+                $input['team_id'] = null;
+                $input['team_or_single'] = $category->solo_or_team;
+                $input['kata_or_kumite'] = $category->kata_or_kumite;
+                $input['created_at'] = date("Y:m:d H:i:s");
+                $input['updated_at'] = date("Y:m:d H:i:s");
+                $input['status'] = 1;
+                $arrayOfRegistrations[] = $input;
+            } 
+        }
+        if(count($responseErrorMessage) == 0) {
+            Registration::insert($arrayOfRegistrations);
+            return $this->success('', 'Registracija uspješna!');
+        }
+        return $this->error('', $responseErrorMessage, 403);
+       
+
+
+
+        return $responseErrorMessage;
+
+    }
     public function newStore(Request $request, Compatition $competition) 
     {
         $applicationLimit = $competition->application_limits;

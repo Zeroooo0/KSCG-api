@@ -23,6 +23,9 @@ return new class extends Migration
             $table->tinyInteger('gender');
             $table->date('date_from');
             $table->date('date_to');
+            //years in number
+            $table->integer('years_from');
+            $table->integer('years_to');
 
             // 0=Solo 1=Team 
             $table->boolean('solo_or_team');

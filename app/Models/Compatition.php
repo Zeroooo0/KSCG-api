@@ -23,7 +23,8 @@ class Compatition extends Model
         'registration_status',
         'tatami_no',
         'document',
-        'application_limits'
+        'application_limits',
+        'category_start_point'
     ];
     public function categories() 
     {

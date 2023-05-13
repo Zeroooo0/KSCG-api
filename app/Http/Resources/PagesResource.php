@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\SpecialPersonal;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PagesResource extends JsonResource
@@ -36,7 +37,7 @@ class PagesResource extends JsonResource
         $componentsCollection =  ComponentResource::collection($components->where('type', 'tab-roles'));
         $commission = ComponentResource::collection($components->where('type', 'tab-commission'));
         $judes = ComponentResource::collection($components->where('type', 'tab-judicial-organization'));
-
+        $sudije = SpecPersonRoleResource::collection(SpecialPersonal::where('status', 1)->where('role', 1)->get());
         $componentsArray = [];
         if(!$assamblyComponents->isEmpty()) {
             $componentsArray[] = [
@@ -65,7 +66,15 @@ class PagesResource extends JsonResource
                 'id'=> '18',
                 'title'=> 'SUDIJSKA ORGANIZACIJA',
                 'roles' => [],
-                'components' => $judes,
+                'components' => [
+                    $judes, 
+                    [ 
+                        'id' => 3333,
+                        'title' => 'Sudije',
+                        'type' => 'tab-judicial-organization',
+                        'roles' => $sudije
+                    ]
+                ],
             ];
         }
 

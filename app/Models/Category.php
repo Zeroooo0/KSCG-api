@@ -18,7 +18,9 @@ class Category extends Model
         'date_to',
         'solo_or_team',
         'status',
-        'match_lenght'
+        'match_lenght',
+        'yers_from',
+        'yers_to'
     ];
     public function compatitions()
     {

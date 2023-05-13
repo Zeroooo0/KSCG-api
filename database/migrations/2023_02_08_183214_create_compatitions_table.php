@@ -28,6 +28,8 @@ return new class extends Migration
             $table->boolean('registration_status')->default(1);
             $table->string('host_name');
             $table->tinyInteger('application_limits')->default(2);
+            //0=category date span - 1=category years span
+            $table->boolean('category_start_point')->default(0);
             $table->integer('points_multiplier')->nullable();
             $table->timestamps();
         });
