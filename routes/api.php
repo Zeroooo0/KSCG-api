@@ -108,7 +108,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
   
     Route::get('/competition-aplications/{competition}', [RegistrationsController::class, 'index']);
     Route::get('/competition-aplications-filtered-categories/{competition}', [RegistrationsController::class, 'categoriesFiltered']);
-    Route::post('/competition-team-aplications/{competition}', [RegistrationsController::class, 'newStore']);
+    Route::post('/competition-aplications/{competition}', [RegistrationsController::class, 'newStore']);
     Route::post('/competition-single-aplications/{competition}', [RegistrationsController::class, 'store']);
     Route::delete('/competition-aplications/{registration}', [RegistrationsController::class, 'destroy']);
     //Pool table 
