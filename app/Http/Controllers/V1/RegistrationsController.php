@@ -107,7 +107,7 @@ class RegistrationsController extends Controller
                 }
             }
 
-        
+
             return CategoriesResource::collection((new Collection($competition->categories->whereIn('id', $allowedCategories)))->paginate($request->perPage));
         }
 
@@ -134,9 +134,9 @@ class RegistrationsController extends Controller
         $categories = $competition->categories->whereIn('id', $request->categories);
         
 
-        //$registrations = $competition->registrations->where('compatitor_id', $competitor->id);
+        $registrations = $competition->registrations->where('compatitor_id', $competitor->id);
         
-
+      
 
         $arrayOfRegistrations = [];
         $responseErrorMessage = [];
@@ -183,8 +183,8 @@ class RegistrationsController extends Controller
 
 
     
-        $kataCount = 0;
-        $kumiteCount = 0;
+        $kataCount = 0 + $registrations->where('kata_or_kumite', 1)->count();
+        $kumiteCount = 0 + $registrations->where('kata_or_kumite', 1)->count();
         $dateKumiteFrom = date(now());
 
         foreach($categories as $category) {
@@ -244,7 +244,7 @@ class RegistrationsController extends Controller
             if($isItKata){
                 $kataCount = $kataCount + 1;
                 if($kataCount > $applicationLimit) {
-                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $applicationLimit kategorije Kate!";
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kataCount kategorije Kate!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
@@ -254,7 +254,7 @@ class RegistrationsController extends Controller
                 $kumiteCount = $kumiteCount + 1;
                 
                 if($kumiteCount > $applicationLimit) {
-                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $applicationLimit kategorije Kumite!";
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kumiteCount kategorije Kumite!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
