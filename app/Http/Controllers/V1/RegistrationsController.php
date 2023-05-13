@@ -231,7 +231,6 @@ class RegistrationsController extends Controller
                     }
                 }
                 if($beltChecker) {
-                    $genderLetter = $gender == 1 ? 'M' : 'Ž';
                     $error['message'] = "Takmičar $competitor->name $competitor->last_name ne posjeduje adekvatan pojas za kategoriju: $genderLetter $category->name $category->category_name!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
@@ -246,8 +245,8 @@ class RegistrationsController extends Controller
                 $noErrors = false;
                 continue;
             }
-            if($registrations->where('category_id', $category->id)){
-                $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u $category->combined_name!";
+            if($registrations->where('category_id', $category->id)){    
+                $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u $genderLetter $category->name $category->category_name!";
                 $error['category'] = (string)$category->id;
                 $responseErrorMessage[] = $error;
                 $noErrors = false;
