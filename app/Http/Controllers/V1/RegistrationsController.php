@@ -470,7 +470,7 @@ class RegistrationsController extends Controller
     public function destroy(Registration $registration)
     {
         $category = Category::where('id', $registration->category_id)->first();
-        if($registration->solo_or_team == 0 ) {
+        if($registration->team_or_single == 0 ) {
             $teamId = $registration->team_id;
             $categoryGender = $category->gender;
             $teamDelete = Registration::where('team_id', $teamId)->get();
