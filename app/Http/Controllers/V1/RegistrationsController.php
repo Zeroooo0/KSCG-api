@@ -242,19 +242,21 @@ class RegistrationsController extends Controller
                 $noErrors = false;
             }
             if($isItKata){
+                $kateRealCount = $kataCount;
                 $kataCount = $kataCount + 1;
                 if($kataCount > $applicationLimit) {
-                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kataCount kategorije Kate!";
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kateRealCount kategorije Kate!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
                 }
             }
             if(!$isItKata){
+                $kumiteRealCount = $kumiteCount;
                 $kumiteCount = $kumiteCount + 1;
                 
                 if($kumiteCount > $applicationLimit) {
-                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kumiteCount kategorije Kumite!";
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kumiteRealCount kategorije Kumite!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
