@@ -246,6 +246,7 @@ class RegistrationsController extends Controller
                 $error['category'] = (string)$category->id;
                 $responseErrorMessage[] = $error;
                 $noErrors = false;
+                continue;
             }
             if($isItKata){
                 $kateRealCount = $kataCount;
