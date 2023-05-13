@@ -81,7 +81,7 @@ class RegistrationsController extends Controller
                         $allowedCategories[] = $nextAllowedCat->id;
                     }
                 }
-                if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                if($applicationLimit == 2 ) {
                     foreach($nextCategoriesKumite as $nextAllowedCat) {
                         $allowedCategories[] = $nextAllowedCat->id;
                     }

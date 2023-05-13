@@ -144,6 +144,7 @@ class CompatitionsController extends Controller
             'status'=> $status,
             'registration_status' => $registrationStatus,
             'application_limits' => $request->applicationLimits,
+            'category_start_point' => $request->categoryStartPoint,
         ]);
         if($request->image != null) {
             $path = Storage::putFile('compatition-image', $request->image);
@@ -195,6 +196,7 @@ class CompatitionsController extends Controller
         $request->has('registrationStatus') ? $competition->update(['registration_status' => $request->registrationStatus]) : null;
         $request->has('status') && Auth::user()->user_type != 0 ? $competition->update(['status' => $request->status]) : null;
         $request->has('applicationLimits')? $competition->update(['application_limits' => $request->applicationLimits]) : null;
+        $request->has('category_start_point')? $competition->update(['category_start_point' => $request->applicationLimits]) : null;
 
         if($request->has('categories') && $competition->registrations->count() == 0) {
             $categories = array_filter(explode(',', $request->categories));
