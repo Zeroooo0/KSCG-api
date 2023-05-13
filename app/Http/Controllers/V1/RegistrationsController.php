@@ -245,7 +245,7 @@ class RegistrationsController extends Controller
                 $noErrors = false;
                 continue;
             }
-            if($registrations->where('category_id', $category->id)){    
+            if($registrations->where('category_id', $category->id)->count() != 0 ){    
                 $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u $genderLetter $category->name $category->category_name!";
                 $error['category'] = (string)$category->id;
                 $responseErrorMessage[] = $error;
