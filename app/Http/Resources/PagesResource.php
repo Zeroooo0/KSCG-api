@@ -66,9 +66,7 @@ class PagesResource extends JsonResource
                 'id'=> '18',
                 'title'=> 'SUDIJSKA ORGANIZACIJA',
                 'roles' => [],
-                'components' => [
-                    $judes
-                ],
+                'components' => $judes,
             ];
         }
 
