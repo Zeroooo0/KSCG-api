@@ -206,6 +206,7 @@ class RegistrationsController extends Controller
                 $error['category'] = (string)$category->id;
                 $responseErrorMessage[] = $error;
                 $noErrors = false;
+                continue;
             }
 
             if(!$isItSingle) {
@@ -213,12 +214,14 @@ class RegistrationsController extends Controller
                 $error['category'] = (string)$category->id;
                 $responseErrorMessage[] = $error;
                 $noErrors = false;
+                continue;
             }
             if($applicationLimit == 1 && ($dateFrom > $competitor->date_of_birth || $competitor->date_of_birth > $dateTo)) {
                 $error['message'] = "Takmičar $competitor->name $competitor->last_name se ne može prijaviti u kategoriji: $genderLetter $categoryName $categoryLevel!";
                 $error['category'] = (string)$category->id;
                 $responseErrorMessage[] = $error;
                 $noErrors = false;
+                continue;
             }
             if(!$belts->isEmpty()){
                 $beltChecker = true;
@@ -233,6 +236,7 @@ class RegistrationsController extends Controller
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
+                    continue;
                 }
             }
             if($competitor->gender != $gender) {
@@ -240,9 +244,10 @@ class RegistrationsController extends Controller
                 $error['category'] = (string)$category->id;
                 $responseErrorMessage[] = $error;
                 $noErrors = false;
+                continue;
             }
             if($registrations->where('category_id', $category->id)){
-                $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u ovoj kategoriji!";
+                $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u $category->combined_name!";
                 $error['category'] = (string)$category->id;
                 $responseErrorMessage[] = $error;
                 $noErrors = false;
@@ -257,6 +262,7 @@ class RegistrationsController extends Controller
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
+                    continue;
                 }
             }
             if(!$isItKata){
@@ -268,12 +274,14 @@ class RegistrationsController extends Controller
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
+                    continue;
                 }   
                 if($dateKumiteFrom == $category->date_from) {
                     $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;
+                    continue;
                 }   
                 $dateKumiteFrom = $category->date_from;
             }
