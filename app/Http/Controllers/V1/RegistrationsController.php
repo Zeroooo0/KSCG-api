@@ -92,7 +92,7 @@ class RegistrationsController extends Controller
                 $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
                 $olderCategoryKata = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
                 $olderCategoryKumite = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
-                return $competitorsCategory;
+
                 foreach($competitorsCategory as $allowedCat) {
                     $allowedCategories[] = $allowedCat->id;
                 }
