@@ -67,13 +67,7 @@ class PagesResource extends JsonResource
                 'title'=> 'SUDIJSKA ORGANIZACIJA',
                 'roles' => [],
                 'components' => [
-                    $judes, 
-                    [ 
-                        'id' => 3333,
-                        'title' => 'Sudije',
-                        'type' => 'tab-judicial-organization',
-                        'roles' => $sudije
-                    ]
+                    $judes
                 ],
             ];
         }
