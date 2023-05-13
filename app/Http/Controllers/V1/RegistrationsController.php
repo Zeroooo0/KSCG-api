@@ -71,8 +71,8 @@ class RegistrationsController extends Controller
 
             if($compatitorsYears >= 14) {
                 $competitorsCategory = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>=', $compatitorsYears) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
-                $nextCategoriesKata = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 1);
-                $nextCategoriesKumite = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 0);
+                $nextCategoriesKata = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 1) :$competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from')->where('kata_or_kumite', 1);
+                $nextCategoriesKumite = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 0) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from')->where('kata_or_kumite', 0);
                 foreach($competitorsCategory as $allowedCat) {
                     $allowedCategories[] = $allowedCat->id;
                 }
@@ -81,7 +81,7 @@ class RegistrationsController extends Controller
                         $allowedCategories[] = $nextAllowedCat->id;
                     }
                 }
-                if($applicationLimit == 2 ) {
+                if($applicationLimit == 2) {
                     foreach($nextCategoriesKumite as $nextAllowedCat) {
                         $allowedCategories[] = $nextAllowedCat->id;
                     }
