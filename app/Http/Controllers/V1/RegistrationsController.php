@@ -60,60 +60,60 @@ class RegistrationsController extends Controller
         $applicationLimit = $competition->application_limits;
         $catTimeSpan = $competition->category_start_point;
         $competitionStartTime = new DateTime($competition->start_time_date);
-
+        $allowedCategories = [];
         //competitior data
-        if($request->has('competitorId')) {
+        if($request->has('competitorId') && $request->competitorId != null) {
             $competitor = Compatitor::where('id', $request->competitorId)->first();
             $compatitorsBhirtDay = new DateTime($competitor->date_of_birth);
             $compatitorsYears = $compatitorsBhirtDay->diff($competitionStartTime)->y;
 
-            $allowedCategories = [];
+            
 
             if($compatitorsYears >= 14) {
                 $competitorsCategory = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>', $compatitorsYears) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
-                $nextCategoriesKata = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 1) :$competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from')->where('kata_or_kumite', 1);
-                $nextCategoriesKumite = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 0) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from')->where('kata_or_kumite', 0);
-                foreach($competitorsCategory as $allowedCat) {
-                    $allowedCategories[] = $allowedCat->id;
-                }
-                if($applicationLimit == 2 && $competitor->belt_id >= 7) {
-                    foreach($nextCategoriesKata as $nextAllowedCat) {
-                        $allowedCategories[] = $nextAllowedCat->id;
+                if(!$competitorsCategory->isEmpty()) {
+                    $nextCategoriesKata = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 1) :$competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from')->where('kata_or_kumite', 1);
+                    $nextCategoriesKumite = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 0) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from')->where('kata_or_kumite', 0);
+                    foreach($competitorsCategory as $allowedCat) {
+                        $allowedCategories[] = $allowedCat->id;
                     }
-                }
-                if($applicationLimit == 2) {
-                    foreach($nextCategoriesKumite as $nextAllowedCat) {
-                        $allowedCategories[] = $nextAllowedCat->id;
+                    if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                        foreach($nextCategoriesKata as $nextAllowedCat) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
+                    }
+                    if($applicationLimit == 2) {
+                        foreach($nextCategoriesKumite as $nextAllowedCat) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
                     }
                 }
             }
             if($catTimeSpan && $compatitorsYears < 14) {
                 $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
-                $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
-                $olderCategoryKata = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
-                $olderCategoryKumite = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
+                if(!$competitorsCategory->isEmpty()) {
+                    $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
+                    $olderCategoryKata = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
+                    $olderCategoryKumite = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
+    
+                    foreach($competitorsCategory as $allowedCat) {
+                        $allowedCategories[] = $allowedCat->id;
+                    }
+                    if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                        foreach($olderCategoryKata as $nextAllowedCat) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
+                    }
+                    if($applicationLimit == 2) {
+                        foreach($olderCategoryKumite as $nextAllowedCat) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
+                    }
+                }
 
-                foreach($competitorsCategory as $allowedCat) {
-                    $allowedCategories[] = $allowedCat->id;
-                }
-                if($applicationLimit == 2 && $competitor->belt_id >= 7) {
-                    foreach($olderCategoryKata as $nextAllowedCat) {
-                        $allowedCategories[] = $nextAllowedCat->id;
-                    }
-                }
-                if($applicationLimit == 2) {
-                    foreach($olderCategoryKumite as $nextAllowedCat) {
-                        $allowedCategories[] = $nextAllowedCat->id;
-                    }
-                }
             }
-
-
-
-
-            return CategoriesResource::collection((new Collection($competition->categories->whereIn('id', $allowedCategories)))->paginate($request->perPage));
         }
-
+        return CategoriesResource::collection((new Collection($competition->categories->whereIn('id', $allowedCategories)))->paginate($request->perPage));
     }
 
     /**
@@ -272,7 +272,7 @@ class RegistrationsController extends Controller
                 $kumiteCount = $kumiteCount + 1;
                 $katText = $kumiteRealCount == 1 ? 'kategoriji' : 'kategorije';
                 if($kumiteCount > $applicationLimit) {
-                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kumiteRealCount $katText Kumite!";
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kumiteRealCount. $katText Kumite!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
                     $noErrors = false;

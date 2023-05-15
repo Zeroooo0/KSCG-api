@@ -75,7 +75,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/competitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
     Route::get('/special-personnel-documents/{specialPersonal}', [FileController::class, 'specialPersonalDocuments']);
     //Delete
-    Route::post('/document-delete/{document}', [FileController::class, 'deleteDocument']);
+    Route::delete('/document-delete/{document}', [FileController::class, 'deleteDocument']);
 
 
     //Categories
