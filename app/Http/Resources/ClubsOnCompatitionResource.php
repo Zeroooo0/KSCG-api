@@ -52,6 +52,7 @@ class ClubsOnCompatitionResource extends JsonResource
             'name' => $this->name,
             'competitionName' => $competition->name,
             'totalRegistrationNo' => $reg_compatitors->count(),
+            'competitorsCount' => $reg_compatitors->groupBy('compatitor_id')->count(),
             'singleRegistrationNo' => $registration_single->count(),
             'teamRegistrationNo' => $registration_team->count(),
             'totalPrice' => $totalPrice,
