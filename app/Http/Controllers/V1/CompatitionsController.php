@@ -10,7 +10,6 @@ use App\Filters\CompatitorsFilter;
 use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CategoriesResource;
-use App\Http\Resources\ClubsOnCompatitionResource;
 use App\Http\Resources\CompatitionsResource;
 use App\Http\Resources\RegistrationsResource;
 use App\Models\Club;

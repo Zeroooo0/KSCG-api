@@ -61,6 +61,10 @@ class ComponentController extends Controller
         !$request->has('orderNumber') ? null : $component->update(['order_number' => $request->orderNumber]);
         return new ComponentResource($component);
     }
+    public function show(Request $request, Component $component)
+    {
+        return new ComponentResource($component);
+    }
 
     /**
      * Remove the specified resource from storage.

@@ -57,6 +57,7 @@ trait LenghtOfCategory {
             'categoryPoolsFront' => $pools > 0 ? $pools + 1 : 0,
             'categoryGroupsBack' => $groups,
             'categoryPoolsBack' => $pools,
+            'categoryRegistrations' => $registrationCount,
         ];
             
     }

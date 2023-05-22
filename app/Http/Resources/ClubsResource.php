@@ -48,7 +48,7 @@ class ClubsResource extends JsonResource
 
         $rolesAdministration = RolesResource::collection($this->roles->where('role', 0));
         $rolesCoach = RolesResource::collection($this->roles->where('role', 2));
-        $competitors = ClubsCompatiorsResource::collection(Compatitor::where('club_id', $this->id)->paginate($request->perPage));
+        $competitors = ClubsCompatiorsResource::collection(Compatitor::where('club_id', $this->id)->all());
 
         $rolesArray = [];
         if(!$rolesAdministration->isEmpty()) {
@@ -66,8 +66,7 @@ class ClubsResource extends JsonResource
         if(!$competitors->isEmpty()) {
             $rolesArray[] =[
                 'title' => 'Takmičari',
-                'roles' => $competitors
-             
+                'roles' => $competitors             
             ];
         }
 

@@ -37,6 +37,7 @@ class CategoriesForTimeTableResource extends JsonResource
             'categoryDuration' => $catSpec['categoryDuration'],
             'categoryGroups' => $catSpec['categoryGroupsFront'],
             'categoryPools' => $catSpec['categoryPoolsFront'],
+            'categoryRegistration' => $catSpec['categoryRegistrations'],
         ];
     }
 }
