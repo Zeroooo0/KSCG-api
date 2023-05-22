@@ -48,7 +48,7 @@ class ClubsResource extends JsonResource
 
         $rolesAdministration = RolesResource::collection($this->roles->where('role', 0));
         $rolesCoach = RolesResource::collection($this->roles->where('role', 2));
-        $competitors = ClubsCompatiorsResource::collection(Compatitor::where('club_id', $this->id)->all());
+        $competitors = ClubsCompatiorsResource::collection(Compatitor::where('club_id', $this->id)->get());
 
         $rolesArray = [];
         if(!$rolesAdministration->isEmpty()) {
