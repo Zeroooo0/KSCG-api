@@ -133,7 +133,7 @@ class PoolsController extends Controller
         */
         /** Here we start rebuilding */
         //return $nn_team_cat;
-    
+        return $nn_team_cat;
         foreach($nn_team_cat as $key => $val) {
             $category_id =  $val[0][0]->category_id;
             $timeTableData = $timeTable->where('category_id', $category_id)->first();

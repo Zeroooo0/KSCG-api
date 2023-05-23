@@ -33,6 +33,8 @@ class CategoriesForTimeTableResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'kataOrKumite' => $kata_or_kumite,
+            'isTeam' => !$this->solo_or_team,
             'combinedName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->name . ' ' . $this->category_name  . $ekipno,
             'categoryDuration' => $catSpec['categoryDuration'],
             'categoryGroups' => $catSpec['categoryGroupsFront'],
