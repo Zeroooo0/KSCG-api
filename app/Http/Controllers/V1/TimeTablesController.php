@@ -10,12 +10,14 @@ use App\Http\Resources\TimeTableResource;
 use App\Models\Compatition;
 use App\Models\TimeTable;
 use App\Traits\HttpResponses;
+use App\Traits\LenghtOfCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TimeTablesController extends Controller
 {
     use HttpResponses;
+    use LenghtOfCategory;
     /**
      * Display a listing of the resource.
      *
@@ -40,85 +42,46 @@ class TimeTablesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTimeTableMassRequest $request)
+    public function store(Request $request)
     {
-        $compatition = Compatition::where('id', collect($request->all())->values()->first()['competitionId'])->first();
-        $number_of_tatami = $compatition->tatami_no;
+        $compatition = Compatition::where('id', $request->competitionId)->first();
         $start_time = $compatition->start_time_date;
-        $pairs = $compatition->registrations;
         $category = $compatition->categories;
-        $reg_singles = $pairs->where('team_or_single', 1);
-        $reg_team = $pairs->where('team_or_single', 0);
-        $incomin_data = collect($request->all())->except('competitionId')->values()->sortBy('orderNo');
-        $timeTableData = $compatition->timeTable;
 
-        if($incomin_data->where('tatamiNo', '>', $number_of_tatami)->count() > 0 || $incomin_data->where('tatamiNo', '<=', 0)->count() > 0) {
-            return $this->error('', "Tatami pocinje sa indexom 1 i može maksimalno da sadrži $number_of_tatami!", 404);
-        }
+        $incomin_data = $request->tatamies;
+        $timeTableData = $compatition->timeTable;
+        
+
         
         
         $timeTable = [];
-        for($i = 1; $i <= $number_of_tatami; $i++) {
-            $tatmiIncomingData = $incomin_data->where('tatamiNo', $i);
-            $orderNoByTatami = $tatmiIncomingData->countBy('orderNo');
-
-            foreach($orderNoByTatami as $orNo=>$count) {
-                if($count > 1) {
-                    return $this->error('', 'Redni broj kategorije na borilištu se ne moze ponavljati!', 403);
-                }
-            }
-            $finishedTimeStore = $start_time;
-            foreach($tatmiIncomingData as $data) {
-                
-                $teamOrSingle = $pairs->where('category_id', $data['categoryId'])->first()->team_or_single;
-
-                $teamCount =  $reg_team->where('category_id', $data['categoryId'])->groupBy('team_id')->count();
-                $singleCount = $reg_singles->where('category_id', $data['categoryId'])->count();
-                $registrations = $teamOrSingle == 0 ? $teamCount : $singleCount;
-      
-                $timePerCategory = $category->where('id', $data['categoryId'])->first()->match_lenght ?? 0;
-                $repesaz = $category->where('id', $data['categoryId'])->first()->repesaz == true ? 2 * $timePerCategory : 0;
-                $kateOrKumite = $category->where('id', $data['categoryId'])->first()->kata_or_kumite;
-                $totalTimePerCat = 0;
-                
-                switch($registrations) {
-                    case $registrations == 0:
-                        break;
-                    case $registrations <= 2:
-                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 2 - $registrations)) : $registrations) / 2 * $timePerCategory;
-                        break;
-                    case $registrations <= 4:
-                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 4 - $registrations)) : $registrations) / 2 * $timePerCategory + $timePerCategory + $repesaz;
-                        break;
-                    case $registrations <= 8:
-                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 8 - $registrations)) : $registrations) / 2 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 2 * $repesaz;
-                        break;
-                    case $registrations <= 16:
-                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 16 - $registrations)) : $registrations) / 2 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 3 * $repesaz;
-                        break;
-                    case $registrations <= 32:
-                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 32 - $registrations)) : $registrations) / 2 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 4 * $repesaz;
-                        break;
-                    case $registrations <= 64:
-                        $totalTimePerCat = ($kateOrKumite == 0 ? ($registrations - ( 64 - $registrations)) : $registrations) / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
-                        break;
-                        
-                }
+        $finishedTimeStore = $start_time;
+        foreach($incomin_data as $data) {
             
-
-                $input['compatition_id'] = collect($request->all())->values()->first()['competitionId'];
-                $input['category_id'] = $data['categoryId'];
-                $input['tatami_no'] = $data['tatamiNo'];
-                $input['order_no'] = $data['orderNo'];
+            $numberOfCategory = count($data['categories']);
+            
+            for($j = 0; $j <= $numberOfCategory - 1; $j++) {
+                $categoryNow = $category->where('id', $data['categories'][$j])->first();
+                
+                $registrationsData = $this->categoryDuration($compatition , $categoryNow);
+                $registrations = $registrationsData['categoryRegistrations'];
+                $totalTimePerCat = $registrationsData['categoryDuration'] * 60;
+                
+                $input['compatition_id'] = $request->competitionId;
+                $input['category_id'] = $categoryNow->id;
+                $input['tatami_no'] = $data['tatami'];
+                $input['order_no'] = $j + 1;
                 $input['status'] = 0;
                 $input['pairs'] = $registrations;
                 $input['eto_start'] = $finishedTimeStore;
-                $finishedTimeStore = Date("Y-m-d H:i:s", strtotime("$totalTimePerCat minutes", strtotime($finishedTimeStore)));
+                $finishedTimeStore = Date("Y-m-d H:i:s", strtotime("$totalTimePerCat seconds", strtotime($finishedTimeStore)));
                 $input['eto_finish'] = $finishedTimeStore;
 
                 $timeTable[] = $input;
             }
         }
+
+
 
         if($timeTableData->count() >= 1) {
             if($timeTableData->where('status', '!=', 0)->count() > 0) {
