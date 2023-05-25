@@ -135,7 +135,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('/competition-personnel/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Posts
     Route::resource('/news', PostsController::class);
-    Route::resource('/news-components/{news}', [PostsController::class, 'postComponents']);
+    Route::get('/news-components/{news}', [PostsController::class, 'postComponents']);
     //Pages
     Route::resource('/pages', PagesController::class);
     Route::get('/page-components/{page}', [PagesController::class, 'pageComponents']);

@@ -8,13 +8,11 @@ use App\Http\Requests\StorePostsRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\ComponentResource;
 use App\Http\Resources\PostsResource;
-use App\Models\Image;
 use App\Models\Post;
 use App\Support\Collection;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class PostsController extends Controller
