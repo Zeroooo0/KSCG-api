@@ -137,6 +137,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::resource('/news', PostsController::class);
     //Pages
     Route::resource('/pages', PagesController::class);
+    Route::get('/page-components/{page}', [PagesController::class, 'pageComponents']);
 
     //Component
     Route::post('page-component/{page}', [ComponentController::class, 'storePageComponent']);

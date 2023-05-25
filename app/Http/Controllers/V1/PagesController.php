@@ -5,8 +5,10 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePagesRequest;
 use App\Http\Requests\UpdatePageRequest;
+use App\Http\Resources\ComponentResource;
 use App\Http\Resources\PagesResource;
 use App\Models\Page;
+use App\Support\Collection;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -109,5 +111,10 @@ class PagesController extends Controller
         $page->document()->delete();
         
         return $this->success('','Uspjesno je obrisan stranica!');
+    }
+
+    public function pageComponents(Request $request, Page $page)
+    {
+        return ComponentResource::collection((new Collection($page->components))->paginate($request->perPage));
     }
 }
