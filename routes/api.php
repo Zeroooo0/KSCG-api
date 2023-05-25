@@ -135,13 +135,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('/competition-personnel/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Posts
     Route::resource('/news', PostsController::class);
+    Route::resource('/news-components/{news}', [PostsController::class, 'postComponents']);
     //Pages
     Route::resource('/pages', PagesController::class);
     Route::get('/page-components/{page}', [PagesController::class, 'pageComponents']);
 
     //Component
-    Route::post('page-component/{page}', [ComponentController::class, 'storePageComponent']);
-    Route::post('news-component/{news}', [ComponentController::class, 'storePostComponent']);
+    Route::post('page-components/{page}', [ComponentController::class, 'storePageComponent']);
+    Route::post('news-components/{news}', [ComponentController::class, 'storePostComponent']);
+
     Route::delete('component/{component}', [ComponentController::class, 'destroy']);
     Route::patch('component/{component}', [ComponentController::class, 'update']);
     //component file managament

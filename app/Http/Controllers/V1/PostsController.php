@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Filters\PostsFilter;
 use App\Http\Requests\StorePostsRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\ComponentResource;
 use App\Http\Resources\PostsResource;
 use App\Models\Image;
 use App\Models\Post;
+use App\Support\Collection;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -135,5 +137,10 @@ class PostsController extends Controller
         $news->delete();
         
        return $this->success('','Uspjesno je obrisan post!');
+    }
+
+    public function postComponents(Request $request, Post $news)
+    {
+        return ComponentResource::collection((new Collection($news->components))->paginate($request->perPage));
     }
 }
