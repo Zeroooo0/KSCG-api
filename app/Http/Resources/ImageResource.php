@@ -15,11 +15,9 @@ class ImageResource extends JsonResource
     public function toArray($request)
     {
         $storage_url = env('APP_URL') . 'api/file/';
-        $delete_url = env('APP_URL') . 'api/v1/delete-image/';
         return [
             'id' => (string)$this->id,
             'url' => $storage_url . $this->url,
-            'deleteUrl' =>  $delete_url . $this->id
         ];
     }
 }

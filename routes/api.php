@@ -146,10 +146,14 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
 
     Route::delete('component/{component}', [ComponentController::class, 'destroy']);
     Route::patch('component/{component}', [ComponentController::class, 'update']);
+    Route::get('component/{component}', [ComponentController::class, 'show']);
     //component file managament
     Route::post('component-document/{component}', [FileController::class, 'storeComponentDocs']);
+    Route::get('component-document/{component}', [ComponentController::class, 'getComponentDocs']);
     Route::post('component-roles/{component}', [ReusableDataController::class, 'storeComponentRole']);
+    Route::get('component-roles/{component}', [ComponentController::class, 'getComponentRole']);
     Route::post('component-image/{component}', [FileController::class, 'storeComponentImage']);
+    Route::get('component-image/{component}', [ComponentController::class, 'getComponentImage']);
 
 
     //Compatition filtering data

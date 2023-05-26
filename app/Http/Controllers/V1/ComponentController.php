@@ -6,10 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreComponentRequest;
 use App\Http\Requests\UpdateComponentRequest;
 use App\Http\Resources\ComponentResource;
+use App\Http\Resources\DocumentsResource;
+use App\Http\Resources\ImageResource;
+use App\Http\Resources\RolesResource;
 use App\Models\Component;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\SpecialPersonal;
+use App\Support\Collection;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,6 +22,7 @@ class ComponentController extends Controller
 {
 
     use HttpResponses;
+
     /**
      * Store a newly created resource in storage.
      *
@@ -65,6 +70,22 @@ class ComponentController extends Controller
     {
         return new ComponentResource($component);
     }
+    public function getComponentDocs(Request $request, Component $component)
+    {
+        $docs = $component->documents;
+        return DocumentsResource::collection((new Collection($docs))->paginate($request->perPage));
+    }
+    public function getComponentRole(Request $request, Component $component)
+    {
+        $roles = $component->roles;
+        return RolesResource::collection((new Collection($roles))->paginate($request->perPage));
+    }
+    public function getComponentImage(Request $request, Component $component)
+    {
+        $images = $component->images;
+        return ImageResource::collection((new Collection($images))->paginate($request->perPage));
+    }
+
 
     /**
      * Remove the specified resource from storage.
