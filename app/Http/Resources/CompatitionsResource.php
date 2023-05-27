@@ -48,6 +48,7 @@ class CompatitionsResource extends JsonResource
                 $registeredPersonnal = new RolesResource($testRole);
             } 
         }
+        $poolCreated = $this->pools->count() || $this->poolsTeam->count() > 0 ? true : false;
 
  
         return [
@@ -67,6 +68,7 @@ class CompatitionsResource extends JsonResource
             'registrationStatus' => (boolean)$this->registration_status,
             'tatamiNumber' => $this->tatami_no,
             'aplicationsLimit' => $this->aplications_limit,
+            'poolsCreated' => $poolCreated,
             'officialTrainer' => $registeredPersonnal,
             'registrations' => [
                 'clubs' => $this->registrations->countBy('club_id')->count(),

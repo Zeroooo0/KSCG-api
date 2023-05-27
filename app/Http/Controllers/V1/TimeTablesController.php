@@ -50,10 +50,7 @@ class TimeTablesController extends Controller
 
         $incomin_data = $request->tatamies;
         $timeTableData = $compatition->timeTable;
-        
-
-        
-        
+ 
         $timeTable = [];
         $finishedTimeStore = $start_time;
         foreach($incomin_data as $data) {

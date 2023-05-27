@@ -54,6 +54,7 @@ class PoolsController extends Controller
         $reg_single = $registrations->where('team_or_single', 1)->whereIn('category_id', $timeTableCategories)->countBy('category_id');
         $reg_teams = $registrations->where('team_or_single', 0)->whereIn('category_id', $timeTableCategories)->countBy('category_id');
         $pools = $compatition->pools;
+        $poolsTeam = $compatition->poolsTeam;
         
         $nn_single_cat = [];
         $nn_team_cat = [];
@@ -130,8 +131,9 @@ class PoolsController extends Controller
         //END category change
 
     
-        if($pools->where('compatition_id', $compatition->id)->count() > 0) {
-            return $this->error('', 'Žrijebanje je već odrađeno za ovo takmičenje', 403);
+        if($pools->count() > 0 || $poolsTeam->count() > 0 ) {
+            Pool::destroy($pools);
+            PoolTeam::destroy($poolsTeam);
         }
         if($timeTable->count() == 0) {
             return $this->error('', 'Potrebno je prvo da se odredi Time Table', 422);
