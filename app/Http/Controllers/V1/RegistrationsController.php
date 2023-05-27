@@ -330,14 +330,7 @@ class RegistrationsController extends Controller
         if($competition->registration_status == 0) {
             $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
         }
-        if(!$isItSingle) {
-            $teamName = "Ekipa ";
-            $teamNumber = $competition->teams()->count() + 1;
-            
-            $team = $competition->teams()->create([
-                'name' => $teamName . $teamNumber
-            ]);
-        }
+
         if(!$isItSingle && $isItKata && ($isItMale || $isItFemale) && ($competitiors->count() < 3 || $competitiors->count() > 4)) {
             $team ['message'] =  "Nema dovoljno takmičara u ekipi, minimum 3 a maksimum 4 takmičara!";
             $responseErrorMessage [] =  $team;
@@ -383,7 +376,14 @@ class RegistrationsController extends Controller
                 $generationError = true;
             }
 
-
+            if(!$isItSingle) {
+                $teamName = "Ekipa ";
+                $teamNumber = $competition->teams()->count() + 1;
+                
+                $team = $competition->teams()->create([
+                    'name' => $teamName . $teamNumber
+                ]);
+            }
             if(!$isItError && !$categoryError && !$olderCategoryError && !$genderError && !$beltError && !$generationError) {
                 $input['compatition_id'] = $competition->id;
                 $input['club_id'] = $competitor->club_id != null ? $competitor->club->id : null;
