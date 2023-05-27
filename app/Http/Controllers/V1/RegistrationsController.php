@@ -331,8 +331,11 @@ class RegistrationsController extends Controller
             $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
         }
         if(!$isItSingle) {
+            $teamName = "Ekipa ";
+            $teamNumber = $competition->teams()->count() + 1;
+            
             $team = $competition->teams()->create([
-                'name' => $request->teamName
+                'name' => $teamName . $teamNumber
             ]);
         }
         if(!$isItSingle && $isItKata && ($isItMale || $isItFemale) && ($competitiors->count() < 3 || $competitiors->count() > 4)) {
