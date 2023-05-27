@@ -45,7 +45,7 @@ class CompatitionsResource extends JsonResource
             }
             $testRole = $this->roles->whereIn('special_personals_id', $clubRoles)->first();
             if($testRole != null) {
-                $registeredPersonnal = new SpecialPersonalsResource(SpecialPersonal::where('id', $testRole->special_personals_id)->first());
+                $registeredPersonnal = new RolesResource($testRole);
             } 
         }
 

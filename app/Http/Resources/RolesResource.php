@@ -43,12 +43,14 @@ class RolesResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'specialPersonalId' => (string)$specialPersonal->id,
-            'name' => $specialPersonal->name . ' ' . $specialPersonal->last_name,
+            'combinedName' => $specialPersonal->name . ' ' . $specialPersonal->last_name,
+            'email' => $specialPersonal->email,
+            'phone' => $specialPersonal->phone_number,
             'title' => $this->title,
             'role' => $role,
             'status' => (boolean)$specialPersonal->status,
             'image' => $path,
-            'clubName' => $this->role == 1 ? null : $this->roleable->name,
+            'positionIn' => $this->role == 1 ? null : $this->roleable->name,
             'competitionName' => $this->role != 1 ? null : $this->roleable->name,
             'registeredOn' => date('Y-m-d H:m:s', strtotime($this->roleable->created_at))
         ];
