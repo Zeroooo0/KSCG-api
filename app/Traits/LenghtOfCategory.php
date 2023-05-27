@@ -10,7 +10,7 @@ trait LenghtOfCategory {
         $registrations = $competition->registrations->where('category_id', $category->id);
         $timePerCategory = $category->match_lenght;
         $teamOrSingle = $category->solo_or_team;
-        $teamRegistration = $registrations->where('team_id', '!=', null)->groupBy('team_id')->count();
+        $teamRegistration = $registrations->groupBy('team_id')->count();
     
         $registrationCount = $teamOrSingle == 1 ? $registrations->count() : $teamRegistration;
     
@@ -53,11 +53,12 @@ trait LenghtOfCategory {
         }
         return [
             'categoryDuration' =>$totalTimePerCat,
-            'categoryGroupsFront' => $groups > 0 ? $groups + 1 : 0,
-            'categoryPoolsFront' => $pools > 0 ? $pools + 1 : 0,
+            'categoryGroupsFront' => $registrationCount > 0 ? $groups + 1 : 0,
+            'categoryPoolsFront' => $registrationCount > 0 ? $pools + 1 : 0,
             'categoryGroupsBack' => $groups,
             'categoryPoolsBack' => $pools,
-            'categoryRegistrations' => $registrationCount,
+            'categoryRegistrations' => $registrationCount
+
         ];
             
     }

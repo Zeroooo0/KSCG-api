@@ -48,7 +48,8 @@ class PoolsController extends Controller
         foreach($timeTable as $timeTableCategory) {
             $timeTableCategories [] = $timeTableCategory->category_id;
         }
-   
+        
+        
         $registrations = $compatition->registrations;
         $reg_single = $registrations->where('team_or_single', 1)->whereIn('category_id', $timeTableCategories)->countBy('category_id');
         $reg_teams = $registrations->where('team_or_single', 0)->whereIn('category_id', $timeTableCategories)->countBy('category_id');
@@ -77,7 +78,7 @@ class PoolsController extends Controller
             }
 
             foreach($data as $new_data) {
-                $input['compatition_id'] = $request->compatitionId;
+                $input['compatition_id'] = $compatition->id;
                 $input['category_id'] = $request->categoryId;
                 $input['pool'] = $new_data['pool'];
                 $input['pool_type'] = $new_data['poolType'];
@@ -107,7 +108,7 @@ class PoolsController extends Controller
             }
 
             foreach($data as $new_data) {
-                $input['compatition_id'] = $request->compatitionId;
+                $input['compatition_id'] = $compatition->id;
                 $input['category_id'] = $request->categoryId;
                 $input['pool'] = $new_data['pool'];
                 $input['pool_type'] = $new_data['poolType'];
@@ -129,7 +130,7 @@ class PoolsController extends Controller
         //END category change
 
     
-        if($pools->where('compatition_id', $request->compatitionId)->count() > 0) {
+        if($pools->where('compatition_id', $compatition->id)->count() > 0) {
             return $this->error('', 'Žrijebanje je već odrađeno za ovo takmičenje', 403);
         }
         if($timeTable->count() == 0) {
@@ -146,10 +147,11 @@ class PoolsController extends Controller
             $category = Category::where('id', $category_id)->first();
             $category_match_lenght = $category->match_lenght;
             $catSpec = $this->categoryDuration($compatition, $category);
+            
             $count = $catSpec['categoryGroupsFront'];
             $pool = $catSpec['categoryPoolsFront'];
             $timeTracking = $category_timeStart;
-
+            
             for($j = 1; $j <= $pool; $j++) {
                 $counting = $count;
                 switch($j) {
