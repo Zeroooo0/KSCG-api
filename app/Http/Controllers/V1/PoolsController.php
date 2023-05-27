@@ -38,17 +38,22 @@ class PoolsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function automatedStore(Request $request)
+    public function automatedStore(Request $request, Compatition $compatition)
     {
         if(Auth::user()->user_type == 0 || Auth::user()->user_type == 1 && Auth::user()->status == 0 ) {
             return $this->error('', 'Not allowed!', 403);
         }
-        $compatition = Compatition::where('id', $request->compatitionId)->get()->first();
-        $registrations = $compatition->registrations;
-        $reg_single = $registrations->where('team_or_single', 1)->countBy('category_id');
-        $reg_teams = $registrations->where('team_or_single', 0)->countBy('category_id');
-        $pools = $compatition->pools;
         $timeTable = $compatition->timeTable;
+        $timeTableCategories = [];
+        foreach($timeTable as $timeTableCategory) {
+            $timeTableCategories [] = $timeTableCategory->category_id;
+        }
+   
+        $registrations = $compatition->registrations;
+        $reg_single = $registrations->where('team_or_single', 1)->whereIn('category_id', $timeTableCategories)->countBy('category_id');
+        $reg_teams = $registrations->where('team_or_single', 0)->whereIn('category_id', $timeTableCategories)->countBy('category_id');
+        $pools = $compatition->pools;
+        
         $nn_single_cat = [];
         $nn_team_cat = [];
         $singleArr = [];
@@ -123,17 +128,17 @@ class PoolsController extends Controller
         }
         //END category change
 
-        /*
+    
         if($pools->where('compatition_id', $request->compatitionId)->count() > 0) {
             return $this->error('', 'Žrijebanje je već odrađeno za ovo takmičenje', 403);
         }
         if($timeTable->count() == 0) {
             return $this->error('', 'Potrebno je prvo da se odredi Time Table', 422);
         }
-        */
+
         /** Here we start rebuilding */
         //return $nn_team_cat;
-        return $nn_team_cat;
+        
         foreach($nn_team_cat as $key => $val) {
             $category_id =  $val[0][0]->category_id;
             $timeTableData = $timeTable->where('category_id', $category_id)->first();

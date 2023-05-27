@@ -116,7 +116,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::patch('/pools/{pool}', [PoolsController::class, 'updatePool']);
     Route::patch('/team-pools/{poolTeam}', [PoolsController::class, 'updatePoolTeam']);
     //Route::put('/pools/{compatition}', [PoolsController::class, 'updateBatch']);
-    Route::post('/pools-automated', [PoolsController::class, 'automatedStore']);
+    Route::post('/pools-automated/{compatition}', [PoolsController::class, 'automatedStore']);
     //Timetable
     Route::get('/time-table/{competition}', [TimeTablesController::class, 'index']);
     Route::get('/time-table-one/{time_table}', [TimeTablesController::class, 'show']);
