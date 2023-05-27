@@ -70,63 +70,63 @@ class PoolsController extends Controller
         }
   
         //STAR category change
-        if(isset($request->categoryId) && $requestedCategory->solo_or_team == 1) {
-            $pool = $pools->where('category_id', $request->categoryId);
-            $data = collect($request)->except(['compatitionId', 'categoryId']);
-            if($pool->count() == 0) {
-                return $this->error('', 'Prvo odradite žrijebanje da bi ste mogli da editujete!', 403);
-            }
+        // if(isset($request->categoryId) && $requestedCategory->solo_or_team == 1) {
+        //     $pool = $pools->where('category_id', $request->categoryId);
+        //     $data = collect($request)->except(['compatitionId', 'categoryId']);
+        //     if($pool->count() == 0) {
+        //         return $this->error('', 'Prvo odradite žrijebanje da bi ste mogli da editujete!', 403);
+        //     }
 
-            foreach($data as $new_data) {
-                $input['compatition_id'] = $compatition->id;
-                $input['category_id'] = $request->categoryId;
-                $input['pool'] = $new_data['pool'];
-                $input['pool_type'] = $new_data['poolType'];
-                $input['group'] = $new_data['group'];
-                $input['status'] = $new_data['status'];
-                $input['registration_one'] = $new_data['registrationOne'];
-                $input['registration_two'] = $new_data['registrationTwo'];
-                $singleArr[] = $input;
-            }
-            if($pools->where('category_id', $request->categoryId)->count() > 0) {
-                foreach($pool as $trash) {
-                    $trash->delete();
-                }
-            }
-            //return $singleArr;
-            Pool::insert($singleArr);
-            return $this->success($singleArr);
-        }
+        //     foreach($data as $new_data) {
+        //         $input['compatition_id'] = $compatition->id;
+        //         $input['category_id'] = $request->categoryId;
+        //         $input['pool'] = $new_data['pool'];
+        //         $input['pool_type'] = $new_data['poolType'];
+        //         $input['group'] = $new_data['group'];
+        //         $input['status'] = $new_data['status'];
+        //         $input['registration_one'] = $new_data['registrationOne'];
+        //         $input['registration_two'] = $new_data['registrationTwo'];
+        //         $singleArr[] = $input;
+        //     }
+        //     if($pools->where('category_id', $request->categoryId)->count() > 0) {
+        //         foreach($pool as $trash) {
+        //             $trash->delete();
+        //         }
+        //     }
+        //     //return $singleArr;
+        //     Pool::insert($singleArr);
+        //     return $this->success($singleArr);
+        // }
 
 
 
-        if(isset($request->categoryId) && $requestedCategory->solo_or_team == 0) {
-            $pool = $pools->where('category_id', $request->categoryId);
-            $data = collect($request)->except(['compatitionId', 'categoryId']);
-            if($pool->count() == 0) {
-                return $this->error('', 'Prvo odradite žrijebanje da bi ste mogli da editujete!', 403);
-            }
+        // if(isset($request->categoryId) && $requestedCategory->solo_or_team == 0) {
+        //     $pool = $pools->where('category_id', $request->categoryId);
+        //     $data = collect($request)->except(['compatitionId', 'categoryId']);
+        //     if($pool->count() == 0) {
+        //         return $this->error('', 'Prvo odradite žrijebanje da bi ste mogli da editujete!', 403);
+        //     }
 
-            foreach($data as $new_data) {
-                $input['compatition_id'] = $compatition->id;
-                $input['category_id'] = $request->categoryId;
-                $input['pool'] = $new_data['pool'];
-                $input['pool_type'] = $new_data['poolType'];
-                $input['group'] = $new_data['group'];
-                $input['status'] = $new_data['status'];
-                $input['team_one'] = $new_data['registrationOne'];
-                $input['team_two'] = $new_data['registrationTwo'];
-                $teamArr[] = $input;
-            }
-            if($pools->where('category_id', $request->categoryId)->count() > 0) {
-                foreach($pool as $trash) {
-                    $trash->delete();
-                }
-            }
+        //     foreach($data as $new_data) {
+        //         $input['compatition_id'] = $compatition->id;
+        //         $input['category_id'] = $request->categoryId;
+        //         $input['pool'] = $new_data['pool'];
+        //         $input['pool_type'] = $new_data['poolType'];
+        //         $input['group'] = $new_data['group'];
+        //         $input['status'] = $new_data['status'];
+        //         $input['team_one'] = $new_data['registrationOne'];
+        //         $input['team_two'] = $new_data['registrationTwo'];
+        //         $teamArr[] = $input;
+        //     }
+        //     if($pools->where('category_id', $request->categoryId)->count() > 0) {
+        //         foreach($pool as $trash) {
+        //             $trash->delete();
+        //         }
+        //     }
 
-            PoolTeam::insert($singleArr);
-            return $this->success($singleArr);
-        }
+        //     PoolTeam::insert($singleArr);
+        //     return $this->success($singleArr);
+        // }
         //END category change
 
     

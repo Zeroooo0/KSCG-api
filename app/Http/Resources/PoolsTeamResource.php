@@ -78,8 +78,8 @@ class PoolsTeamResource extends JsonResource
             'match' => $this->group,
             'nextMatchId' => $nextMatchId,
             'startTime' => $this->start_time,
-            'teamOne' => $one,
-            'teamTwo' => $two
+            'competitorOne' => $one,
+            'competitorTwo' => $two
         ];
     }
 }
