@@ -59,8 +59,8 @@ class TimeTableResource extends JsonResource
             'startedAt' => $this->started_time != null ? date('H:i', strtotime($this->started_time)) : null,
             'finishedAt' => $this->finish_time != null ? date('H:i', strtotime($this->finish_time)) : null,
             'status' => $this->status,
-            'groups' => $data->toArray(),
-            'rematch' => $repesaz->toArray()
+            'groups' => $request->has('embed') && str_contains($request->embed, 'groups') ? $data->toArray() : 'embbedable',
+            'rematch' => $request->has('embed') && str_contains($request->embed, 'groups') ? $repesaz->toArray() : 'embbedable'
 
         ];
     }
