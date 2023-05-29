@@ -350,7 +350,7 @@ class PoolsController extends Controller
             $request->winnerId != 'null' ? $winnerResult =  3 : $winnerResult = null;
             Registration::where('id', $winnerId)->first()->update(['position' => $winnerResult]);
             if($category->repesaz == 0) {
-                if($looserId != (null || "null")){
+                if($looserId !=  'null'){
                     Registration::where('id', $looserId)->first()->update(['position' => $looserResult]);
                 }
                 $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
@@ -447,7 +447,7 @@ class PoolsController extends Controller
        
         if($poolTeam->pool_type == 'SF' && $category->repesaz == 0) {
             $poolTeam->looser_id != 'null' ? $looserResult =  1 : $looserResult = null;
-            $teamLooser = $looserId != (null || 'null') ? Team::where('id', $looserId)->first()->registrations : null;
+            $teamLooser = $looserId != 'null' ? Team::where('id', $looserId)->first()->registrations : null;
             $teamWinner = Team::where('id', $winnerId)->first()->registrations;
             foreach($teamLooser as $teamReg) {
                 if($teamLooser != null) {
@@ -461,7 +461,7 @@ class PoolsController extends Controller
         if($poolTeam->pool_type == 'FM') {
             $poolTeam->looser_id != 'null' ? $looserResult =  2 : $looserResult = null;
             $poolTeam->winner_id != 'null' ? $winnerResult =  3 : $winnerResult = null;
-            $teamLoose = $request->looserId != (null || "null") ? Team::where('id', $request->looserId)->first()->registrations : null;
+            $teamLoose = $request->looserId != 'null' ? Team::where('id', $request->looserId)->first()->registrations : null;
             $teamWin = Team::where('id', $request->winnerId)->first()->registrations;
             $timeTable = TimeTable::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id)->first();
 
