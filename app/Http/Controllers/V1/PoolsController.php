@@ -463,12 +463,12 @@ class PoolsController extends Controller
             $timeTable = TimeTable::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id)->first();
 
             foreach($winnerRegistration as $teamReg) {
-                $winnerRegistration->update(['position' => $winnerResult]);
+                $teamReg->update(['position' => $winnerResult]);
             }
             if($category->repesaz == 0 ) {
                 if($looserRegistration != 'null'){
                     foreach($looserRegistration as $teamReg) {
-                        $looserRegistration->update(['position' => $looserResult]);
+                        $teamReg->update(['position' => $looserResult]);
                     }
                 }
                 $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
