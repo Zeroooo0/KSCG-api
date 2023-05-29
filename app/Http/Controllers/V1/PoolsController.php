@@ -341,7 +341,7 @@ class PoolsController extends Controller
        
         if($pool->pool_type == 'SF' && $category->repesaz == 0) {
             $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
-            $looserRegistration->update(['position' => $looserResult]);
+            $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
             $winnerRegistration->update(['position' => null]);
         } 
         if($pool->pool_type == 'FM') {
@@ -349,7 +349,7 @@ class PoolsController extends Controller
             $request->winnerId != 'null' ? $winnerResult =  3 : $winnerResult = null;
             Registration::where('id', $winnerId)->first()->update(['position' => $winnerResult]);
             if($category->repesaz == 0) {
-                Registration::where('id', $looserId)->first()->update(['position' => $looserResult]);
+                $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
                 $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
             }
         } 
