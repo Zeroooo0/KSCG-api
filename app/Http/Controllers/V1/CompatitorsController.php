@@ -238,7 +238,9 @@ class CompatitorsController extends Controller
             $competitor->update(['club_id' => null, 'status' => 0]);            
             return $this->success('', 'Uspješno obrisan takmičar!');
         }
-
+        if($competitor->registrations > 0) {
+            return $this->error('', 'Nije moguće brisati takmičara koji je već učestvovao na takmičenja.', 403);
+        }
         foreach($competitor->image()->get() as $image) {
             Storage::delete($image->url);
         }

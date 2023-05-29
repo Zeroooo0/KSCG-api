@@ -93,7 +93,7 @@ class ReusableDataController extends Controller
         if($rolesExistance) {
             $roleIdOfClub = Roles::where([['special_personals_id',  $request->specialPersonalId], ['roleable_type', 'App\Models\Club']])->get()->first()->roleable_id;
             $roleInClub = Club::find($roleIdOfClub)->name;
-            if($club->roles()->where('special_personals_id', $request->specialPersonalId)->count() >= 1) {
+            if($club->roles()->where('special_personals_id', $request->specialPersonalId)->count() > 1) {
                 return $this->error('', 'Već je prijavljen u vašem klubu!', 406);
             }
             if((string)$roleIdOfClub != (string)$request->clubId) {

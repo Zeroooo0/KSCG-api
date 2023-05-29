@@ -57,13 +57,16 @@ class PagesController extends Controller
             'excerpt' => $request->excerpt,
             'user_id' => Auth::user()->id
         ]);
-        $path = Storage::putFile('post-image', $request->image);
-        $image = $page->images()->create([
-            'url' => $path
-        ]);
-        $page->update([
-            'cover_image' => $image->id
-        ]);
+
+        if($request->has('image')){
+            $path = Storage::putFile('post-image', $request->image);
+            $image = $page->images()->create([
+                'url' => $path
+            ]);
+            $page->update([
+                'cover_image' => $image->id
+            ]);
+        }
 
         return new PagesResource($page);
        
@@ -94,6 +97,18 @@ class PagesController extends Controller
         $page->update([
             'updated_at'=> date('Y:m:d H:i:s')
         ]);
+        if($request->has('image')){
+            $path = Storage::putFile('post-image', $request->image);
+            $image = $page->images()->create([
+                'url' => $path
+            ]);
+            if($request->has('coverImage') && $request->coverImage == (true || 'true')){
+                $page->update([
+                    'cover_image' => $image->id
+                ]);
+            }
+
+        }
         return new PagesResource($page);
     }
 

@@ -114,7 +114,19 @@ class PostsController extends Controller
     public function update(UpdatePostRequest $request, Post $news)
     {
         $request->validated($request->all());
-        $news->update($request->all());
+        $news->update($request->except('image'));
+        if($request->has('image')){
+            $path = Storage::putFile('post-image', $request->image);
+            $image = $news->images()->create([
+                'url' => $path
+            ]);
+            if($request->has('coverImage') && $request->coverImage == (true || 'true') ){
+                $news->update([
+                    'cover_image' => $image->id
+                ]);
+            }
+
+        }
         return new PostsResource($news);
     }
 

@@ -134,10 +134,19 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Compatition
     Route::post('/competition-personnel/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Posts
-    Route::resource('/news', PostsController::class);
+    Route::get('/news', [PostsController::class, 'index']);
+    Route::get('/news/{news}', [PostsController::class, 'show']);
+    Route::post('/news', [PostsController::class, 'store']);
+    Route::post('/news/{news}', [PostsController::class, 'update']);
+    Route::delete('/news/{news}', [PostsController::class, 'destroy']);
     Route::get('/news-components/{news}', [PostsController::class, 'postComponents']);
     //Pages
-    Route::resource('/pages', PagesController::class);
+    //Route::resource('/pages', PagesController::class);
+    Route::get('/pages', [PagesController::class, 'index']);
+    Route::get('/pages/{page}', [PagesController::class, 'show']);
+    Route::post('/pages', [PagesController::class, 'store']);
+    Route::post('/pages/{page}', [PagesController::class, 'update']);
+    Route::delete('/pages/{page}', [PagesController::class, 'destroy']);
     Route::get('/page-components/{page}', [PagesController::class, 'pageComponents']);
 
     //Component

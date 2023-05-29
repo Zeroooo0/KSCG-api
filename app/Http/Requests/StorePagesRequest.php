@@ -28,7 +28,7 @@ class StorePagesRequest extends FormRequest
             'slug' => ['string', 'not_regex:/([A-Z])| |\.|\/n/'],
             'content' => ['required','string'],
             'excerpt' => ['required','string'],
-            'image' => ['required','image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480'],
+            'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:20480'],
         ];
     }
 }
