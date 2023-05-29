@@ -423,7 +423,7 @@ class PoolsController extends Controller
         $winnerId = $request->winnerId != 'null' ? $request->winnerId : $poolTeam->winner_id;
         $looserId = $request->looserId != 'null' ? $request->looserId : $poolTeam->looser_id;
         $winnerRegistration = Registration::where('team_id', $winnerId)->get();
-        $looserRegistration = Registration::where('team_id', $looserId)->get();
+        $looserRegistration = $looserId != 'null' ? Registration::where('team_id', $looserId)->get() : null;
         $categoryLenght = $category->match_lenght;
 
         if($poolTeam->pool == 1 && $poolTeam->group == 1 && $timeTable->status == 0) {
@@ -444,39 +444,44 @@ class PoolsController extends Controller
        
         if($poolTeam->pool_type == 'SF' && $category->repesaz == 0) {
             $poolTeam->looser_id != 'null' ? $looserResult =  1 : $looserResult = null;
-            $teamLooser = Team::where('id', $looserId)->first()->registrations;
-            $teamWinner = Team::where('id', $winnerId)->first()->registrations;
-            foreach($teamLooser as $teamReg) {
-                $teamReg->update(['position' => $looserResult]);
+
+            if($looserRegistration != null) {
+                foreach($looserRegistration as $teamReg) {
+                    $teamReg->update(['position' => $looserResult]);
+                }
             }
-            foreach($teamWinner as $teamReg) {
+            foreach($winnerRegistration as $teamReg) {
                 $teamReg->update(['position' => null]);
             }
+          
+
         } 
         if($poolTeam->pool_type == 'FM') {
             $poolTeam->looser_id != 'null' ? $looserResult =  2 : $looserResult = null;
             $poolTeam->winner_id != 'null' ? $winnerResult =  3 : $winnerResult = null;
-            $teamLoose = Team::where('id', $request->winnerId)->first()->registrations;
-            $teamWin = Team::where('id', $request->win)->first()->registrations;
+
             $timeTable = TimeTable::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id)->first();
 
-            foreach($teamWin as $teamReg) {
-                $teamWin->update(['position' => $winnerResult]);
+            foreach($winnerRegistration as $teamReg) {
+                $winnerRegistration->update(['position' => $winnerResult]);
             }
-            if($category->repesaz == 0) {
-                foreach($teamLoose as $teamReg) {
-                    $teamLoose->update(['position' => $looserResult]);
+            if($category->repesaz == 0 ) {
+                if($looserRegistration != 'null'){
+                    foreach($looserRegistration as $teamReg) {
+                        $looserRegistration->update(['position' => $looserResult]);
+                    }
                 }
                 $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
             }
         } 
+        $getPool = PoolTeam::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id);
         if($poolTeam->pool_type == 'FM' && $category->repesaz == 1) {
-            $getPool = PoolTeam::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id);
-            $getLoosers = PoolTeam::where('winner_id', $request->winnerId)->where('looser_id', '!=', null)->orderBy('pool', 'asc')->get();
+            
+            $getPoolLoosers = $getPool->where('winner_id', $request->winnerId)->where('looser_id', '!=', null)->orderBy('pool', 'asc')->get();
             if($getPool->where('pool_type','like',  "%R%")->get()->count() > 0){
                 $getPool->where('pool_type','like',  "%R%")->delete();
             }
-            $countLoosers = $getLoosers->count();
+            $countLoosers = $getPoolLoosers->count();
             $repesazData = [];
             for($i = 2; $i <= $countLoosers; $i++){
                 switch($i) {
@@ -502,8 +507,8 @@ class PoolsController extends Controller
                 
                 $lastPoolTime = $poolTeam->start_time;
                 $timeTracking = $otherCompetitors * $categoryLenght;
-                $input['team_one'] = $i == 2 ? $getLoosers[$firstCompetitor]->looser_id : null;
-                $input['team_two'] = $getLoosers[$otherCompetitors]->looser_id;
+                $input['team_one'] = $i == 2 ? $getPoolLoosers[$firstCompetitor]->looser_id : null;
+                $input['team_two'] = $getPoolLoosers[$otherCompetitors]->looser_id;
                 $input['start_time'] = Date("H:i:s", strtotime("$lastPoolTime + $timeTracking minutes"));
                 $repesazData[] = $input;  
         }
