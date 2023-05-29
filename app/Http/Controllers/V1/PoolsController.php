@@ -350,9 +350,9 @@ class PoolsController extends Controller
             $request->winnerId != 'null' ? $winnerResult =  3 : $winnerResult = null;
             Registration::where('id', $winnerId)->first()->update(['position' => $winnerResult]);
             if($category->repesaz == 0) {
-                if($looserId !=  'null'){
-                    Registration::where('id', $looserId)->first()->update(['position' => $looserResult]);
-                }
+                
+                $looserId !=  'null' ? Registration::where('id', $looserId)->first()->update(['position' => $looserResult]) : null;
+         
                 $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
             }
         } 
