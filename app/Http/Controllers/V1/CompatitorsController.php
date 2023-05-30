@@ -179,6 +179,9 @@ class CompatitorsController extends Controller
         if(Auth::user()->user_type == 0 && $competitor->club_id != Auth::user()->club->id) {
             return $this->restricted('', 'Možete vršiti izmjene samo članova Vašeg kluba!', 403);
         }
+        if(Auth::user()->user_type == 0 && $competitor->registrations->count() > 0) {
+            return $this->error('', 'Takmičar posjeduje prijave, zamolite administratora da promijeni podatak!', 403);
+        }
         
         $competitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status', 'belt']));
 
@@ -192,7 +195,7 @@ class CompatitorsController extends Controller
                 'date_of_birth' => $request->dateOfBirth
             ]);
         }
-        if ($request->has('belt') && Auth::user()->user_type != 0) {
+        if ($request->has('belt')) {
             $competitor->update([
                 'belt_id' => $request->belt
             ]);
@@ -209,7 +212,7 @@ class CompatitorsController extends Controller
         }
         if ($request->has('status')) {
 
-            if(Auth::user()->user_type != 2 || Auth::user()->user_type == 0) {
+            if(Auth::user()->user_type != 2 && Auth::user()->status == 0 ) {
                 return $this->error('', 'Status mogu promijeniti aktivni administratori ove platforme!', 403);
             } 
 
