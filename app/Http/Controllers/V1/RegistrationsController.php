@@ -339,6 +339,14 @@ class RegistrationsController extends Controller
             $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 5 a maksimum 6 takmičara!";
             $responseErrorMessage [] =  $team;
         }
+        if(!$isItSingle) {
+            $teamName = "Ekipa ";
+            $teamNumber = $competition->teams()->count() + 1;
+            
+            $team = $competition->teams()->create([
+                'name' => $teamName . $teamNumber
+            ]);
+        }
         foreach($competitiors as $competitor) {
             $isItError = false;
             $categoryError = false;
@@ -376,14 +384,7 @@ class RegistrationsController extends Controller
                 $generationError = true;
             }
 
-            if(!$isItSingle) {
-                $teamName = "Ekipa ";
-                $teamNumber = $competition->teams()->count() + 1;
-                
-                $team = $competition->teams()->create([
-                    'name' => $teamName . $teamNumber
-                ]);
-            }
+
             if(!$isItError && !$categoryError && !$olderCategoryError && !$genderError && !$beltError && !$generationError) {
                 $input['compatition_id'] = $competition->id;
                 $input['club_id'] = $competitor->club_id != null ? $competitor->club->id : null;
