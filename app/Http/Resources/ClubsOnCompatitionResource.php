@@ -45,11 +45,11 @@ class ClubsOnCompatitionResource extends JsonResource
         foreach($roles as $person) {
             $arrayOfRoles[] = $person->special_personals_id;
         }
-    
+        $dateNow = date('d/m/Y',strtotime($competition->start_time_date));
         
         return [
             'id' => (string)$this->id,
-            'documentId' => (string)($competition->id . $this->id),
+            'documentId' => (string)("$dateNow-$competition->id/$this->id"),
             'name' => $this->name,
             'competitionName' => $competition->name,
             'totalRegistrationNo' => $reg_compatitors->count(),
