@@ -49,6 +49,7 @@ class ClubsOnCompatitionResource extends JsonResource
         
         return [
             'id' => (string)$this->id,
+            'documentId' => (string)($competition->id . $this->id),
             'name' => $this->name,
             'competitionName' => $competition->name,
             'totalRegistrationNo' => $reg_compatitors->count(),
