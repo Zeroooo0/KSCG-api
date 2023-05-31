@@ -8,7 +8,9 @@ use App\Http\Resources\RegistrationsResource;
 use App\Models\Category;
 use App\Models\Compatition;
 use App\Models\Compatitor;
+use App\Models\PoolTeam;
 use App\Models\Registration;
+use App\Models\Team;
 use App\Support\Collection;
 use App\Traits\HttpResponses;
 use DateTime;
@@ -478,26 +480,34 @@ class RegistrationsController extends Controller
             $teamId = $registration->team_id;
             $categoryGender = $category->gender;
             $teamDelete = Registration::where('team_id', $teamId)->get();
+            $team = Team::where('id', $teamId)->first();
+            $teamOne = PoolTeam::where('team_one', $teamId)->get();
+            $teamTwo = PoolTeam::where('team_two', $teamId)->get();
+            $toUpdate = 0;
+ 
+           
             if($category->kata_or_kumite == 0 && $categoryGender == 1 && $teamDelete->count() - 1 < 5) {
+                $toUpdate = 1;
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();
-                }
-                return $this->success('', 'Uspješno obrisana ekipa!');
+                }   
             }
             if($teamDelete->count() - 1 < 3) {
-                
+                $toUpdate = 1;
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();
                 }
-                return $this->success('', 'Uspješno obrisana ekipa!');
             }
-            if($teamDelete->count() - 1 < 3) {
-                foreach($teamDelete as $teamMember) {
-                    $teamMember->delete();
-                }
-                return $this->success('', 'Uspješno obrisana ekipa!');
+            if($toUpdate == 1 && $teamOne->count() > 0) {
+                $teamOne->first()->update(['team_one'=> null]);
             }
+            if($toUpdate == 1 && $teamTwo->count() > 0) {
+                $teamTwo->first()->update(['team_two'=> null]);
+            }
+            $team->delete();
+            return $this->success('', 'Uspješno obrisana ekipa!');
         }
+
         $registration->delete();
         return $this->success('', 'Uspješno obrisana registracija!');
     }

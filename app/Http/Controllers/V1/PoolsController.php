@@ -321,6 +321,7 @@ class PoolsController extends Controller
         $looserId = $request->looserId != 'null' ? $request->looserId : $pool->looser_id;
         $looserRegistration = Registration::where('id', $looserId)->first();
         $winnerRegistration = Registration::where('id', $winnerId)->first();
+        $totalRegistrations = Registration::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id)->get()->count();
         $categoryLenght = $category->match_lenght;
 
 
@@ -343,11 +344,31 @@ class PoolsController extends Controller
             $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
             $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
             $winnerRegistration->update(['position' => null]);
+            if($totalRegistrations < 4 && $request->looserId == 'null') {
+                $winnerRegistration->update(['status' => 0]);
+            }
+            if($totalRegistrations < 4 && $request->looserId != 'null') {
+                $looserRegistration->update(['status' => 0]);
+                $winnerRegistration->update(['status' => 1]);
+            }
         } 
         if($pool->pool_type == 'FM') {
             $request->looserId != 'null' ? $looserResult =  2 : $looserResult = null;
             $request->winnerId != 'null' ? $winnerResult =  3 : $winnerResult = null;
-            Registration::where('id', $winnerId)->first()->update(['position' => $winnerResult]);
+            $winnerRegistration->update(['position' => $winnerResult]);
+            if($totalRegistrations == 1) {
+                $winnerRegistration->update(['status' => 0]);
+            }
+            if($totalRegistrations == 2 ) {
+                $winnerRegistration->update(['status' => 1]);
+                $looserRegistration->update(['status' => 0]);
+            }
+            if($totalRegistrations == 3 ) {
+                $poolsWinningCount = Pool::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id)->where('winner_id', $request->looserId)->where('looser_id', '!=', null)->where('id', '!=', $pool->id)->count();
+                $poolsWinningCount >= 1 ? $looserStatus = 1 : $looserStatus = 0;
+                $winnerRegistration->update(['status' => 1]);
+                $looserRegistration->update(['status' => $looserStatus]);
+            }
             if($category->repesaz == 0) {
                 $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
                 $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
@@ -423,21 +444,26 @@ class PoolsController extends Controller
         $winnerId = $request->winnerId != 'null' ? $request->winnerId : $poolTeam->winner_id;
         $looserId = $request->looserId != 'null' ? $request->looserId : $poolTeam->looser_id;
         $winnerRegistration = Registration::where('team_id', $winnerId)->get();
-        $looserRegistration = $looserId != 'null' ? Registration::where('team_id', $looserId)->get() : null;
+        $looserRegistration = $looserId != 'null' && $looserId != null ? Registration::where('team_id', $looserId)->get() : null;
         $categoryLenght = $category->match_lenght;
+        $totalRegistrations = Registration::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id)->get()->groupBy('team_id')->count();
+        
 
+        
         if($poolTeam->pool == 1 && $poolTeam->group == 1 && $timeTable->status == 0) {
             $nowTime = now();
             $timeTable->update(['status'=> 1, 'started_time' => Date("H:i:s", strtotime("$nowTime - 10 minutes"))]);
         }
 
         if($request->has('nextMatchId') && $request->nextMatchId !== 'null') {
-            $nextMetch = Pool::where('id', $request->nextMatchId)->first();
+            $nextMetch = PoolTeam::where('id', $request->nextMatchId)->first();
+            
             if(!str_contains($nextMetch->pool_type, 'R')){
                 $isOdd = $poolTeam->group % 2 == 0 ? 1 : 0;
-                $isOdd == 0 ? $nextMetch->update(['registration_one' => $winnerId]) : $nextMetch->update(['registration_two' => $winnerId]);
+                
+                $isOdd == 0 ? $nextMetch->update(['team_one' => $winnerId]) : $nextMetch->update(['team_two' => $winnerId]);
             } else {
-                $request->nextMatchId != 'null' ? $nextMetch->update(['registration_one' => $winnerId]) : null;
+                $request->nextMatchId != 'null' ? $nextMetch->update(['team_one' => $winnerId]) : null;
             }
         }
 
@@ -453,26 +479,65 @@ class PoolsController extends Controller
             foreach($winnerRegistration as $teamReg) {
                 $teamReg->update(['position' => null]);
             }
-          
+
+            if($totalRegistrations < 4 && $request->looserId == 'null') {
+                foreach($winnerRegistration as $teamReg) {
+                    $teamReg->update(['status' => 0]);
+                }
+            }
+            if($totalRegistrations < 4 && $request->looserId != 'null') {
+                foreach($looserRegistration as $teamReg) {
+                    $teamReg->update(['status' => 0]);
+                }
+                foreach($winnerRegistration as $teamReg) {
+                    $teamReg->update(['status' => 1]);
+                }
+            }
 
         } 
+
         if($poolTeam->pool_type == 'FM') {
             $poolTeam->looser_id != 'null' ? $looserResult =  2 : $looserResult = null;
             $poolTeam->winner_id != 'null' ? $winnerResult =  3 : $winnerResult = null;
 
             $timeTable = TimeTable::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id)->first();
-
+            
             foreach($winnerRegistration as $teamReg) {
                 $teamReg->update(['position' => $winnerResult]);
             }
+
+            if($totalRegistrations == 1) {
+                foreach($winnerRegistration as $teamReg) {
+                    $teamReg->update(['status' => 0]);
+                }
+            }
+            
+            if($totalRegistrations == 2) {
+                foreach($looserRegistration as $teamReg) {
+                    $teamReg->update(['status' => 0]);
+                }
+            }
+            
+            if($totalRegistrations == 3) {
+                $poolsWinnerCount = PoolTeam::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id)->where('winner_id', $request->looserId)->where('looser_id', '!=', null)->where('id', '!=', $poolTeam->id)->get()->count();
+            
+                $poolsWinnerCount >= 1 ? $looserStatus = 1 : $looserStatus = 0;
+                foreach($winnerRegistration as $teamReg) {
+                    $teamReg->update(['status' => 1]);
+                }
+                foreach($looserRegistration as $teamReg) {
+                    $teamReg->update(['status' => $looserStatus]);
+                }
+            }
             if($category->repesaz == 0 ) {
-                if($looserRegistration != 'null'){
+                if($looserRegistration != null){
                     foreach($looserRegistration as $teamReg) {
                         $teamReg->update(['position' => $looserResult]);
                     }
                 }
                 $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
             }
+
         } 
         $getPool = PoolTeam::where('compatition_id', $poolTeam->compatition_id)->where('category_id', $poolTeam->category_id);
         if($poolTeam->pool_type == 'FM' && $category->repesaz == 1) {
