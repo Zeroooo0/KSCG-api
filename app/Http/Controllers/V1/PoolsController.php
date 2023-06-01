@@ -68,7 +68,6 @@ class PoolsController extends Controller
         $dataGroupTwo = [];
 
         foreach($reg_single as $key=>$count){
-            return in_array($key, $groupOneIds);
             $nn_single_cat[] = $registrations->sortBy('club_id')->where('category_id', $key)->values();
             
         }
