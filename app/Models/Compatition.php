@@ -48,7 +48,7 @@ class Compatition extends Model
     }
     public function poolsTeam()
     {
-        return $this->hasMany(Pool::class);
+        return $this->hasMany(PoolTeam::class);
     }
     public function timeTable()
     {
