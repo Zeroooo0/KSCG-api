@@ -204,9 +204,13 @@ class ReusableDataController extends Controller
         foreach($sortingClubs as $club) {
             $sortedClubs[] = Club::where('id', $club['club_id'])->first();
         }
+
+        $dataSort = $request->has('id') ? collect($sortedClubs)->firstWhere('id', '=', $request->id['eq']) : $sortedClubs;
         
-    
-        return ClubsOnCompatitionResource::collection((new Collection($sortedClubs))->paginate($per_page));
+        if($request->has('id')){
+            return new ClubsOnCompatitionResource($dataSort);
+        }
+        return ClubsOnCompatitionResource::collection((new Collection($dataSort))->paginate($per_page));
     }
     public function competitionRoles(Compatition $competition, Request $request)
     {
