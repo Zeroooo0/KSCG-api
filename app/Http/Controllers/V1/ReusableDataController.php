@@ -192,25 +192,18 @@ class ReusableDataController extends Controller
             $clubs[] = $input;
             
         }
-        $teamRegistrations = $registrations->where('team_or_single', 0)->where('status', 1);
-        $teams = [];
-        // foreach($teamRegistrations->groupBy('team_id') as $teamReg) {
-        
-        //     $teams[] = $teamReg->where('position', 3)->count();
-        // }
-        // return array_sum($teams);
+
+
         $sortingClubs = collect($clubs)->sortByDesc('bronze')->sortByDesc('silver')->sortByDesc('gold');
         $sortedClubs = [];
         foreach($sortingClubs as $club) {
             $sortedClubs[] = Club::where('id', $club['club_id'])->first();
         }
-
-        $dataSort = $request->has('id') ? collect($sortedClubs)->firstWhere('id', '=', $request->id['eq']) : $sortedClubs;
         
         if($request->has('id')){
-            return new ClubsOnCompatitionResource($dataSort);
+            return ClubsOnCompatitionResource::collection($competition->clubs->where($queryItems));
         }
-        return ClubsOnCompatitionResource::collection((new Collection($dataSort))->paginate($per_page));
+        return ClubsOnCompatitionResource::collection((new Collection($sortedClubs))->paginate($per_page));
     }
     public function competitionRoles(Compatition $competition, Request $request)
     {
