@@ -187,9 +187,9 @@ class RegistrationsController extends Controller
         
 
 
-    
-        $kataCount = 0 + $registrations->where('kata_or_kumite', 1)->count();
-        $kumiteCount = 0 + $registrations->where('kata_or_kumite', 0)->count();
+     
+        $kataCount = 0 + $registrations->where('team_or_single', 1)->where('kata_or_kumite', 1)->count();
+        $kumiteCount = 0 + $registrations->where('team_or_single', 1)->where('kata_or_kumite', 0)->count();
         $dateKumiteFrom = date(now());
 
         foreach($categories as $category) {
