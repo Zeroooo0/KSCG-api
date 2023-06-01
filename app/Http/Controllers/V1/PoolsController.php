@@ -308,6 +308,29 @@ class PoolsController extends Controller
         return $this->success(['single' => $singleArr, 'teams' => $teamArr]);
 
     }
+    public function rebuildCategoryPool(Request $request) 
+    {
+        if(!$request->isTeam) {
+            foreach($request->groups as $pool) {
+                $poolToUpdate = Pool::where('id', $pool['poolId'])->first();
+                $poolToUpdate->update([
+                    'competitor_one' => $pool['competitorOne'],
+                    'competitor_two' => $pool['competitorTwo']
+                ]);
+            }
+            return $this->success('', 'Uspješno izmjenjen žrijeb!');
+        }
+        if($request->isTeam) {
+            foreach($request->groups as $pool) {
+                $poolToUpdate = PoolTeam::where('id', $pool['poolId'])->first();
+                $poolToUpdate->update([
+                    'team_one' => $pool['competitorOne'],
+                    'team_two' => $pool['competitorTwo']
+                ]);
+            }
+            return $this->success('', 'Uspješno izmjenjen žrijeb!');
+        }
+    }
 
     /**
      * Update the specified resource in storage.
