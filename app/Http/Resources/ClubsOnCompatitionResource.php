@@ -53,9 +53,9 @@ class ClubsOnCompatitionResource extends JsonResource
         $silver = [];
         $bronze = [];
         foreach($teamRegistrations->groupBy('team_id') as $teamReg) {
-            $gold[] = $teamReg->where('position', 3)->count();
-            $silver[] = $teamReg->where('position', 2)->count();
-            $bronze[] = $teamReg->where('position', 1)->count();
+            $gold[] = $teamReg->where('position', 3)->groupBy('team_id')->count();
+            $silver[] = $teamReg->where('position', 2)->groupBy('team_id')->count();
+            $bronze[] = $teamReg->where('position', 1)->groupBy('team_id')->count();
         }
         $pointsTeam = array_sum($gold) * 3 + array_sum($silver) * 2 + array_sum($bronze) * 1;
         return [
