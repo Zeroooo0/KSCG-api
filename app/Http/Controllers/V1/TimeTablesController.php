@@ -54,9 +54,9 @@ class TimeTablesController extends Controller
         $timeTableData = $compatition->timeTable;
  
         $timeTable = [];
-        $finishedTimeStore = $start_time;
+
         foreach($incomin_data as $data) {
-            
+            $finishedTimeStore = $start_time;
             $numberOfCategory = count($data['categories']);
             
             for($j = 0; $j <= $numberOfCategory - 1; $j++) {
@@ -83,9 +83,9 @@ class TimeTablesController extends Controller
 
 
         if($timeTableData->count() >= 1) {
-            if($timeTableData->where('status', '!=', 0)->count() > 0) {
-                return $this->error('', 'Takmičenje je već započelo!', 403);
-            }
+            // if($timeTableData->where('status', '!=', 0)->count() > 0) {
+            //     return $this->error('', 'Takmičenje je već započelo!', 403);
+            // }
             TimeTable::destroy($timeTableData);
         }
         TimeTable::insert($timeTable);
