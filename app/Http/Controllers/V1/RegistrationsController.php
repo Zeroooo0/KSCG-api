@@ -337,7 +337,7 @@ class RegistrationsController extends Controller
             $team ['message'] =  "Nema dovoljno takmičara u ekipi, minimum 3 a maksimum 4 takmičara!";
             $responseErrorMessage [] =  $team;
         }
-        if(!$isItSingle && !$isItKata && $isItMale && ($competitiors->count() < 5 || $competitiors->count() > 6)) {
+        if(!$isItSingle && !$isItKata && $isItMale && ($competitiors->count() < 5 || $competitiors->count() > 7)) {
             $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 5 a maksimum 6 takmičara!";
             $responseErrorMessage [] =  $team;
         }
@@ -491,12 +491,14 @@ class RegistrationsController extends Controller
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();
                 }   
+                $team->delete();
             }
-            if($teamDelete->count() - 1 < 3) {
+            if($category->kata_or_kumite != 0 && $categoryGender != 1 && $teamDelete->count() - 1 < 3) {
                 $toUpdate = 1;
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();
                 }
+                $team->delete();
             }
             if($toUpdate == 1 && $teamOne->count() > 0) {
                 $teamOne->first()->update(['team_one'=> null]);
@@ -504,8 +506,10 @@ class RegistrationsController extends Controller
             if($toUpdate == 1 && $teamTwo->count() > 0) {
                 $teamTwo->first()->update(['team_two'=> null]);
             }
-            $team->delete();
-            return $this->success('', 'Uspješno obrisana ekipa!');
+            if($toUpdate == 1) {
+                return $this->success('', 'Uspješno obrisana ekipa!');
+            }
+            
         }
 
         $registration->delete();

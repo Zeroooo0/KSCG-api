@@ -20,6 +20,7 @@ use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\Compatitor;
 use App\Models\Component;
+use App\Models\Image;
 use App\Models\Registration;
 use App\Models\Roles;
 use App\Models\SpecialPersonal;
@@ -172,17 +173,40 @@ class ReusableDataController extends Controller
         {
             return $this->error('', 'Mora da postoji parametar competitionId={id}', 422);
         }
-        $per_page = $request->perPage;
+
+        $per_page = $request->has('perPage') ? $request->perPage : 15;
         $competition = Compatition::where('id', $request->competitionId)->first();
+        $registrations = $competition->registrations;
         $clubs = [];
 
-        foreach ($competition->registrations->countBy('club_id') as $club=>$val) {   
-            $clubs[] = $club;            
+        foreach ($registrations->countBy('club_id') as $club=>$val) {   
+            $singleRegistrations = $registrations->where('status', 1)->where('team_or_single', 1)->where('club_id', $club);
+            $teamRegistrations = $registrations->where('status', 1)->where('team_or_single', 0)->where('club_id', $club);
+            $gold = $singleRegistrations->where('position', 3)->count() + $teamRegistrations->where('position', 3)->countBy('team_id')->count();
+            $silver = $singleRegistrations->where('position', 2)->count() + $teamRegistrations->where('position', 2)->countBy('team_id')->count();
+            $bronze = $singleRegistrations->where('position', 1)->count() + $teamRegistrations->where('position', 1)->countBy('team_id')->count();
+            $input['club_id'] = $club;            
+            $input['gold'] = $gold;
+            $input['silver'] = $silver;
+            $input['bronze'] = $bronze;
+            $clubs[] = $input;
+            
         }
-
-        $clubs = Club::whereIn('id', array_filter($clubs));
-
-        return ClubsOnCompatitionResource::collection($clubs->orderBy($sort, $sortDirection)->where($queryItems)->paginate($per_page));
+        $teamRegistrations = $registrations->where('team_or_single', 0)->where('status', 1);
+        $teams = [];
+        // foreach($teamRegistrations->groupBy('team_id') as $teamReg) {
+        
+        //     $teams[] = $teamReg->where('position', 3)->count();
+        // }
+        // return array_sum($teams);
+        $sortingClubs = collect($clubs)->sortByDesc('bronze')->sortByDesc('silver')->sortByDesc('gold');
+        $sortedClubs = [];
+        foreach($sortingClubs as $club) {
+            $sortedClubs[] = Club::where('id', $club['club_id'])->first();
+        }
+        
+    
+        return ClubsOnCompatitionResource::collection((new Collection($sortedClubs))->paginate($per_page));
     }
     public function competitionRoles(Compatition $competition, Request $request)
     {
@@ -220,5 +244,11 @@ class ReusableDataController extends Controller
         $roles = Roles::where('special_personals_id', $specPersonnels->id);
 
         return RolesResource::collection($roles->orderBy('id', 'desc')->paginate($per_page));
+    }
+
+    public function deleteImage(Image $image) 
+    {
+        $image->delete();
+        return $this->success('', 'Slika uspješno obrisana');
     }
 }

@@ -46,7 +46,18 @@ class ClubsOnCompatitionResource extends JsonResource
             $arrayOfRoles[] = $person->special_personals_id;
         }
         $dateNow = date('d/m/Y',strtotime($competition->start_time_date));
+        $singleRegistrations = $reg_compatitors->where('team_or_single', 1)->where('status', 1);
+        $teamRegistrations = $reg_compatitors->where('team_or_single', 0)->where('status', 1);
         
+        $gold = [];
+        $silver = [];
+        $bronze = [];
+        foreach($teamRegistrations->groupBy('team_id') as $teamReg) {
+            $gold[] = $teamReg->where('position', 3)->count();
+            $silver[] = $teamReg->where('position', 2)->count();
+            $bronze[] = $teamReg->where('position', 1)->count();
+        }
+        $pointsTeam = array_sum($gold) * 3 + array_sum($silver) * 2 + array_sum($bronze) * 1;
         return [
             'id' => (string)$this->id,
             'documentId' => (string)("$dateNow-$competition->id/$this->id"),
@@ -57,10 +68,10 @@ class ClubsOnCompatitionResource extends JsonResource
             'singleRegistrationNo' => $registration_single->count(),
             'teamRegistrationNo' => $registration_team->count(),
             'totalPrice' => $totalPrice,
-            'gold' => $reg_compatitors->where('position', 3)->count(), 
-            'silver' => $reg_compatitors->where('position', 2)->count(),
-            'bronze' => $reg_compatitors->where('position', 1)->count(),
-            'points' => $reg_compatitors->sum('position'),
+            'gold' => $singleRegistrations->where('position', 3)->count() + $teamRegistrations->where('position', 3)->countBy('team_id')->count(), 
+            'silver' => $singleRegistrations->where('position', 2)->count() + $teamRegistrations->where('position', 2)->countBy('team_id')->count(),
+            'bronze' => $singleRegistrations->where('position', 1)->count() + $teamRegistrations->where('position', 1)->countBy('team_id')->count(),
+            'points' => $singleRegistrations->sum('position') + $pointsTeam,
             'teamsList' => $request->has('embed') && str_contains($request->embed, 'teamsList') ? TeamsRegistrationsResource::collection($teamCollection->get()) : 'embedable',
             'singlesList' => $request->has('embed') && str_contains($request->embed, 'singlesList') ? RegistratedCompatitorsSingleResource::collection($registration_single) : 'embedable',
             
