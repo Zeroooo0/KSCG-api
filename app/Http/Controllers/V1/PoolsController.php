@@ -61,10 +61,16 @@ class PoolsController extends Controller
         $singleArr = [];
         $teamArr = [];
         
-        $requestedCategory = $compatition->categories->where('id', $request->categoryId)->first();
+        $groupOneIds = [];
+        $groupTwoIds = [];
+
+        $dataGroupOne = [];
+        $dataGroupTwo = [];
 
         foreach($reg_single as $key=>$count){
+            return in_array($key, $groupOneIds);
             $nn_single_cat[] = $registrations->sortBy('club_id')->where('category_id', $key)->values();
+            
         }
         foreach($reg_teams as $key=>$count){
             $nn_team_cat[] = $registrations->where('category_id', $key)->groupBy('team_id')->values();
