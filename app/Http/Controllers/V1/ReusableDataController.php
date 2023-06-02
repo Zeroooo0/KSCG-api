@@ -201,7 +201,7 @@ class ReusableDataController extends Controller
         }
         
         if($request->has('id')){
-            return ClubsOnCompatitionResource::collection(Club::where($queryItems)->paginate());
+            return ClubsOnCompatitionResource::collection(Club::where('id', $request->id['eq'])->paginate());
         }
         return ClubsOnCompatitionResource::collection((new Collection($sortedClubs))->paginate($per_page));
     }
