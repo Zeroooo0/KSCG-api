@@ -20,7 +20,13 @@ class ClubsOnCompatitionResource extends JsonResource
     public function toArray($request)
     {
 
-
+        $storage_url = env('APP_URL') . 'api/file/';
+        
+        if($this->image != null) {
+            $path =  $storage_url . $this->image->url;
+        } else{
+            $path = $storage_url . 'default/default-club.jpg';
+        }
         $reg_compatitors = $this->registrations->where('compatition_id', $request->competitionId);
         $competition = Compatition::where('id', $request->competitionId)->first();
         $single_price = 0;
@@ -62,6 +68,7 @@ class ClubsOnCompatitionResource extends JsonResource
             'id' => (string)$this->id,
             'documentId' => (string)("$dateNow-$competition->id/$this->id"),
             'name' => $this->name,
+            'image' =>  $path,
             'competitionName' => $competition->name,
             'totalRegistrationNo' => $reg_compatitors->count(),
             'competitorsCount' => $reg_compatitors->groupBy('compatitor_id')->count(),
