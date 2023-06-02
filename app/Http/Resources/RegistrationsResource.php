@@ -25,11 +25,12 @@ class RegistrationsResource extends JsonResource
         if($this->category != null) {
             $kata_or_kumite = $this->category->kata_or_kumite ? 'Kate' : 'Kumite';
             $gender = $this->category->gender == 1 ? 'M' : ($this->category->gender == 2 ? 'Ž' : 'M + Ž');
-            $ekipno = $this->category->solo_or_team == 0 ? ' | Ekipno' : null;
+            $ekipno = $this->category->solo_or_team == 0 ? 'Ekipno' : null;
             $price = $this->category->solo_or_team == 0 ? $this->compatition->price_single : $this->compatition->price_team;
             $categoryData = [
                 'id' => (string)$this->category->id,
-                'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
+                'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . ' | ' . $ekipno,
+                'certificateName' => "$kata_or_kumite $ekipno",
             ];
         }
         if($this->compatitor != null) {

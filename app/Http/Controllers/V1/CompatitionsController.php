@@ -89,20 +89,23 @@ class CompatitionsController extends Controller
     public function piblicRegistrations(Request $request, Compatition $competition) {
         //$filter = new CategoriesFilter();
         //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $filter = new CompatitorsFilter();
-        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
-        $competitionResoults = Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competition->id);
-        $quertCount = count($queryItems);
+        
+        $sort = $request->sort == null ? 'compatitor_id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        $regResults = Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competition->id);
+        $request->has('isPrinted') ? $competitionResoults = $regResults->where('position', '>', 0)->where('is_printed', $request->isPrinted) : $competitionResoults = $regResults;
         $per_page = $request->perPage;
         $search = '%'. $request->search . '%';
         $searchedCompetitors = [];
-        if($request->has('search') || $quertCount > 0) {
+        if($request->has('search') || $request->has('gender')) {
+            $filter = new CompatitorsFilter();
+            $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
             $competitiors = Compatitor::where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->where($queryItems)->get('id');
             foreach($competitiors as $competitor){
                 $searchedCompetitors[] = $competitor->id;
             }
+        } else {
+            return RegistrationsResource::collection($competitionResoults->paginate($per_page));
         }
 
         return RegistrationsResource::collection($competitionResoults->whereIn('compatitor_id', $searchedCompetitors)->paginate($per_page));

@@ -29,6 +29,8 @@ class RegistrationsController extends Controller
     {
         $per_page = $request->perPage;
         $competitionId = $competition->id;
+        $sort = $request->sort == null ? 'compatitor_id' : $request->sort;
+        $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
 
         if(Auth::user() != null){
             if($competition->registration_deadline >= now()){
@@ -36,24 +38,24 @@ class RegistrationsController extends Controller
             }
             if(Auth::user()->user_type == 0) {
                 $clubId = Auth::user()->club->id;
-                return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
+                return RegistrationsResource::collection(Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
             }
             if(Auth::user()->user_type != 0 && $request->has('clubId')) {   
                 $clubId = $request->clubId;
-                return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
+                return RegistrationsResource::collection(Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
             }
             if(Auth::user()->user_type == 0 && Auth::user()->club == null){
                 return $this->error('', 'Molimo vas da prvo kreirate klub!',403);
             }
             if(Auth::user()->user_type != 0) {                   
-                return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->paginate($per_page));
+                return RegistrationsResource::collection(Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->paginate($per_page));
             }
         } 
         if(Auth::user() == null) {
             if($competition->registration_deadline >= now()){
                 $competition->update(['registration_status' => 0]);
             }
-            return RegistrationsResource::collection(Registration::where('compatition_id', $competitionId)->paginate($per_page));
+            return RegistrationsResource::collection(Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->paginate($per_page));
         }
     }
     public function categoriesFiltered(Request $request, Compatition $competition) {
@@ -463,7 +465,8 @@ class RegistrationsController extends Controller
      */
     public function update(Request $request, Registration $registration)
     {
-        //
+        $registration->update(['is_printed' => $request->isPrinted]);
+        return $this->success('', 'Uspješno imjenjen status štampanja.');
     }
 
 

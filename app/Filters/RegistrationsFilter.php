@@ -10,17 +10,19 @@ class RegistrationsFilter {
         'id' => ['eq'],
         'clubId' => ['eq'],
         'competitionId' => ['eq'],
-        'competitiorId' => ['eq'],
+        'position' => ['eq', 'gt'],
+        'isPrinted' => ['eq'],
     ];
 
     protected $columnsMap = [
         'clubId' => 'club_id',
         'competitionId' => 'compatition_id',
-        'competitiorId' => 'compatitior_id',
+        'isPrinted' => 'is_printed',
     ];
 
     protected $operatorMap = [
-        'eq' => '='
+        'eq' => '=',
+        'gt' => '>'
     ];
 
     public function transform(Request $request) {
