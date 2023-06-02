@@ -19,7 +19,7 @@ class CompatitionsFilter {
     ];
 
     protected $columnsMap = [
-        'startTime' => 'start_time_date',
+        'startTimeDate' => 'start_time_date',
         'registrationDeadline' => 'registration_deadline',
         'hostName' => 'host_name'
     ];
