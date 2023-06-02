@@ -35,7 +35,7 @@ class ClubsOnCompatitionResource extends JsonResource
             $team_price = $val->compatition->price_team;
             $single_price = $val->compatition->price_single;
         }
-        $registration_single = $reg_compatitors->where('team_or_single', 1);
+        $registration_single = $reg_compatitors->where('team_or_single', 1)->sortBy('compatitor_id');
         $registration_team = $reg_compatitors->where('team_or_single', 0)->groupBy('team_id');
         $totalPrice = $single_price * $registration_single->count() + $team_price * $registration_team->count();
         $teams = [];
