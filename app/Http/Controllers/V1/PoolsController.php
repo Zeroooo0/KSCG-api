@@ -285,8 +285,8 @@ class PoolsController extends Controller
                         $input['group'] =  $k + $groupCount + 1;
                         
                         $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupFour, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupFour, $second .  '.id') : null;
+                        $input['registration_one'] = $j == 1 ? Arr::get($groupThree, $first . '.id') : null;
+                        $input['registration_two'] = $j == 1 ? Arr::get($groupThree, $second .  '.id') : null;
     
                         $input['start_time'] =  $timeTracking;                       
                         
@@ -303,8 +303,8 @@ class PoolsController extends Controller
                         $input['group'] =  $k + ($groupCount * 2) + 1;
                         
                         $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupThree, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupThree, $second .  '.id') : null;
+                        $input['registration_one'] = $j == 1 ? Arr::get($groupFour, $first . '.id') : null;
+                        $input['registration_two'] = $j == 1 ? Arr::get($groupFour, $second .  '.id') : null;
     
                         $input['start_time'] =  $timeTracking;
                 
