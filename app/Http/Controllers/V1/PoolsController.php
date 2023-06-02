@@ -270,7 +270,12 @@ class PoolsController extends Controller
                         $input['registration_one'] = $j == 1 ? Arr::get($groupOne, $first . '.id') : null;
                         $input['registration_two'] = $j == 1 ? Arr::get($groupOne, $second .  '.id') : null;
     
-                        $input['start_time'] =  $timeTracking;                       
+                        $input['start_time'] =  $timeTracking;      
+                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
+                            $timeTracking = $timeTracking;
+                        } else {
+                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
+                        }                 
                         
                         $singleArr[] = $input;
                     }
@@ -288,7 +293,12 @@ class PoolsController extends Controller
                         $input['registration_one'] = $j == 1 ? Arr::get($groupThree, $first . '.id') : null;
                         $input['registration_two'] = $j == 1 ? Arr::get($groupThree, $second .  '.id') : null;
     
-                        $input['start_time'] =  $timeTracking;                       
+                        $input['start_time'] =  $timeTracking;    
+                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
+                            $timeTracking = $timeTracking;
+                        } else {
+                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
+                        }                   
                         
                         $singleArr[] = $input;
                     }
@@ -307,6 +317,11 @@ class PoolsController extends Controller
                         $input['registration_two'] = $j == 1 ? Arr::get($groupFour, $second .  '.id') : null;
     
                         $input['start_time'] =  $timeTracking;
+                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
+                            $timeTracking = $timeTracking;
+                        } else {
+                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
+                        }
                 
                         $singleArr[] = $input;
                     }
@@ -324,7 +339,12 @@ class PoolsController extends Controller
                         $input['registration_one'] = $j == 1 ? Arr::get($groupTwo, $first . '.id') : null;
                         $input['registration_two'] = $j == 1 ? Arr::get($groupTwo, $second .  '.id') : null;
     
-                        $input['start_time'] =  $timeTracking;                        
+                        $input['start_time'] =  $timeTracking;   
+                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
+                            $timeTracking = $timeTracking;
+                        } else {
+                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
+                        }                     
                         
                         $singleArr[] = $input;
                     }
