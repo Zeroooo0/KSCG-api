@@ -136,7 +136,7 @@ class PoolsController extends Controller
                         $groupType = 'FM';
                         break;
                 }                
-                
+                return $val;
                 for($i = 0; $i <= $counting; $i++) {
                     $random = rand(0,1);
                     $first = $random  ? $i : $counting - $i;
