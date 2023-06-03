@@ -382,7 +382,7 @@ class PoolsController extends Controller
                     $newArr [] = $groupThree;
                     $newArr [] = $groupFour;
                     $newArr [] = $groupTwo;
-                    return $groupCount;
+                    return $compInGroup;
                     
                     // for($k = 0; $k <= $groupCount - 1; $k++) {
                     //     $random = rand(0,1);
