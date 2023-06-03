@@ -350,7 +350,7 @@ class PoolsController extends Controller
                 }                
 
 
-                if($groupsReal > 4 && $j == 1) {
+                if($groupsReal > 2 && $j == 1) {
                 
                     $startPoint = 1;
                     $groupCount =  $groupsReal / 4;
