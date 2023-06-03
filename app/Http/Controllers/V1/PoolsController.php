@@ -377,7 +377,11 @@ class PoolsController extends Controller
                                 break;
                         }
                     }
-                    $newArr = $groupOne . $groupThree . $groupFour . $groupTwo;
+                    $newArr = [];
+                    $newArr [] = $groupOne;
+                    $newArr [] = $groupThree;
+                    $newArr [] = $groupFour;
+                    $newArr [] = $groupTwo;
                     return $newArr;
                     
                     // for($k = 0; $k <= $groupCount - 1; $k++) {
