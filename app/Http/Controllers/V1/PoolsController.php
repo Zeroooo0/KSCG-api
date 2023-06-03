@@ -151,6 +151,7 @@ class PoolsController extends Controller
                     break;
                 case $registrationCount <= 64:
                     $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
+                    $neededReg = 64;
                     $groups = 31;
                     $groupsReal = 32;
                     $pools = 5;
@@ -230,8 +231,9 @@ class PoolsController extends Controller
             $category = Category::where('id', $category_id)->first();
             $category_match_lenght = $category->match_lenght;
             $catSpec = $this->categoryDuration($compatition, $category);
-            $count = $catSpec['categoryGroupsFront'];
-            $pool = $catSpec['categoryPoolsFront'];
+            $count = $catSpec['groupsReal'];
+            $pool = $catSpec['pool'];
+            $neededReg = $catSpec['neededReg'];
             $cat_ids = $val->groupBy('club_id')->sortDesc();
             $sorted_cats = [];
             $startPoint = 0;
@@ -318,8 +320,8 @@ class PoolsController extends Controller
                     
                     for($k = 0; $k <= $groupCount - 1; $k++) {
                         $random = rand(0,1);
-                        $first = $random  ? $k : ($groupCount / 2 + 1) + $k;
-                        $second = $random ? ($groupCount / 2 + 1) + $k : $k;
+                        $first = $random  ? $k : $neededReg - $k;
+                        $second = $random ? $neededReg - $k : $k;
                         $input['compatition_id'] = $compatition->id;
                         $input['category_id'] = $category_id;
                         $input['pool'] = $j;
@@ -341,8 +343,8 @@ class PoolsController extends Controller
                     }
                     for($k = 0; $k <= $groupCount - 1; $k++) {
                         $random = rand(0,1);
-                        $first = $random  ? $k : ($counting / 2 + 1) + $k;
-                        $second = $random ? ($counting / 2 + 1) + $k : $k;
+                        $first = $random  ? $k : $neededReg - $k;
+                        $second = $random ? $neededReg - $k : $k;
                         $input['compatition_id'] = $compatition->id;
                         $input['category_id'] = $category_id;
                         $input['pool'] = $j;
@@ -364,8 +366,8 @@ class PoolsController extends Controller
                     }
                     for($k = 0; $k <= $groupCount - 1; $k++) {
                         $random = rand(0,1);
-                        $first = $random  ? $k : ($counting / 2 + 1) + $k;
-                        $second = $random ? ($counting / 2 + 1) + $k : $k;
+                        $first = $random  ? $k : $neededReg - $k;
+                        $second = $random ? $neededReg - $k : $k;
                         $input['compatition_id'] = $compatition->id;
                         $input['category_id'] = $category_id;
                         $input['pool'] = $j;
@@ -387,8 +389,8 @@ class PoolsController extends Controller
                     }
                     for($k = 0; $k <= $groupCount - 1 ; $k++) {
                         $random = rand(0,1);
-                        $first = $random  ? $k : ($counting / 2 + 1) + $k;
-                        $second = $random ? ($counting / 2 + 1) + $k : $k;
+                        $first = $random  ? $k : $neededReg - $k;
+                        $second = $random ? $neededReg - $k : $k;
                         $input['compatition_id'] = $compatition->id;
                         $input['category_id'] = $category_id;
                         $input['pool'] = $j;
@@ -414,8 +416,8 @@ class PoolsController extends Controller
                 if($startPoint == 0 || $j >= 2) {
                     for($i = 0; $i <= ($counting - 1); $i++) {
                         $random = rand(0,1);
-                        $first = $random  ? $i : ($counting / 2 + 1) + $i;
-                        $second = $random ? ($counting / 2 + 1) + $i : $i;
+                        $first = $random  ? $i : $neededReg - $i;
+                        $second = $random ? $neededReg - $i : $i;
                         $input['compatition_id'] = Arr::get($cleaned, '0.compatition_id');
                         $input['category_id'] = Arr::get($cleaned, '0.category_id');
                         $input['pool'] = $j;
