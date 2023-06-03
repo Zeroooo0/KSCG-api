@@ -85,7 +85,7 @@ class PoolsController extends Controller
      
         /** Here we start rebuilding */
         //return $nn_team_cat;
-     
+        
         foreach($nn_team_cat as $key => $val) {
             $category_id =  $val[0][0]->category_id;
             $timeTableData = $timeTable->where('category_id', $category_id)->first();
@@ -94,13 +94,11 @@ class PoolsController extends Controller
             $category_match_lenght = $category->match_lenght;
             $catSpec = $this->categoryDuration($compatition, $category);
             
-            
-            $test[] = $val;
-            $count = $catSpec['categoryGroupsBack'];
-            $pool = $catSpec['categoryPoolsBack'];
+            $count = $catSpec['categoryGroupsFront'];
+            $pool = $catSpec['categoryPoolsFront'];
             $timeTracking = $category_timeStart;
-
-            for($j = 1; $j <= $pool + 1; $j++) {
+            
+            for($j = 1; $j <= $pool; $j++) {
                 $counting = $count;
                 switch($j) {
                     case $j == 1:
@@ -136,13 +134,13 @@ class PoolsController extends Controller
                         $groupType = 'FM';
                         break;
                 }                
-                return response()->json(Arr::get($val, '3.0.team_id'));
-                for($i = 0; $i <= $counting; $i++) {
+                
+                for($i = 0; $i <= ($counting - 1); $i++) {
                     $random = rand(0,1);
-                    $first = $random  ? $i : $counting - $i;
-                    $second = $random ? $counting - $i : $i;
+                    $first = $random  ? $i : ($counting / 2 + 1) + $i;
+                    $second = $random ? ($counting / 2 + 1) + $i : $i;
                     $inputTeam['compatition_id'] = $compatition->id;
-                    $inputTeam['category_id'] = $category->id;
+                    $inputTeam['category_id'] = $category_id;
                     $inputTeam['pool'] = $j;
                     $inputTeam['pool_type'] = $groupType;
                     $inputTeam['group'] = $i + 1;
@@ -161,9 +159,8 @@ class PoolsController extends Controller
                     $teamArr[] = $inputTeam;
                 }
             }
-
         }
-     
+       
         
         
         foreach($nn_single_cat as $val) {
