@@ -95,7 +95,7 @@ class PoolsController extends Controller
 
             
             $timeTracking = $category_timeStart;
-            $registrations = $competition->registrations->where('category_id', $category->id);
+            $registrations = $compatition->registrations->where('category_id', $category->id);
             $timePerCategory = $category->match_lenght;
             $teamOrSingle = $category->solo_or_team;
             $teamRegistration = $registrations->groupBy('team_id')->count();
