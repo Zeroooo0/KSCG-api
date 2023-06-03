@@ -139,8 +139,8 @@ class PoolsController extends Controller
                 
                 for($i = 0; $i <= ($counting - 1); $i++) {
                     $random = rand(0,1);
-                    $first = $random  ? $i : ($counting / 2 - 1) + $i;
-                    $second = $random ? ($counting / 2 - 1) + $i : $i;
+                    $first = $random  ? $i : ($counting / 2 ) + $i;
+                    $second = $random ? ($counting / 2 ) + $i : $i;
                     $inputTeam['compatition_id'] = $compatition->id;
                     $inputTeam['category_id'] = $category->id;
                     $inputTeam['pool'] = $j;
