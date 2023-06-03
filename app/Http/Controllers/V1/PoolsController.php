@@ -97,10 +97,10 @@ class PoolsController extends Controller
             
             $test[] = $val;
             $count = $catSpec['categoryGroupsBack'];
-            $pool = $catSpec['categoryPoolsFront'];
+            $pool = $catSpec['categoryPoolsBack'];
             $timeTracking = $category_timeStart;
 
-            for($j = 1; $j <= $pool; $j++) {
+            for($j = 1; $j <= $pool + 1; $j++) {
                 $counting = $count;
                 switch($j) {
                     case $j == 1:
