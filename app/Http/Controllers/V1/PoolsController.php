@@ -112,39 +112,45 @@ class PoolsController extends Controller
                     $totalTimePerCat = $registrationCount / 2 * $timePerCategory;
                     $neededReg = 1;
                     $groups = 0;
+                    $groupsReal = 1;
                     $pools = 0;
                     break;
                 case $registrationCount <= 4:
                     $totalTimePerCat = $registrationCount / 2 * $timePerCategory + $timePerCategory + $repesaz;
                     $neededReg = 3;
                     $groups = 1;
+                    $groupsReal = 2;
                     $pools = 1;
                     break;
                 case $registrationCount <= 8:
                     $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 2 * $repesaz;
                     $neededReg = 7;
                     $groups = 3;
+                    $groupsReal = 4;
                     $pools = 2;
                     break;
                 case $registrationCount <= 16:
                     $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 3 * $repesaz;
                     $neededReg = 15;
                     $groups = 7;
+                    $groupsReal = 8;
                     $pools = 3;
                     break;
                 case $registrationCount <= 32:
                     $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 4 * $repesaz;
                     $neededReg = 31;
                     $groups = 15;
+                    $groupsReal = 16;
                     $pools = 4;
                     break;
                 case $registrationCount <= 64:
                     $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
                     $groups = 31;
+                    $groupsReal = 32;
                     $pools = 5;
                     break;
             }
-            $count = $groups + 1;
+            $count = $groupsReal;
             for($j = 1; $j <= $pools; $j++) {
                 $counting = $count;
                 switch($j) {
