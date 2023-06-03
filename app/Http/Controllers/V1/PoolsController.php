@@ -94,10 +94,42 @@ class PoolsController extends Controller
             $category_match_lenght = $category->match_lenght;
             $catSpec = $this->categoryDuration($compatition, $category);
             
-            $count = $catSpec['categoryGroupsFront'];
-            $pool = $catSpec['categoryPoolsFront'];
+            
             $timeTracking = $category_timeStart;
             
+            switch($registrationCount) {
+                case $registrationCount <= 2:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory;
+                    $groups = 0;
+                    $pools = 0;
+                    break;
+                case $registrationCount <= 4:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + $timePerCategory + $repesaz;
+                    $groups = 1;
+                    $pools = 1;
+                    break;
+                case $registrationCount <= 8:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 2 * $repesaz;
+                    $groups = 3;
+                    $pools = 2;
+                    break;
+                case $registrationCount <= 16:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 3 * $repesaz;
+                    $groups = 7;
+                    $pools = 3;
+                    break;
+                case $registrationCount <= 32:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 4 * $repesaz;
+                    $groups = 15;
+                    $pools = 4;
+                    break;
+                case $registrationCount <= 64:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
+                    $groups = 31;
+                    $pools = 5;
+                    break;
+            }
+            $count = $groups;
             for($j = 1; $j <= $pool; $j++) {
                 $counting = $count;
                 switch($j) {
@@ -135,10 +167,10 @@ class PoolsController extends Controller
                         break;
                 }                
                 
-                for($i = 0; $i <= ($counting - 1); $i++) {
+                for($i = 0; $i <= $counting; $i++) {
                     
                     $first = $i;
-                    $second = ($counting + 1) - $i;
+                    $second = ($counting * 2 + 1) - $i;
                     $inputTeam['compatition_id'] = $compatition->id;
                     $inputTeam['category_id'] = $category_id;
                     $inputTeam['pool'] = $j;
