@@ -354,7 +354,7 @@ class PoolsController extends Controller
                 
                     $startPoint = 1;
                     $groupCount =  $groupsReal / 4;
-                    $compInGroup =  $reg / 4 ;
+                    $compInGroup =  $regs / 4 ;
       
                     $groupOne = [];
                     $groupTwo = [];
