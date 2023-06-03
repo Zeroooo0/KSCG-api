@@ -377,100 +377,101 @@ class PoolsController extends Controller
                                 break;
                         }
                     }
+                    $newArr = $groupOne . $groupThree . $groupFour . $groupTwo;
+                    return $newArr;
                     
-                    
-                    for($k = 0; $k <= $groupCount - 1; $k++) {
-                        $random = rand(0,1);
-                        $first = $random  ? $k : $groupCount - 1 - $k;
-                        $second = $random ? $groupCount - 1 - $k : $k;
-                        $input['compatition_id'] = $compatition->id;
-                        $input['category_id'] = $category_id;
-                        $input['pool'] = $j;
-                        $input['pool_type'] = $groupType;
-                        $input['group'] =  $k + 1;
+                    // for($k = 0; $k <= $groupCount - 1; $k++) {
+                    //     $random = rand(0,1);
+                    //     $first = $random  ? $k : $groupCount + 1 - $k;
+                    //     $second = $random ? $groupCount - 1 - $k : $k;
+                    //     $input['compatition_id'] = $compatition->id;
+                    //     $input['category_id'] = $category_id;
+                    //     $input['pool'] = $j;
+                    //     $input['pool_type'] = $groupType;
+                    //     $input['group'] =  $k + 1;
                         
-                        $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupOne, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupOne, $second .  '.id') : null;
+                    //     $input['status'] = 0;
+                    //     $input['registration_one'] = $j == 1 ? Arr::get($groupOne, $first . '.id') : null;
+                    //     $input['registration_two'] = $j == 1 ? Arr::get($groupOne, $second .  '.id') : null;
     
-                        $input['start_time'] =  $timeTracking;      
-                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
-                            $timeTracking = $timeTracking;
-                        } else {
-                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                        }                 
+                    //     $input['start_time'] =  $timeTracking;      
+                    //     if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
+                    //         $timeTracking = $timeTracking;
+                    //     } else {
+                    //         $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
+                    //     }                 
                         
-                        $singleArr[] = $input;
-                    }
-                    for($k = 0; $k <= $groupCount - 1; $k++) {
-                        $random = rand(0,1);
-                        $first = $random  ? $k : $groupCount - 1 - $k;
-                        $second = $random ? $groupCount - 1 - $k : $k;
-                        $input['compatition_id'] = $compatition->id;
-                        $input['category_id'] = $category_id;
-                        $input['pool'] = $j;
-                        $input['pool_type'] = $groupType;
-                        $input['group'] =  $k + $groupCount + 1;
+                    //     $singleArr[] = $input;
+                    // }
+                    // for($k = 0; $k <= $groupCount - 1; $k++) {
+                    //     $random = rand(0,1);
+                    //     $first = $random  ? $k : $groupCount - 1 - $k;
+                    //     $second = $random ? $groupCount - 1 - $k : $k;
+                    //     $input['compatition_id'] = $compatition->id;
+                    //     $input['category_id'] = $category_id;
+                    //     $input['pool'] = $j;
+                    //     $input['pool_type'] = $groupType;
+                    //     $input['group'] =  $k + $groupCount + 1;
                         
-                        $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupThree, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupThree, $second .  '.id') : null;
+                    //     $input['status'] = 0;
+                    //     $input['registration_one'] = $j == 1 ? Arr::get($groupThree, $first . '.id') : null;
+                    //     $input['registration_two'] = $j == 1 ? Arr::get($groupThree, $second .  '.id') : null;
     
-                        $input['start_time'] =  $timeTracking;    
-                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
-                            $timeTracking = $timeTracking;
-                        } else {
-                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                        }                   
+                    //     $input['start_time'] =  $timeTracking;    
+                    //     if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
+                    //         $timeTracking = $timeTracking;
+                    //     } else {
+                    //         $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
+                    //     }                   
                         
-                        $singleArr[] = $input;
-                    }
-                    for($k = 0; $k <= $groupCount - 1; $k++) {
-                        $random = rand(0,1);
-                        $first = $random  ? $k : $groupCount - 1 - $k;
-                        $second = $random ? $groupCount - 1 - $k : $k;
-                        $input['compatition_id'] = $compatition->id;
-                        $input['category_id'] = $category_id;
-                        $input['pool'] = $j;
-                        $input['pool_type'] = $groupType;
-                        $input['group'] =  $k + ($groupCount * 2) + 1;
+                    //     $singleArr[] = $input;
+                    // }
+                    // for($k = 0; $k <= $groupCount - 1; $k++) {
+                    //     $random = rand(0,1);
+                    //     $first = $random  ? $k : $groupCount - 1 - $k;
+                    //     $second = $random ? $groupCount - 1 - $k : $k;
+                    //     $input['compatition_id'] = $compatition->id;
+                    //     $input['category_id'] = $category_id;
+                    //     $input['pool'] = $j;
+                    //     $input['pool_type'] = $groupType;
+                    //     $input['group'] =  $k + ($groupCount * 2) + 1;
                         
-                        $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupFour, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupFour, $second .  '.id') : null;
+                    //     $input['status'] = 0;
+                    //     $input['registration_one'] = $j == 1 ? Arr::get($groupFour, $first . '.id') : null;
+                    //     $input['registration_two'] = $j == 1 ? Arr::get($groupFour, $second .  '.id') : null;
     
-                        $input['start_time'] =  $timeTracking;
-                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
-                            $timeTracking = $timeTracking;
-                        } else {
-                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                        }
+                    //     $input['start_time'] =  $timeTracking;
+                    //     if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
+                    //         $timeTracking = $timeTracking;
+                    //     } else {
+                    //         $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
+                    //     }
                 
-                        $singleArr[] = $input;
-                    }
-                    for($k = 0; $k <= $groupCount - 1 ; $k++) {
-                        $random = rand(0,1);
-                        $first = $random  ? $k : $groupCount - 1 - $k;
-                        $second = $random ? $groupCount - 1 - $k : $k;
-                        $input['compatition_id'] = $compatition->id;
-                        $input['category_id'] = $category_id;
-                        $input['pool'] = $j;
-                        $input['pool_type'] = $groupType;
-                        $input['group'] =  $k + ($groupCount * 3) + 1;
+                    //     $singleArr[] = $input;
+                    // }
+                    // for($k = 0; $k <= $groupCount - 1 ; $k++) {
+                    //     $random = rand(0,1);
+                    //     $first = $random  ? $k : $groupCount - 1 - $k;
+                    //     $second = $random ? $groupCount - 1 - $k : $k;
+                    //     $input['compatition_id'] = $compatition->id;
+                    //     $input['category_id'] = $category_id;
+                    //     $input['pool'] = $j;
+                    //     $input['pool_type'] = $groupType;
+                    //     $input['group'] =  $k + ($groupCount * 3) + 1;
                         
-                        $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupTwo, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupTwo, $second .  '.id') : null;
+                    //     $input['status'] = 0;
+                    //     $input['registration_one'] = $j == 1 ? Arr::get($groupTwo, $first . '.id') : null;
+                    //     $input['registration_two'] = $j == 1 ? Arr::get($groupTwo, $second .  '.id') : null;
     
-                        $input['start_time'] =  $timeTracking;   
-                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
-                            $timeTracking = $timeTracking;
-                        } else {
-                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                        }                     
+                    //     $input['start_time'] =  $timeTracking;   
+                    //     if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
+                    //         $timeTracking = $timeTracking;
+                    //     } else {
+                    //         $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
+                    //     }                     
                         
-                        $singleArr[] = $input;
-                    }
+                    //     $singleArr[] = $input;
+                    // }
     
                     
                 }
