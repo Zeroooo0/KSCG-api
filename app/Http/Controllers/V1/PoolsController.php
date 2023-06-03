@@ -380,8 +380,8 @@ class PoolsController extends Controller
                     
                     for($k = 0; $k <= $groupCount - 1; $k++) {
                         $random = rand(0,1);
-                        $first = $random  ? $k : $neededReg - $k;
-                        $second = $random ? $neededReg - $k : $k;
+                        $first = $random  ? $k : $groupCount - $k;
+                        $second = $random ? $groupCount - $k : $k;
                         $input['compatition_id'] = $compatition->id;
                         $input['category_id'] = $category_id;
                         $input['pool'] = $j;
@@ -403,8 +403,8 @@ class PoolsController extends Controller
                     }
                     for($k = 0; $k <= $groupCount - 1; $k++) {
                         $random = rand(0,1);
-                        $first = $random  ? $k : $neededReg - $k;
-                        $second = $random ? $neededReg - $k : $k;
+                        $first = $random  ? $k : $groupCount - $k;
+                        $second = $random ? $groupCount - $k : $k;
                         $input['compatition_id'] = $compatition->id;
                         $input['category_id'] = $category_id;
                         $input['pool'] = $j;
@@ -426,8 +426,8 @@ class PoolsController extends Controller
                     }
                     for($k = 0; $k <= $groupCount - 1; $k++) {
                         $random = rand(0,1);
-                        $first = $random  ? $k : $neededReg - $k;
-                        $second = $random ? $neededReg - $k : $k;
+                        $first = $random  ? $k : $groupCount - $k;
+                        $second = $random ? $groupCount - $k : $k;
                         $input['compatition_id'] = $compatition->id;
                         $input['category_id'] = $category_id;
                         $input['pool'] = $j;
@@ -449,8 +449,8 @@ class PoolsController extends Controller
                     }
                     for($k = 0; $k <= $groupCount - 1 ; $k++) {
                         $random = rand(0,1);
-                        $first = $random  ? $k : $neededReg - $k;
-                        $second = $random ? $neededReg - $k : $k;
+                        $first = $random  ? $k : $groupCount - $k;
+                        $second = $random ? $groupCount - $k : $k;
                         $input['compatition_id'] = $compatition->id;
                         $input['category_id'] = $category_id;
                         $input['pool'] = $j;
