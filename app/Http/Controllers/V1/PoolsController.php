@@ -99,7 +99,7 @@ class PoolsController extends Controller
             $count = $catSpec['categoryGroupsFront'];
             $pool = $catSpec['categoryPoolsFront'];
             $timeTracking = $category_timeStart;
-            $testCount = $catSpec['categoryGroupsBack'];
+
             for($j = 1; $j <= $pool; $j++) {
                 $counting = $count;
                 switch($j) {
@@ -137,10 +137,10 @@ class PoolsController extends Controller
                         break;
                 }                
                 
-                for($i = 0; $i <= ($count - 1); $i++) {
+                for($i = 0; $i <= ($counting - 1); $i++) {
                     $random = rand(0,1);
-                    $first = $random  ? $i : $testCount - $i;
-                    $second = $random ? $testCount - $i : $i;
+                    $first = $random  ? $i : ($counting - 1) - $i;
+                    $second = $random ? ($counting - 1 ) - $i : $i;
                     $inputTeam['compatition_id'] = $compatition->id;
                     $inputTeam['category_id'] = $category->id;
                     $inputTeam['pool'] = $j;
