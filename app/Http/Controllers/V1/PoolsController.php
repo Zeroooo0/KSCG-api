@@ -106,6 +106,7 @@ class PoolsController extends Controller
             $totalTimePerCat = 0;
             $groups = 0;
             $pools = 0;
+            $pool = 0;
             
             switch($registrationCount) {
                 case $registrationCount <= 2:
@@ -156,30 +157,30 @@ class PoolsController extends Controller
                     $pool = 6;
                     break;
             }
-            $count = $groupsReal;
+            
             for($j = 1; $j <= $pool; $j++) {
-                $counting = $count;
+                $counting = $groupsReal;
                 switch($j) {
                     case $j == 1:
-                        $counting = $count;
+                        $counting = $groupsReal;
                         break;
                     case $j == 2:
-                        $counting = $count / 2;
+                        $counting = $groupsReal / 2;
                         break;
                     case $j == 3:
-                        $counting = $count / 4;
+                        $counting = $groupsReal / 4;
                         break;
                     case $j == 4:
-                        $counting = $count / 8;
+                        $counting = $groupsReal / 8;
                         break;
                     case $j == 5:
-                        $counting = $count / 16;
+                        $counting = $groupsReal / 16;
                         break;
                     case $j == 6:
-                        $counting = $count  / 32;
+                        $counting = $groupsReal  / 32;
                         break;
                     case $j == 7:
-                        $counting = $count  / 64;
+                        $counting = $groupsReal  / 64;
                         break;
                 }
                 switch($counting) {
@@ -194,7 +195,7 @@ class PoolsController extends Controller
                         break;
                 }                
                 
-                for($i = 0; $i <= $counting; $i++) {
+                for($i = 0; $i <= ($counting -1 ); $i++) {
                     
                     $first = $i;
                     $second = $neededReg - $i;
