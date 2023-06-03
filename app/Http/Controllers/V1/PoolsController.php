@@ -85,7 +85,7 @@ class PoolsController extends Controller
      
         /** Here we start rebuilding */
         //return $nn_team_cat;
-        
+        $test = [];
         foreach($nn_team_cat as $key => $val) {
             $category_id =  $val[0][0]->category_id;
             $timeTableData = $timeTable->where('category_id', $category_id)->first();
@@ -94,6 +94,8 @@ class PoolsController extends Controller
             $category_match_lenght = $category->match_lenght;
             $catSpec = $this->categoryDuration($compatition, $category);
             
+            
+            $test[] = $val;
             $count = $catSpec['categoryGroupsFront'];
             $pool = $catSpec['categoryPoolsFront'];
             $timeTracking = $category_timeStart;
@@ -159,8 +161,9 @@ class PoolsController extends Controller
                     $teamArr[] = $inputTeam;
                 }
             }
+
         }
-       
+        return $test;
         
         
         foreach($nn_single_cat as $val) {
