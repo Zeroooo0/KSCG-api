@@ -344,7 +344,7 @@ class PoolsController extends Controller
                 }                
 
 
-                if($groupsReal >= 4 && $j == 1) {
+                if($groupsReal > 4 && $j == 1) {
                 
                     $startPoint = 1;
                     $groupCount =  $groupsReal / 4;
@@ -382,7 +382,7 @@ class PoolsController extends Controller
                     $newArr [] = $groupThree;
                     $newArr [] = $groupFour;
                     $newArr [] = $groupTwo;
-                    return $newArr;
+                    return $groupCount;
                     
                     // for($k = 0; $k <= $groupCount - 1; $k++) {
                     //     $random = rand(0,1);
