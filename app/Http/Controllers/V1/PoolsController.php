@@ -151,7 +151,7 @@ class PoolsController extends Controller
                     break;
                 case $registrationCount <= 64:
                     $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
-                    $neededReg = 64;
+                    $neededReg = 63;
                     $groups = 31;
                     $groupsReal = 32;
                     $pools = 5;
@@ -230,10 +230,6 @@ class PoolsController extends Controller
             $category_timeStart = $timeTableData->eto_start == null ? null : $timeTableData->eto_start;
             $category = Category::where('id', $category_id)->first();
             $category_match_lenght = $category->match_lenght;
-            $catSpec = $this->categoryDuration($compatition, $category);
-            $count = $catSpec['groupsReal'];
-            $pool = $catSpec['pool'];
-            $neededReg = $catSpec['neededReg'];
             $cat_ids = $val->groupBy('club_id')->sortDesc();
             $sorted_cats = [];
             $startPoint = 0;
@@ -245,29 +241,93 @@ class PoolsController extends Controller
 
             
             $timeTracking = $category_timeStart;
+
+            $registrations = $compatition->registrations->where('category_id', $category->id);
+            $timePerCategory = $category->match_lenght;
+            $teamOrSingle = $category->solo_or_team;
+            $teamRegistration = $registrations->groupBy('team_id')->count();
+        
+            $registrationCount = $teamOrSingle == 1 ? $registrations->count() : $teamRegistration;
+        
+            $repesaz = $category->repesaz == true ? $timePerCategory : 0;
+            $totalTimePerCat = 0;
+            $groups = 0;
+            $pools = 0;
+            $pool = 0;
+            
+            switch($registrationCount) {
+                case $registrationCount <= 2:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory;
+                    $neededReg = 1;
+                    $groups = 0;
+                    $groupsReal = 1;
+                    $pools = 0;
+                    $pool = 1;
+                    break;
+                case $registrationCount <= 4:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + $timePerCategory + $repesaz;
+                    $neededReg = 3;
+                    $groups = 1;
+                    $groupsReal = 2;
+                    $pools = 1;
+                    $pool = 2;
+                    break;
+                case $registrationCount <= 8:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 2 * $repesaz;
+                    $neededReg = 7;
+                    $groups = 3;
+                    $groupsReal = 4;
+                    $pools = 2;
+                    $pool = 3;
+                    break;
+                case $registrationCount <= 16:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 3 * $repesaz;
+                    $neededReg = 15;
+                    $groups = 7;
+                    $groupsReal = 8;
+                    $pools = 3;
+                    $pool = 4;
+                    break;
+                case $registrationCount <= 32:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 4 * $repesaz;
+                    $neededReg = 31;
+                    $groups = 15;
+                    $groupsReal = 16;
+                    $pools = 4;
+                    $pool = 5;
+                    break;
+                case $registrationCount <= 64:
+                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
+                    $neededReg = 63;
+                    $groups = 31;
+                    $groupsReal = 32;
+                    $pools = 5;
+                    $pool = 6;
+                    break;
+            }
             for($j = 1; $j <= $pool; $j++) {
-                $counting = $count;
+                $counting = $groupsReal;
                 switch($j) {
                     case $j == 1:
-                        $counting = $count;
+                        $counting = $groupsReal;
                         break;
                     case $j == 2:
-                        $counting = $count / 2;
+                        $counting = $groupsReal / 2;
                         break;
                     case $j == 3:
-                        $counting = $count / 4;
+                        $counting = $groupsReal / 4;
                         break;
                     case $j == 4:
-                        $counting = $count / 8;
+                        $counting = $groupsReal / 8;
                         break;
                     case $j == 5:
-                        $counting = $count / 16;
+                        $counting = $groupsReal / 16;
                         break;
                     case $j == 6:
-                        $counting = $count  / 32;
+                        $counting = $groupsReal  / 32;
                         break;
                     case $j == 7:
-                        $counting = $count  / 64;
+                        $counting = $groupsReal  / 64;
                         break;
                 }
                 
@@ -284,10 +344,10 @@ class PoolsController extends Controller
                 }                
 
 
-                if($count > 4 && $j == 1) {
+                if($groupsReal > 4 && $j == 1) {
                 
                     $startPoint = 1;
-                    $groupCount =  $count / 4;
+                    $groupCount =  $groupsReal / 4;
       
                     $groupOne = [];
                     $groupTwo = [];
