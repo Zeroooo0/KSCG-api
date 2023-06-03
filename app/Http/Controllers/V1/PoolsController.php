@@ -92,8 +92,7 @@ class PoolsController extends Controller
             $category_timeStart = $timeTableData->eto_start == null ? null : $timeTableData->eto_start;
             $category = Category::where('id', $category_id)->first();
             $category_match_lenght = $category->match_lenght;
-            $catSpec = $this->categoryDuration($competition, $category);
-            
+
             
             $timeTracking = $category_timeStart;
             $registrations = $competition->registrations->where('category_id', $category->id);
