@@ -85,7 +85,7 @@ class PoolsController extends Controller
      
         /** Here we start rebuilding */
         //return $nn_team_cat;
-        $test = [];
+     
         foreach($nn_team_cat as $key => $val) {
             $category_id =  $val[0][0]->category_id;
             $timeTableData = $timeTable->where('category_id', $category_id)->first();
@@ -142,7 +142,7 @@ class PoolsController extends Controller
                     $first = $random  ? $i : ($counting / 2 + 1) + $i;
                     $second = $random ? ($counting / 2 + 1) + $i : $i;
                     $inputTeam['compatition_id'] = $compatition->id;
-                    $inputTeam['category_id'] = $category_id;
+                    $inputTeam['category_id'] = $category->id;
                     $inputTeam['pool'] = $j;
                     $inputTeam['pool_type'] = $groupType;
                     $inputTeam['group'] = $i + 1;
@@ -163,7 +163,7 @@ class PoolsController extends Controller
             }
 
         }
-        return $test;
+     
         
         
         foreach($nn_single_cat as $val) {
