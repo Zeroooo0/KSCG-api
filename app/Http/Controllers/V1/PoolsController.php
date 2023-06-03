@@ -146,17 +146,17 @@ class PoolsController extends Controller
                     $groups = 15;
                     $groupsReal = 16;
                     $pools = 4;
-                    $pools = 5;
+                    $pool = 5;
                     break;
                 case $registrationCount <= 64:
                     $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
                     $groups = 31;
                     $groupsReal = 32;
                     $pools = 5;
-                    $pools = 6;
+                    $pool = 6;
                     break;
             }
-            $count = $groups;
+            $count = $groupsReal;
             for($j = 1; $j <= $pool; $j++) {
                 $counting = $count;
                 switch($j) {
