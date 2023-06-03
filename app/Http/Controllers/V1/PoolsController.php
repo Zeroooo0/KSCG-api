@@ -145,7 +145,7 @@ class PoolsController extends Controller
                     break;
             }
             $count = $groups;
-            for($j = 1; $j <= $pool; $j++) {
+            for($j = 1; $j <= $pools; $j++) {
                 $counting = $count;
                 switch($j) {
                     case $j == 1:
