@@ -496,7 +496,21 @@ class RegistrationsController extends Controller
                 }   
                 $team->delete();
             }
-            if($category->kata_or_kumite != 0 && $categoryGender != 1 && $teamDelete->count() - 1 < 3) {
+            if($category->kata_or_kumite == 1 && $categoryGender == 1 && $teamDelete->count() - 1 < 3) {
+                $toUpdate = 1;
+                foreach($teamDelete as $teamMember) {
+                    $teamMember->delete();
+                }   
+                $team->delete();
+            }
+            if($category->kata_or_kumite == 0 && $categoryGender == 2 && $teamDelete->count() - 1 < 3) {
+                $toUpdate = 1;
+                foreach($teamDelete as $teamMember) {
+                    $teamMember->delete();
+                }
+                $team->delete();
+            }
+            if($category->kata_or_kumite == 1 && $categoryGender == 2 && $teamDelete->count() - 1 < 3) {
                 $toUpdate = 1;
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();
