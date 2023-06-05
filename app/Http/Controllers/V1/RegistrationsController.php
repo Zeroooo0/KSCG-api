@@ -128,6 +128,9 @@ class RegistrationsController extends Controller
      */
     public function store(Request $request, Compatition $competition)
     {
+        if(Auth::user()->user_type != 2 && $competition->registration_status == 0) {
+            return $this->error('', 'Zatvorene su prijave!', 403);
+        }
         //competition limits and data
         $applicationLimit = $competition->application_limits;
         $catTimeSpan = $competition->category_start_point;
@@ -331,7 +334,7 @@ class RegistrationsController extends Controller
         $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
         $arrayOfRegistrations = [];
         $responseErrorMessage = [];
-        if($competition->registration_status == 0) {
+        if(Auth::user()->user_type != 2 && $competition->registration_status == 0) {
             $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
         }
 
@@ -465,6 +468,9 @@ class RegistrationsController extends Controller
      */
     public function update(Request $request, Registration $registration)
     {
+        if(Auth::user()->user_type != 2 && $registration->competition->registration_status == 0) {
+            $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
+        }
         $registration->update(['is_printed' => $request->isPrinted]);
         return $this->success('', 'Uspješno imjenjen status štampanja.');
     }
