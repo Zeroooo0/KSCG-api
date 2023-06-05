@@ -18,7 +18,8 @@ class Registration extends Model
         'team_or_single',
         'status',
         'kata_or_kumite',
-        'position'
+        'position',
+        'is_printed'
     ];
 
     public function compatition()
