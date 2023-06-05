@@ -468,9 +468,7 @@ class RegistrationsController extends Controller
      */
     public function update(Request $request, Registration $registration)
     {
-        if(Auth::user()->user_type != 2 && $registration->competition->registration_status == 0) {
-            $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
-        }
+
         $registration->update(['is_printed' => $request->isPrinted]);
         return $this->success('', 'Uspješno imjenjen status štampanja.');
     }

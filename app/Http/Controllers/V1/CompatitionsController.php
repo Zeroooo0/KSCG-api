@@ -93,7 +93,7 @@ class CompatitionsController extends Controller
         $sort = $request->sort == null ? 'compatitor_id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
         $regResults = Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competition->id);
-        $request->has('isPrinted') ? $competitionResoults = $regResults->where('position', '>', 0)->where('is_printed', $request->isPrinted) : $competitionResoults = $regResults;
+        $request->has('isPrinted') ? $competitionResoults = $regResults->where('position', '!=', null)->where('is_printed', $request->isPrinted) : $competitionResoults = $regResults;
         $per_page = $request->perPage;
         $search = '%'. $request->search . '%';
         $searchedCompetitors = [];
