@@ -97,7 +97,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/registered-clubs', [ReusableDataController::class, 'registeredClubs']);
     Route::post('/rebuild-pool', [PoolsController::class, 'rebuildCategoryPool']);
     Route::get('/certificate-print/{competition}', [CompatitionsController::class, 'piblicRegistrations']);
-    Route::post('/printed/{registration}', [RegistrationsController::class, 'update']);
+    Route::patch('/printed/{registration}', [RegistrationsController::class, 'update']);
 
     //Clubs
     Route::resource('/clubs', ClubsController::class);   
