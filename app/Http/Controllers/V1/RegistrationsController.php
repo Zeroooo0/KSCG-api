@@ -468,9 +468,11 @@ class RegistrationsController extends Controller
      */
     public function update(Request $request, Registration $registration)
     {
-
-        $registration->update(['is_printed' => $request->isPrinted]);
-        return $this->success('', 'Uspješno imjenjen status štampanja.');
+        if($request->has('status')) {
+            $registration->update(['is_printed' => $request->status]);
+            return $this->success('', 'Uspješno imjenjen status štampanja.');
+        }
+        return $this->error('', 'Only status can be chaged', 403);
     }
 
 
