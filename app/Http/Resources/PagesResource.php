@@ -90,7 +90,7 @@ class PagesResource extends JsonResource
             'user' => $userData,
             'coverImage' => $cover_image,
             'images' => $image,
-            'components' => $componentsArray != [] ? $componentsArray :  ComponentResource::collection($components),
+            'components' => $componentsArray != [] ? $componentsArray :  ComponentResource::collection($components->sortBy('id', 'desc')),
 
         ];
     }
