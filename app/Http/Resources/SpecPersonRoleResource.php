@@ -41,7 +41,7 @@ class SpecPersonRoleResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'specialPersonalId' => (string)$this->id,
-            'name' => $this->name . ' ' . $this->last_name,
+            'combinedName' => $this->name . ' ' . $this->last_name,
             'title' => 'Sudija',
             'role' => 'Sudija',
             'role' => $role,
