@@ -27,6 +27,7 @@ class ClubsCompatiorsResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'name' => $this->name . ' ' . $this->last_name,   
+            'combinedName' => $this->name . ' ' . $this->last_name,   
             'kscgId' => $this->kscg_compatitor_id,
             'brthDay' => date($this->date_of_birth),      
             'belt' => $this->belt,
