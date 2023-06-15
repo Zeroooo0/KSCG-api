@@ -33,7 +33,7 @@ class StoreCategoryRequest extends FormRequest
             'matchLenght' => ['required', 'numeric', 'gt:0'], 
             'yearsFrom' => ['numeric', 'gt:0'], 
             'yearsTo' => ['numeric', 'gt:0'], 
-            'remach' => ['boolean'], 
+            'rematch' => ['boolean'], 
             'matchLenght' => ['required', 'numeric'], 
             'soloOrTeam' => ['required', 'boolean']
         ];
