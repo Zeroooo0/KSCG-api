@@ -33,6 +33,7 @@ class UpdateCategoryRequest extends FormRequest
             'matchLenght' => ['numeric'], 
             'yearsFrom' => ['numeric', 'gt:0'], 
             'yearsTo' => ['numeric', 'gt:0'], 
+            'remach' => ['boolean'], 
             'soloOrTeam' => ['boolean'],
             'status' => ['boolean'],
         ];

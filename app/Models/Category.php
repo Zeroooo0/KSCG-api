@@ -20,7 +20,8 @@ class Category extends Model
         'status',
         'match_lenght',
         'years_from',
-        'years_to'
+        'years_to',
+        'repesaz'
     ];
     public function compatitions()
     {
