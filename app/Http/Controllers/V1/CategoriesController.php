@@ -68,7 +68,7 @@ class CategoriesController extends Controller
             return $this->restricted('', 'Not alowed!', 403);
         }
         $request->validated($request->all());
-        return $request->yearsFrom;
+
         $category = Category::create([
             'name' => $request->name,
             'kata_or_kumite' => $request->kataOrKumite,
