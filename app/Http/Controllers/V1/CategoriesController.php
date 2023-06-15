@@ -78,7 +78,7 @@ class CategoriesController extends Controller
             'date_to' => $request->dateTo,
             'solo_or_team' => $request->soloOrTeam, //0=solo 1=team
             'match_lenght' => $request->matchLenght,      
-            'repesaz' => $request->remach,      
+            'repesaz' => $request->rematch,      
             'years_from' => $request->yearsFrom,  
             'years_to' => $request->yearsTo,  
             'status' => 1    
