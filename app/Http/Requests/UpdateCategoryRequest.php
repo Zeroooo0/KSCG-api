@@ -31,6 +31,8 @@ class UpdateCategoryRequest extends FormRequest
             'dateFrom' => ['date_format:Y-m-d'],
             'dateTo' => ['date_format:Y-m-d'],
             'matchLenght' => ['numeric'], 
+            'yearsFrom' => ['numeric', 'gt:0'], 
+            'yearsTo' => ['numeric', 'gt:0'], 
             'soloOrTeam' => ['boolean'],
             'status' => ['boolean'],
         ];
