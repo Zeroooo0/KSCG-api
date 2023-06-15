@@ -29,7 +29,7 @@ class CategoriesResource extends JsonResource
             'id' => (string)$this->id,
             'combinedName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->name . ' ' . $this->category_name  . $ekipno,
             'name' => $this->name,
-            'kataOrKumite' => $kata_or_kumite,
+            'kataOrKumite' => $this->kata_or_kumite,
             'categoryName' => $this->category_name,
             'gender' => $this->gender, 
             'soloOrTeam' => $soloOrTeam,
