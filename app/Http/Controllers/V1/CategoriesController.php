@@ -126,7 +126,7 @@ class CategoriesController extends Controller
         $request->has('matchLenght') ? $category->update(['match_lenght' => $request->matchLenght])  : null;
         $request->has('yearsFrom') ? $category->update(['years_from' => $request->yearsFrom])  : null;
         $request->has('yearsTo') ? $category->update(['years_to' => $request->yearsTo])  : null;
-        $request->has('remach') ? $category->update(['repesaz' => $request->remach])  : null;
+        $request->has('rematch') ? $category->update(['repesaz' => $request->rematch])  : null;
   
 
         $belts = array_filter(explode(',', $request->belts));
