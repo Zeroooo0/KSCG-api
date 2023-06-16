@@ -34,6 +34,7 @@ class StoreCategoryRequest extends FormRequest
             'yearsFrom' => ['numeric', 'gt:0'], 
             'yearsTo' => ['numeric', 'gt:0'], 
             'rematch' => ['boolean'], 
+            'status' => ['boolean'], 
             'matchLenght' => ['required', 'numeric'], 
             'soloOrTeam' => ['required', 'boolean']
         ];

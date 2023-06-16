@@ -22,7 +22,7 @@ class CategoriesResource extends JsonResource
         $ekipno = $this->solo_or_team  ? null : ' | Ekipno';
         $belts = [];
         foreach ($this->belts as $belt) {
-            $belts[] = $belt->id;
+            $belts[] = (string)$belt->id;
         }
 
         return [

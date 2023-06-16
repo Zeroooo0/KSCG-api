@@ -78,10 +78,10 @@ class CategoriesController extends Controller
             'date_to' => $request->dateTo,
             'solo_or_team' => $request->soloOrTeam, //0=solo 1=team
             'match_lenght' => $request->matchLenght,      
-            'repesaz' => $request->rematch == 'true' ? 1 : 0,      
+            'repesaz' => $request->rematch,      
             'years_from' => $request->yearsFrom,  
-            'years_to' => $request->yearsTo,  
-            'status' => $request->status == 'true' ? 1 : 0,     
+            'years_to' => $request->yearsTuo,  
+            'status' => $request->status   
         ]);
 
         $belts = explode(',', $request->belts);
@@ -126,7 +126,7 @@ class CategoriesController extends Controller
         $request->has('matchLenght') ? $category->update(['match_lenght' => $request->matchLenght])  : null;
         $request->has('yearsFrom') ? $category->update(['years_from' => $request->yearsFrom])  : null;
         $request->has('yearsTo') ? $category->update(['years_to' => $request->yearsTo])  : null;
-        $request->has('rematch') ? $category->update(['repesaz' => $request->rematch == 'true' ? 1 : 0])  : null;
+        $request->has('rematch') ? $category->update(['repesaz' => $request->rematch])  : null;
   
 
         $belts = array_filter(explode(',', $request->belts));
