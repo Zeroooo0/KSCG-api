@@ -124,8 +124,8 @@ class CategoriesController extends Controller
         $request->has('dateTo') ? $category->update(['date_to' => $request->dateTo])  : null;
         $request->has('soloOrTeam') ? $category->update(['solo_or_team' => $request->soloOrTeam])  : null;
         $request->has('matchLenght') ? $category->update(['match_lenght' => $request->matchLenght])  : null;
-        $request->has('yearsFrom') ? $category->update(['years_from' => $request->yearsFrom])  : null;
-        $request->has('yearsTo') ? $category->update(['years_to' => $request->yearsTo])  : null;
+        $request->has('yearsFrom') ? $category->update(['years_from' => $request->yearsFrom == '0' ? NULL : $request->yearsFrom])  : null;
+        $request->has('yearsTo') ? $category->update(['years_to' => $request->yearsTo == '0' ? NULL : $request->yearsTo ])  : null;
         $request->has('rematch') ? $category->update(['repesaz' => $request->rematch])  : null;
   
 
