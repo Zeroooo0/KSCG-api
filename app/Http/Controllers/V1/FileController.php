@@ -295,8 +295,10 @@ class FileController extends Controller
     {
         $path = Storage::putFile('component-image', $request->image);
         $image = $component->images()->create([
-            'url' => $path
-        ]);            
+            'url' => $path,
+            'order_no' => $request->has('orderNo') ? $request->orderNo : NULL
+        ]);
+
         return $this->success(new ImageResource($image), 'Uspjesno dodata slika');
     }
 

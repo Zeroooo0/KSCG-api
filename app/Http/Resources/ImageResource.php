@@ -17,6 +17,7 @@ class ImageResource extends JsonResource
         $storage_url = env('APP_URL') . 'api/file/';
         return [
             'id' => (string)$this->id,
+            'orderNo' => $this->order_no,
             'url' => $storage_url . $this->url,
         ];
     }
