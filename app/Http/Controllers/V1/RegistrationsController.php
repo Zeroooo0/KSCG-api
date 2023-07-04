@@ -33,7 +33,7 @@ class RegistrationsController extends Controller
         $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
 
         if(Auth::user() != null){
-            if($competition->registration_deadline >= now()){
+            if($competition->registration_deadline <= now()){
                 $competition->update(['registration_status' => 0]);
             }
             if(Auth::user()->user_type == 0) {
