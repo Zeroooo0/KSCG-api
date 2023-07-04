@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('country');
             $table->date('date_of_birth');
             $table->boolean('status')->default(false);
+            $table->boolean('first_membership')->default(true);
             $table->foreignId('club_id')
                 ->nullable()
                 ->references('id')

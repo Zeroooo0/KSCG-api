@@ -7,6 +7,7 @@ use App\Http\Controllers\V1\ComponentController;
 use App\Http\Controllers\V1\CompatitorsController;
 use App\Http\Controllers\V1\CompatitionsController;
 use App\Http\Controllers\V1\FileController;
+use App\Http\Controllers\V1\MembrshipController;
 use App\Http\Controllers\V1\PagesController;
 use App\Http\Controllers\V1\PoolsController;
 use App\Http\Controllers\V1\PostsController;
@@ -173,8 +174,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Compatition filtering data
     //Category
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'categories']);
- 
- 
+    Route::get('/confirm-all-competiors', [MembrshipController::class, 'confirmAllCompetitors']);
+    Route::resource('/membership', MembrshipController::class);
 });
 //testing
 

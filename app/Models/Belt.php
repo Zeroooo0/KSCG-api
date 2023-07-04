@@ -21,5 +21,9 @@ class Belt extends Model
     {
         return $this->belonToMany(Category::class, 'belts_categories');
     }
+    public function compatitorMembership()
+    {
+        return $this->hasMany(CompetitorMembership::class);
+    }
 
 }
