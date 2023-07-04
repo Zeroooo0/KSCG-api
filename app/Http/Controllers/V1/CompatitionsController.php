@@ -131,7 +131,7 @@ class CompatitionsController extends Controller
         } else {
             $status = false;
         }
-        $registrationStatus = $request->has('registrationStatus') ? $request->registrationStatus : true;
+        $registrationStatus = $request->has('registrationStatus') ? $request->registrationStatus : 1;
         $compatition = Compatition::create([
             'name' => $request->name,
             'host_name' => $request->hostName,
