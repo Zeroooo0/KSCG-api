@@ -170,7 +170,7 @@ class RegistrationsController extends Controller
                 }
             }
         }
-        if($catTimeSpan && $compatitorsYears < 14) {
+        if($compatitorsYears < 14) {
             $competitorsCategory = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
             $nextCategories = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
             $olderCategoryKata = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
