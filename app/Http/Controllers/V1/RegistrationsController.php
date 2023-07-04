@@ -52,7 +52,7 @@ class RegistrationsController extends Controller
             }
         } 
         if(Auth::user() == null) {
-            if($competition->registration_deadline >= now()){
+            if($competition->registration_deadline <= now()){
                 $competition->update(['registration_status' => 0]);
             }
             return RegistrationsResource::collection(Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->paginate($per_page));
