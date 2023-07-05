@@ -30,7 +30,7 @@ class UpdateComatitorRequest extends FormRequest
             'country' => ['string', 'max:255'],
             'lastName' => ['string', 'max:255'],
             'gender' => ['integer', 'max:3'], Rule::in([1, 2]),
-            'jmbg' => ['integer'],
+            'jmbg' => ['numeric'],
             'belt' => ['integer'],
             'dateOfBirth' => ['date'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:2048'],

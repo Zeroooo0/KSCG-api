@@ -497,8 +497,8 @@ class RegistrationsController extends Controller
             $teamTwo = PoolTeam::where('team_two', $teamId)->get();
             $toUpdate = 0;
  
-           
-            if($category->kata_or_kumite == 0 && $categoryGender == 1 && $teamDelete->count() - 1 < 5) {
+           //should be 5
+            if($category->kata_or_kumite == 0 && $categoryGender == 1 && $teamDelete->count() - 1 < 3) {
                 $toUpdate = 1;
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();
