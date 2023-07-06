@@ -174,7 +174,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Compatition filtering data
     //Category
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'categories']);
-    Route::get('/confirm-all-competiors', [MembrshipController::class, 'confirmAllCompetitors']);
+
     Route::resource('/membership', MembrshipController::class);
 });
 //testing

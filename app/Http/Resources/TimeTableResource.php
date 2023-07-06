@@ -63,7 +63,7 @@ class TimeTableResource extends JsonResource
             'startedAt' => $this->started_time != null ? date('H:i', strtotime($this->started_time)) : null,
             'finishedAt' => $this->finish_time != null ? date('H:i', strtotime($this->finish_time)) : null,
             'status' => $this->status,
-            'roundsTotal' => $this->id != 62 ? $groupsTotal['categoryPoolsFront'] : 2,
+            'roundsTotal' => $pool->where('pool_type', 'FM')->count() != 0 ? $pool->where('pool_type', 'FM')->first()->pool : 0,
             'groups' => $request->has('embed') && str_contains($request->embed, 'groups') ? $data->toArray() : 'embbedable',
             'rematch' => $request->has('embed') && str_contains($request->embed, 'rematch') ? $repesaz->toArray() : 'embbedable'
 

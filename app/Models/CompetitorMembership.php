@@ -14,7 +14,7 @@ class CompetitorMembership extends Model
     {
         return $this->belongsTo(ClubMembership::class);
     }
-    public function competitior() 
+    public function compatitor() 
     {
         return $this->belongsTo(Compatitor::class);
     }

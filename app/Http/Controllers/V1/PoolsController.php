@@ -14,6 +14,7 @@ use App\Models\Team;
 use App\Models\TimeTable;
 use App\Traits\HttpResponses;
 use App\Traits\LenghtOfCategory;
+use App\Traits\PoolsGroups;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 class PoolsController extends Controller
 {
     use HttpResponses;
-    use LenghtOfCategory;
+    use PoolsGroups;
     /**
      * Display a listing of the resource.
      *
@@ -58,6 +59,7 @@ class PoolsController extends Controller
         
         $nn_single_cat = [];
         $nn_team_cat = [];
+        
         $singleArr = [];
         $teamArr = [];
         
@@ -89,415 +91,83 @@ class PoolsController extends Controller
         foreach($nn_team_cat as $key => $val) {
             $category_id =  $val[0][0]->category_id;
             $timeTableData = $timeTable->where('category_id', $category_id)->first();
-            $category_timeStart = $timeTableData->eto_start == null ? null : $timeTableData->eto_start;
+            $catTimeStart = $timeTableData->eto_start == null ? null : $timeTableData->eto_start;
             $category = Category::where('id', $category_id)->first();
-            $category_match_lenght = $category->match_lenght;
 
-            
-            $timeTracking = $category_timeStart;
             $registrations = $compatition->registrations->where('category_id', $category->id);
             $timePerCategory = $category->match_lenght;
-            $teamOrSingle = $category->solo_or_team;
-            $teamRegistration = $registrations->groupBy('team_id')->count();
-        
-            $registrationCount = $teamOrSingle == 1 ? $registrations->count() : $teamRegistration;
-        
-            $repesaz = $category->repesaz == true ? $timePerCategory : 0;
-            $pools = 0;
-            $pool = 0;
-            
+            $registrationCount = $registrations->groupBy('team_id')->count();
             switch($registrationCount) {
                 case $registrationCount <= 2:
-                    $neededReg = 1;
                     $groupsReal = 1;
-                    $pools = 0;
-                    $pool = 1;
                     break;
                 case $registrationCount <= 4:
-                    $neededReg = 3;
                     $groupsReal = 2;
-                    $pools = 1;
-                    $pool = 2;
                     break;
                 case $registrationCount <= 8:
-                    $neededReg = 7;
                     $groupsReal = 4;
-                    $pools = 2;
-                    $pool = 3;
                     break;
                 case $registrationCount <= 16:
-                    $neededReg = 15;
                     $groupsReal = 8;
-                    $pools = 3;
-                    $pool = 4;
                     break;
                 case $registrationCount <= 32:
-                    $neededReg = 31;
                     $groupsReal = 16;
-                    $pools = 4;
-                    $pool = 5;
                     break;
                 case $registrationCount <= 64:
-                    $neededReg = 63;
                     $groupsReal = 32;
-                    $pools = 5;
-                    $pool = 6;
+                    break;
+                case $registrationCount <= 128:
+                    $groupsReal = 64;
                     break;
             }
+            $teamArr[] = $this->sortGroups($groupsReal, $val, $timePerCategory, $catTimeStart, 'team');
             
-            for($j = 1; $j <= $pool; $j++) {
-                $counting = $groupsReal;
-                switch($j) {
-                    case $j == 1:
-                        $counting = $groupsReal;
-                        break;
-                    case $j == 2:
-                        $counting = $groupsReal / 2;
-                        break;
-                    case $j == 3:
-                        $counting = $groupsReal / 4;
-                        break;
-                    case $j == 4:
-                        $counting = $groupsReal / 8;
-                        break;
-                    case $j == 5:
-                        $counting = $groupsReal / 16;
-                        break;
-                    case $j == 6:
-                        $counting = $groupsReal  / 32;
-                        break;
-                    case $j == 7:
-                        $counting = $groupsReal  / 64;
-                        break;
-                }
-                switch($counting) {
-                    case $counting >= 4:
-                        $groupType = 'G';
-                        break;
-                    case $counting >= 2:
-                        $groupType = 'SF';
-                        break;
-                    case $counting = 1:
-                        $groupType = 'FM';
-                        break;
-                }                
-                
-                for($i = 0; $i <= ($counting -1 ); $i++) {
-                    $random = rand(0,1);
-                    $first = $random ? $i : $neededReg - $i;
-                    $second = $random ? $neededReg - $i : $i;
-                    $inputTeam['compatition_id'] = $compatition->id;
-                    $inputTeam['category_id'] = $category_id;
-                    $inputTeam['pool'] = $j;
-                    $inputTeam['pool_type'] = $groupType;
-                    $inputTeam['group'] = $i + 1;
-                    $inputTeam['start_time'] = $timeTracking;
-                    $inputTeam['status'] = 0;
-                    $inputTeam['team_one'] = $j == 1 ? Arr::get($val,  $first . '.0.team_id') : null;
-                    $inputTeam['team_two'] = $j == 1 ? Arr::get($val,  $second . '.0.team_id') : null;
-
-                    if($j == 1 && ($inputTeam['team_one'] == null || $inputTeam['team_two'] == null)) {
-                        $timeTracking = $timeTracking;
-                    } else {
-                        $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                    }
-
-
-                    $teamArr[] = $inputTeam;
-                }
-            }
         }
-       
-        
-        
+
         foreach($nn_single_cat as $val) {
             $category_id =  $val[0]->category_id;
             $timeTableData = $timeTable->where('category_id', $category_id)->first();
-            $category_timeStart = $timeTableData->eto_start == null ? null : $timeTableData->eto_start;
+            $catTimeStart = $timeTableData->eto_start == null ? null : $timeTableData->eto_start;
             $category = Category::where('id', $category_id)->first();
-            $category_match_lenght = $category->match_lenght;
             $cat_ids = $val->groupBy('club_id')->sortDesc();
-            $sorted_cats = [];
-            $startPoint = 0;
-            foreach($cat_ids as $item=>$key) {
-                $sorted_cats[] = $key;
-            }
-        
-            $cleaned = Arr::collapse($sorted_cats);
 
-            
-            $timeTracking = $category_timeStart;
+            $cleaned = Arr::collapse($cat_ids);
 
             $registrations = $compatition->registrations->where('category_id', $category->id);
             $timePerCategory = $category->match_lenght;
-            $teamOrSingle = $category->solo_or_team;
-            $teamRegistration = $registrations->groupBy('team_id')->count();
-        
-            $registrationCount = $teamOrSingle == 1 ? $registrations->count() : $teamRegistration;
-        
-            $repesaz = $category->repesaz == true ? $timePerCategory : 0;
-            $totalTimePerCat = 0;
-            $groups = 0;
-            $pools = 0;
-            $pool = 0;
-            
+            $registrationCount = $registrations->count();
+
             switch($registrationCount) {
                 case $registrationCount <= 2:
-                    $neededReg = 1;
-                    $regs = 1;
                     $groupsReal = 1;
-                    $pools = 0;
-                    $pool = 1;
                     break;
                 case $registrationCount <= 4:
-                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + $timePerCategory + $repesaz;
-                    $neededReg = 3;
-                    $regs = 4;
                     $groupsReal = 2;
-                    $pools = 1;
-                    $pool = 2;
                     break;
                 case $registrationCount <= 8:
-                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 2 * $repesaz;
-                    $neededReg = 7;
-                    $regs = 8;
-                    $groups = 3;
                     $groupsReal = 4;
-                    $pools = 2;
-                    $pool = 3;
                     break;
                 case $registrationCount <= 16:
-                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 3 * $repesaz;
-                    $neededReg = 15;
-                    $regs = 16;
-                    $groups = 7;
                     $groupsReal = 8;
-                    $pools = 3;
-                    $pool = 4;
                     break;
                 case $registrationCount <= 32:
-                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 4 * $repesaz;
-                    $neededReg = 31;
-                    $regs = 32;
-                    $groups = 15;
                     $groupsReal = 16;
-                    $pools = 4;
-                    $pool = 5;
                     break;
                 case $registrationCount <= 64:
-                    $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
-                    $neededReg = 63;
-                    $regs = 64;
-                    $groups = 31;
                     $groupsReal = 32;
-                    $pools = 5;
-                    $pool = 6;
+                    break;
+                case $registrationCount <= 128:
+                    $groupsReal = 64;
                     break;
             }
-            for($j = 1; $j <= $pool; $j++) {
-                $counting = $groupsReal;
-                switch($j) {
-                    case $j == 1:
-                        $counting = $groupsReal;
-                        break;
-                    case $j == 2:
-                        $counting = $groupsReal / 2;
-                        break;
-                    case $j == 3:
-                        $counting = $groupsReal / 4;
-                        break;
-                    case $j == 4:
-                        $counting = $groupsReal / 8;
-                        break;
-                    case $j == 5:
-                        $counting = $groupsReal / 16;
-                        break;
-                    case $j == 6:
-                        $counting = $groupsReal  / 32;
-                        break;
-                    case $j == 7:
-                        $counting = $groupsReal  / 64;
-                        break;
-                }
-                
-                switch($counting) {
-                    case $counting >= 4:
-                        $groupType = 'G';
-                        break;
-                    case $counting >= 2:
-                        $groupType = 'SF';
-                        break;
-                    case $counting = 1:
-                        $groupType = 'FM';
-                        break;
-                }                
-
-
-                if($groupsReal > 2 && $j == 1) {
-                
-                    $startPoint = 1;
-                    $groupCount =  $groupsReal / 4;
-                    $compInGroup =  $regs / 4 ;
-      
-                    $groupOne = [];
-                    $groupTwo = [];
-                    $groupThree = [];
-                    $groupFour = [];
-      
-                    $countingSteps = 0;
-                    foreach($cleaned as $key) {
-                       
-                        switch($countingSteps) {
-                            case 0:
-                                $groupOne [] = $key;
-                                $countingSteps = $countingSteps + 1;
-                                break;
-                            case 1:
-                                $groupTwo [] = $key;
-                                $countingSteps = $countingSteps + 1;
-                                break;
-                            case 2:
-                                $groupThree [] = $key;
-                                $countingSteps = $countingSteps + 1;
-                                break;
-                            case 3:
-                                $groupFour [] = $key;
-                                $countingSteps = 0;
-                                break;
-                        }
-                    }
-                    
-                    
-                    for($k = 0; $k <= $groupCount - 1; $k++) {
-                        $random = rand(0,1);
-                        $first = $random  ? $k : $compInGroup - 1 - $k;
-                        $second = $random ? $compInGroup - 1 - $k : $k;
-                        $input['compatition_id'] = $compatition->id;
-                        $input['category_id'] = $category_id;
-                        $input['pool'] = $j;
-                        $input['pool_type'] = $groupType;
-                        $input['group'] =  $k + 1;
-                        
-                        $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupOne, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupOne, $second .  '.id') : null;
-    
-                        $input['start_time'] =  $timeTracking;      
-                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
-                            $timeTracking = $timeTracking;
-                        } else {
-                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                        }                 
-                        
-                        $singleArr[] = $input;
-                    }
-                    for($k = 0; $k <= $groupCount - 1; $k++) {
-                        $random = rand(0,1);
-                        $first = $random  ? $k : $compInGroup - 1 - $k;
-                        $second = $random ? $compInGroup - 1 - $k : $k;
-                        $input['compatition_id'] = $compatition->id;
-                        $input['category_id'] = $category_id;
-                        $input['pool'] = $j;
-                        $input['pool_type'] = $groupType;
-                        $input['group'] =  $k + $groupCount + 1;
-                        
-                        $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupThree, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupThree, $second .  '.id') : null;
-    
-                        $input['start_time'] =  $timeTracking;    
-                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
-                            $timeTracking = $timeTracking;
-                        } else {
-                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                        }                   
-                        
-                        $singleArr[] = $input;
-                    }
-                    for($k = 0; $k <= $groupCount - 1; $k++) {
-                        $random = rand(0,1);
-                        $first = $random  ? $k : $compInGroup - 1 - $k;
-                        $second = $random ? $compInGroup - 1 - $k : $k;
-                        $input['compatition_id'] = $compatition->id;
-                        $input['category_id'] = $category_id;
-                        $input['pool'] = $j;
-                        $input['pool_type'] = $groupType;
-                        $input['group'] =  $k + ($groupCount * 2) + 1;
-                        
-                        $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupFour, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupFour, $second .  '.id') : null;
-    
-                        $input['start_time'] =  $timeTracking;
-                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
-                            $timeTracking = $timeTracking;
-                        } else {
-                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                        }
-                
-                        $singleArr[] = $input;
-                    }
-                    for($k = 0; $k <= $groupCount - 1 ; $k++) {
-                        $random = rand(0,1);
-                        $first = $random  ? $k : $compInGroup - 1 - $k;
-                        $second = $random ? $compInGroup - 1 - $k : $k;
-                        $input['compatition_id'] = $compatition->id;
-                        $input['category_id'] = $category_id;
-                        $input['pool'] = $j;
-                        $input['pool_type'] = $groupType;
-                        $input['group'] =  $k + ($groupCount * 3) + 1;
-                        
-                        $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($groupTwo, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($groupTwo, $second .  '.id') : null;
-    
-                        $input['start_time'] =  $timeTracking;   
-                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
-                            $timeTracking = $timeTracking;
-                        } else {
-                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                        }                     
-                        
-                        $singleArr[] = $input;
-                    }
-    
-                    
-                }
-                if($startPoint == 0 || $j >= 2) {
-                    for($i = 0; $i <= ($counting - 1); $i++) {
-                        $random = rand(0,1);
-                        $first = $random  ? $i : $neededReg - $i;
-                        $second = $random ? $neededReg - $i : $i;
-                        $input['compatition_id'] = Arr::get($cleaned, '0.compatition_id');
-                        $input['category_id'] = Arr::get($cleaned, '0.category_id');
-                        $input['pool'] = $j;
-                        $input['pool_type'] = $groupType;
-                        $input['group'] =  $i + 1;
-                        
-                        $input['status'] = 0;
-                        $input['registration_one'] = $j == 1 ? Arr::get($cleaned, $first . '.id') : null;
-                        $input['registration_two'] = $j == 1 ? Arr::get($cleaned, $second .  '.id') : null;
-    
-                        $input['start_time'] =  $timeTracking;
-                        if($j == 1 && ($input['registration_one'] == null || $input['registration_two'] == null)) {
-                            $timeTracking = $timeTracking;
-                        } else {
-                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                        }
-                        
-                        
-                        $singleArr[] = $input;
-                    }
-                }
-               
-                
-            }
+            
+            $singleArr[] = $this->sortGroups($groupsReal, $cleaned, $timePerCategory, $catTimeStart, 'single');          
             
         }
-
-        PoolTeam::insert($teamArr);
-        Pool::insert($singleArr);
-        return $this->success(['single' => $singleArr, 'teams' => $teamArr]);
+        
+        PoolTeam::insert(Arr::collapse($teamArr));
+        Pool::insert(Arr::collapse($singleArr));
+        return $this->success(['single' => Arr::collapse($singleArr), 'teams' => Arr::collapse($teamArr)]);
 
     }
     public function rebuildCategoryPool(Request $request) 

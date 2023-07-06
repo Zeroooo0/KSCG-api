@@ -105,7 +105,8 @@ class CompatitorsController extends Controller
             'belt_id' => $request->belt,
             'date_of_birth' => $request->dateOfBirth,
             'country' => $request->country,
-            'status' => Auth::user()->user_type == 0 ? 0 : 1
+            'status' => Auth::user()->user_type == 0 ? 0 : 1,
+            'first_membership' => 0
         ]);
         if($compatitor->country == 'Crna Gora') {
             $country = 'MNE';
