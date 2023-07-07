@@ -217,8 +217,9 @@ class CompatitionsController extends Controller
     public function destroy(Compatition $competition, Request $request)
     {
 
-        if($competition->registrations()->count() > 0 || $request->forceDelete == true){
-            return $this->error('', 'Ovo takmičenje već ima registracije pa nije moguće obrisati ili pošaljite parametar [forceDelete=true]!', 403);
+        if($request->forceDelete == true || $competition->registrations()->count() > 0 ){
+            //[forceDelete=true]!
+            return $this->error('', 'Ovo takmičenje već ima registracije pa nije moguće obrisati!', 403);
         }
         if(Auth::user()->user_type != 2) {
             return $this->error('', 'Nije dozvoljeno brisati takmičenje!', 403);
@@ -227,6 +228,9 @@ class CompatitionsController extends Controller
         $competition->image()->delete();
         $competition->document()->delete();
         $competition->registrations()->delete();
+        $competition->timeTable()->delete();
+        $competition->pools()->delete();
+        $competition->poolsTeam()->delete();
         $competition->delete();
         return $this->success('', 'Uspješno obrisano takmičenje.');
     }

@@ -128,6 +128,9 @@ class RegistrationsController extends Controller
      */
     public function store(Request $request, Compatition $competition)
     {
+        if($competition->registration_deadline <= now()){
+            $competition->update(['registration_status' => 0]);
+        }
         if(Auth::user()->user_type != 2 && $competition->registration_status == 0) {
             return $this->error('', 'Zatvorene su prijave!', 403);
         }

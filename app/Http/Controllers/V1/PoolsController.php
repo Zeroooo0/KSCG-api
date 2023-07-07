@@ -84,7 +84,9 @@ class PoolsController extends Controller
         if($timeTable->count() == 0) {
             return $this->error('', 'Potrebno je prvo da se odredi Time Table', 422);
         }
-     
+        if($compatition->registrations->where('position', '!=', NULL)->count() > 0) {
+            return $this->error('', 'Takmicenje je vec pocelo', 422);
+        }
         /** Here we start rebuilding */
         //return $nn_team_cat;
         
