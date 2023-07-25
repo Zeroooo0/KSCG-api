@@ -572,7 +572,7 @@ class RegistrationsController extends Controller
         return $this->success('', 'Uspješno obrisana registracija!');
     }
     public function calculateResultsNow(Compatition $compatition) {
-        $this->calculateResults($compatition->id , [], 'results');
         $this->calculateResults($compatition->id , [], 'registrations');
+        $this->calculateResults($compatition->id , [], 'results');
     }
 }
