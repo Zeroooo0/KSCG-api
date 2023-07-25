@@ -16,7 +16,7 @@ trait CompatitionClubsResultsTrait {
         $compatitionRegistrations = $compatition->registrations;
         
         if($calculationType == 'registrations'){        
-            return (boolean)empty($clubIds);
+            
             if(empty($clubIds)) {
                 
                 foreach($compatitionRegistrations->unique('club_id') as $club) {
@@ -25,14 +25,14 @@ trait CompatitionClubsResultsTrait {
                     $noSingles = $compatitionRegistrations->where('team_or_single', 1)->where('club_id', $club->club_id)->count();
                     $totalPrice = $noTeams * $compatition->price_team + $noSingles * $compatition->price_single;
                     $clubsIds[] = $club->club_id;
-                    return $compatitionRegistrations;
+                    $resultsData = $compatitionResults->where('club_id', $club->club_id)->first();
                     if($compatitionResults->where('club_id', $club->club_id)->count() == 0) {
-                        CompatitionClubsResults::create([
+                        $resultsData = CompatitionClubsResults::create([
                             'compatition_id' => $compatition->id,
                             'club_id' => $club->club_id
                         ]);
                     }
-                    $resultsData = $compatitionResults->where('club_id', $club->club_id)->first();
+                    
                     // return $noSingles;
                     $resultsData->update([
                         'no_compatitors' => $noCompatitiors,
@@ -49,14 +49,15 @@ trait CompatitionClubsResultsTrait {
                     $noTeams = $compatitionRegistrations->where('team_or_single', 0)->where('club_id', $clubId)->groupBy('team_id')->count();
                     $noSingles = $compatitionRegistrations->where('team_or_single', 1)->where('club_id', $clubId)->count();
                     $totalPrice = $noTeams * $compatition->price_team + $noSingles * $compatition->price_single;
+                    $resultsData = $compatitionResults->where('club_id', $clubId)->first();
                     if($compatitionResults->where('club_id', $clubId)->count() == 0) {
-                        CompatitionClubsResults::create([
+                        $resultsData = CompatitionClubsResults::create([
                             'compatition_id' => $compatition->id,
                             'club_id' => $clubId
                         ]);
                         continue;
                     }
-                    $resultsData = $compatitionResults->where('club_id', $clubId)->first();
+                    
                     $resultsData->update([
                         'no_compatitors' => $noCompatitiors,
                         'no_teams' => $noTeams,
