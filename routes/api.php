@@ -6,6 +6,7 @@ use App\Http\Controllers\V1\ClubsController;
 use App\Http\Controllers\V1\ComponentController;
 use App\Http\Controllers\V1\CompatitorsController;
 use App\Http\Controllers\V1\CompatitionsController;
+use App\Http\Controllers\V1\EventScheduleController;
 use App\Http\Controllers\V1\FileController;
 use App\Http\Controllers\V1\MembrshipController;
 use App\Http\Controllers\V1\PagesController;
@@ -13,10 +14,14 @@ use App\Http\Controllers\V1\PoolsController;
 use App\Http\Controllers\V1\PostsController;
 use App\Http\Controllers\V1\RegistrationsController;
 use App\Http\Controllers\V1\ReusableDataController;
+use App\Http\Controllers\V1\SeminarApplicationController;
+use App\Http\Controllers\V1\SeminarController;
 use App\Http\Controllers\V1\SpecialPersonalsController;
 use App\Http\Controllers\V1\TeamsController;
 use App\Http\Controllers\V1\TimeTablesController;
 use App\Http\Controllers\V1\UsersController;
+use App\Models\Seminar;
+use App\Models\SeminarFormApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,7 +47,14 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/news', [PostsController::class, 'public']);
     Route::get('/news/{news}', [PostsController::class, 'showPublic']);
     Route::get('/pages', [PagesController::class, 'public']);
+    Route::get('/seminars', [SeminarController::class, 'index']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPasswordNotification']);
+
+
+    //working on
+    Route::post('/seminars-form-application/{seminar}', [SeminarApplicationController::class, 'store']);
+    
+    //Route::resource('/seminars-application', SeminarApplicationController::class);
 });
 
 // Verify email
@@ -102,7 +114,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/certificate-print/{competition}', [CompatitionsController::class, 'piblicRegistrations']);
     Route::patch('/printed/{registration}', [RegistrationsController::class, 'update']);
 
-    //Clubs
+    //ClubsF
     Route::resource('/clubs', ClubsController::class);   
     //Compatitiors
     Route::resource('/competitors', CompatitorsController::class);  
@@ -170,12 +182,21 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('component-image/{component}', [FileController::class, 'storeComponentImage']);
     Route::get('component-image/{component}', [ComponentController::class, 'getComponentImage']);
 
-
+    //Event Schedule
+    Route::resource('event-schedule', EventScheduleController::class);
     //Compatition filtering data
     //Category
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'categories']);
 
     Route::resource('/membership', MembrshipController::class);
+    Route::post('/membership-competitors/{membership}', [MembrshipController::class, 'competitorMembershipAdd']);
+
+
+    //Seminar
+    Route::resource('/seminars', SeminarController::class);
+    Route::get('/seminars-form-application/{seminar}', [SeminarApplicationController::class, 'index']);
+    Route::get('/seminars-morph-application/{seminar}', [SeminarApplicationController::class, 'indexMorph']);
+    
 });
 //testing
 

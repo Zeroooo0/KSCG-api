@@ -12,12 +12,14 @@ class RegistrationsFilter {
         'competitionId' => ['eq'],
         'position' => ['eq', 'gt'],
         'isPrinted' => ['eq'],
+        'categoryId' => ['eq'],
     ];
 
     protected $columnsMap = [
         'clubId' => 'club_id',
         'competitionId' => 'compatition_id',
         'isPrinted' => 'is_printed',
+        'categoryId' => 'category_id',
     ];
 
     protected $operatorMap = [

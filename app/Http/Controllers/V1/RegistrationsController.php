@@ -12,6 +12,7 @@ use App\Models\PoolTeam;
 use App\Models\Registration;
 use App\Models\Team;
 use App\Support\Collection;
+use App\Traits\CompatitionClubsResultsTrait;
 use App\Traits\HttpResponses;
 use DateTime;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 class RegistrationsController extends Controller
 {
     use HttpResponses;
+    use CompatitionClubsResultsTrait;
     /**
      * Display a listing of the resource.
      *
@@ -59,7 +61,7 @@ class RegistrationsController extends Controller
         }
     }
     public function categoriesFiltered(Request $request, Compatition $competition) {
-    
+        
         //competition limits and data
         $applicationLimit = $competition->application_limits;
         $catTimeSpan = $competition->category_start_point;
@@ -68,6 +70,7 @@ class RegistrationsController extends Controller
         //competitior data
         if($request->has('competitorId') && $request->competitorId != null) {
             $competitor = Compatitor::where('id', $request->competitorId)->first();
+            //return $competitor->date_of_birth < date(now());
             $compatitorsBhirtDay = new DateTime($competitor->date_of_birth);
             $compatitorsYears = $compatitorsBhirtDay->diff($competitionStartTime)->y;
             //return $catTimeSpan;
@@ -92,8 +95,8 @@ class RegistrationsController extends Controller
                     }
                 }
             }
-            if( $compatitorsYears < 14) {
-                
+
+            if($compatitorsYears < 14) {                
                 $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
                 if(!$competitorsCategory->isEmpty()) {
                     $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
@@ -148,13 +151,13 @@ class RegistrationsController extends Controller
         
 
         $registrations = $competition->registrations->where('compatitor_id', $competitor->id);
-        
-      
+        //return $competitor->club_id;
+
 
         $arrayOfRegistrations = [];
         $responseErrorMessage = [];
         
-       
+
         if($compatitorsYears >= 14) {
             $competitorsCategory = $catTimeSpan ? $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>=', $compatitorsYears) : $competition->categories->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
             $nextCategoriesKata = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from')->where('kata_or_kumite', 1);
@@ -212,7 +215,12 @@ class RegistrationsController extends Controller
             $categoryLevel = $category->category_name;
             $noErrors = true;
             
-                
+            if($competitor->club->country == 'Montenegro' && $competitor->club->status == 0 || $competitor->status == 0) {
+                $error['message'] = "Takmičaru $competitor->name $competitor->last_name nema validan status!";
+                $responseErrorMessage[] = $error;
+                $noErrors = false;
+                continue;
+            }
          
             if($applicationLimit == 2 && !in_array($category->id, $allowedCategories)) {
                 $error['message'] = "Takmičaru $competitor->name $competitor->last_name ova kategorija nije dozvoljena!";
@@ -311,7 +319,11 @@ class RegistrationsController extends Controller
                 $arrayOfRegistrations[] = $input;
             } 
         }
+
+        //updates data for registrated clubs
+        
         if(count($responseErrorMessage) == 0) {
+            $this->calculateResults($competition->id, [$competitor->club_id]);
             Registration::insert($arrayOfRegistrations);
             return $this->success('', 'Registracija uspješna!');
         }
@@ -336,7 +348,10 @@ class RegistrationsController extends Controller
         $competitiors = Compatitor::whereIn('id',$competitorsIds)->get();
         $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
         $arrayOfRegistrations = [];
+        $arrayOfClubs = [];
         $responseErrorMessage = [];
+
+        
         if(Auth::user()->user_type != 2 && $competition->registration_status == 0) {
             $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
         }
@@ -346,7 +361,7 @@ class RegistrationsController extends Controller
             $responseErrorMessage [] =  $team;
         }
         if(!$isItSingle && !$isItKata && $isItMale && ($competitiors->count() < 5 || $competitiors->count() > 7)) {
-            $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 5 a maksimum 6 takmičara!";
+            $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 5 a maksimum 7 takmičara!";
             $responseErrorMessage [] =  $team;
         }
         if(!$isItSingle) {
@@ -364,6 +379,8 @@ class RegistrationsController extends Controller
             $genderError = false;
             $beltError = false;
             $generationError = false;
+            $arrayOfClubs[] = $competitor->club_id;
+
 
 
             if($isItSingle && $registrations->where('compatitor_id',$competitor->id)->where('kata_or_kumite', $isItKata)->count() >= $applicationLimit) {
@@ -394,7 +411,10 @@ class RegistrationsController extends Controller
                 $generationError = true;
             }
 
-
+            if($competitor->club->country == 'Montenegro' &&  $competitor->club->status == 0 || $competitor->status == 0) {
+                $error['message'] = "Takmičaru $competitor->name $competitor->last_name nema validan status!";
+                $responseErrorMessage[] = $error;
+            }
             if(!$isItError && !$categoryError && !$olderCategoryError && !$genderError && !$beltError && !$generationError) {
                 $input['compatition_id'] = $competition->id;
                 $input['club_id'] = $competitor->club_id != null ? $competitor->club->id : null;
@@ -454,7 +474,9 @@ class RegistrationsController extends Controller
                 $responseErrorMessage[] = $input;
             }
         }
+        
         if(count($responseErrorMessage) == 0) {
+            $this->calculateResults($competition->id, array_unique($arrayOfClubs));
             Registration::insert($arrayOfRegistrations);
             return $this->success('', 'Registracija uspješna!');
         }
@@ -474,6 +496,11 @@ class RegistrationsController extends Controller
         if($request->has('status')) {
             $registration->update(['is_printed' => $request->status]);
             return $this->success('', 'Uspješno imjenjen status štampanja.');
+        }
+        if($request->has('position') && $registration->compatition->is_abroad) 
+        {
+            $registration->update(['position' => $request->position]);
+            return $this->success('', 'Uspješno dodata pozicija.');
         }
         return $this->error('', 'Only status can be chaged', 403);
     }
@@ -501,7 +528,7 @@ class RegistrationsController extends Controller
             $toUpdate = 0;
  
            //should be 5
-            if($category->kata_or_kumite == 0 && $categoryGender == 1 && $teamDelete->count() - 1 < 3) {
+            if($category->kata_or_kumite == 0 && $categoryGender == 1 && $teamDelete->count() - 1 < 5) {
                 $toUpdate = 1;
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();

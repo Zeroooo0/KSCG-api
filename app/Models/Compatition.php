@@ -24,7 +24,9 @@ class Compatition extends Model
         'tatami_no',
         'document',
         'application_limits',
-        'category_start_point'
+        'category_start_point',
+        'is_abroad',
+        'rematch'
     ];
     public function categories() 
     {
@@ -37,6 +39,10 @@ class Compatition extends Model
     public function registrations()
     {
         return $this->hasMany(Registration::class);
+    }
+    public function compatitionClubsResults()
+    {
+        return $this->hasMany(CompatitionClubsResults::class);
     }
     public function teams()
     {

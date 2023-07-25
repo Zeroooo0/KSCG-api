@@ -26,7 +26,7 @@ return new class extends Migration
             //years in number
             $table->integer('years_from');
             $table->integer('years_to');
-
+            $table->boolean('is_official')->default('1');
             // 0=Solo 1=Team 
             $table->boolean('solo_or_team');
             $table->integer('match_lenght');

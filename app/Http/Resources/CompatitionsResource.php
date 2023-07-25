@@ -68,6 +68,8 @@ class CompatitionsResource extends JsonResource
             'registrationStatus' => (boolean)$this->registration_status,
             'tatamiNumber' => $this->tatami_no,
             'aplicationsLimit' => $this->aplications_limit,
+            'isAbroad' => (boolean)$this->is_abroad,
+            'rematch' => (boolean)$this->rematch,
             'poolsCreated' => $poolCreated,
             'officialTrainer' => $registeredPersonnal,
             'registrations' => [

@@ -60,20 +60,20 @@ class CompatitorsController extends Controller
         if(Auth::user()->user_type == 0) {
             if($per_page == 0) {
                 return CompatitorsResource::collection(
-                    $compatitior->where('club_id',  Auth::user()->club->id)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->get()
+                    $compatitior->where('club_id',  Auth::user()->club->id)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, kscg_compatitor_id)'), 'like', $search)->get()
                 );
             }
             return CompatitorsResource::collection(
-                $compatitior->where('club_id',  Auth::user()->club->id)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page)
+                $compatitior->where('club_id',  Auth::user()->club->id)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, kscg_compatitor_id)'), 'like', $search)->paginate($per_page)
             );
         } else {
             if($per_page == 0) {
                 return CompatitorsResource::collection(
-                    $compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->get()
+                    $compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, kscg_compatitor_id)'), 'like', $search)->get()
                 );
             }
             return CompatitorsResource::collection(
-                $compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page)
+                $compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, kscg_compatitor_id)'), 'like', $search)->paginate($per_page)
             );
         }
   

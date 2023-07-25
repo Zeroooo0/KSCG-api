@@ -21,7 +21,8 @@ class Category extends Model
         'match_lenght',
         'years_from',
         'years_to',
-        'repesaz'
+        'repesaz',
+        'is_official'
     ];
     public function compatitions()
     {

@@ -11,7 +11,7 @@ class ClubMembership extends Model
 
     protected $fillable = [
         'club_id',
-        'name',
+        'type',
         'is_paid',
         'status',
         'is_submited',

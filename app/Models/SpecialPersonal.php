@@ -31,5 +31,12 @@ class SpecialPersonal extends Model
     {
         return $this->morphMany(Document::class, 'documentable');
     }
-
+    public function seminarMorphApplications()
+    {
+        return $this->morphMany(SeminarMorphApplication::class, 'applicable');
+    }
+    public function seminarFormAplications() 
+    {
+        return $this->hasMany(SeminarFormApplication::class);
+    }
 }

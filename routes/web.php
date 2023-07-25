@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect('https://mnekarate.me/');
-});
+// Route::get('/', function () {
+//     return redirect('https://mnekarate.me/');
+// });
+    // Route::view('/', 'application.seminar');

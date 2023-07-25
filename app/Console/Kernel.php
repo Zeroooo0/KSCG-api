@@ -13,10 +13,14 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
+    protected $comands = [
+        Commands\YearlyStatusCron::class,
+    ];
     protected function schedule(Schedule $schedule)
     {
         //$schedule->command('sanctum:prune-expired --hours=24')->everyTwoMinutes();
         // $schedule->command('inspire')->hourly();
+        $schedule->command('yearlyStatus:cron')->everyMinute();
     }
 
     /**

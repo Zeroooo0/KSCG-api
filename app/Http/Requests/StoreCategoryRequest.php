@@ -36,7 +36,8 @@ class StoreCategoryRequest extends FormRequest
             'rematch' => ['boolean'], 
             'status' => ['boolean'], 
             'matchLenght' => ['required', 'numeric'], 
-            'soloOrTeam' => ['required', 'boolean']
+            'soloOrTeam' => ['required', 'boolean'],
+            'isOfficial' => ['boolean'],
         ];
     }
 }

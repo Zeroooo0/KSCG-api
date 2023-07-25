@@ -150,7 +150,10 @@ class ClubsController extends Controller
             return $this->restricted('', 'Ovaj korisnik moze mijenjati samo podatke za klub: '. Auth::user()->club->name, 403);
         }
         $club->update($request->except(['shortName', 'phoneNumber', 'userId', 'status']));
-
+        
+        if(Auth::user()->user_type == 0 && $request->has('country') && $request->country != $club->country) {
+            return $this->error('', 'Nije moguću mijenjati državu', 404);
+        }
         $request->has('shortName')  ? $club->update(['short_name' => $request->shortName]) : null;
         $request->has('phoneNumber') ? $club->update(['phone_number' => $request->phoneNumber]) : null;
         if ($request->has('userId')) {

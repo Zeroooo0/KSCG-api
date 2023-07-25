@@ -47,6 +47,9 @@ class Club extends Model
     {
         return $this->hasMany(CompetitorMembership::class);
     }
-        
+    public function compatitionClubsResults()
+    {
+        return $this->hasMany(CompatitionClubsResults::class);
+    }
    
 }

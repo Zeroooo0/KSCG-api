@@ -137,32 +137,6 @@ trait PoolsGroups {
                         $timeTracking = Date("H:i:s", strtotime("$timeTracking + $catMatchLenght minutes"));
                     }
                     $sortedGroups[] = $input;
-
-
-
-
-                    ///OLD
-                    // $random = rand(0,1);
-                    // $first = $random ? $i : $neededReg - $i;
-                    // $second = $random ? $neededReg - $i : $i;
-                    // $inputTeam['compatition_id'] = $compatition->id;
-                    // $inputTeam['category_id'] = $category_id;
-                    // $inputTeam['pool'] = $j;
-                    // $inputTeam['pool_type'] = $groupType;
-                    // $inputTeam['group'] = $i + 1;
-                    // $inputTeam['start_time'] = $timeTracking;
-                    // $inputTeam['status'] = 0;
-                    // $inputTeam['team_one'] = $j == 1 ? Arr::get($val,  $first . '.0.team_id') : null;
-                    // $inputTeam['team_two'] = $j == 1 ? Arr::get($val,  $second . '.0.team_id') : null;
-
-                    // if($j == 1 && ($inputTeam['team_one'] == null || $inputTeam['team_two'] == null)) {
-                    //     $timeTracking = $timeTracking;
-                    // } else {
-                    //     $timeTracking = Date("H:i:s", strtotime("$timeTracking + $category_match_lenght minutes"));
-                    // }
-
-
-                    // $teamArr[] = $inputTeam;
                 }
             }
 

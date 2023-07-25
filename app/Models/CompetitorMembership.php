@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class CompetitorMembership extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'club_membership_id',
+        'belt_id',
+        'competitor_id',
+        'membership_price'
+    ];
 
     public function clubMemberships() 
     {

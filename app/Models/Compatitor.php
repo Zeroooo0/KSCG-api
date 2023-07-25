@@ -48,4 +48,8 @@ class Compatitor extends Model
     {
         return $this->hasMany(CompetitorMembership::class);
     }
+    public function seminarMorphApplications()
+    {
+        return $this->morphMany(SeminarMorphApplication::class, 'applicable');
+    }
 }

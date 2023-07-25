@@ -38,6 +38,8 @@ class UpdateCompatitionRequest extends FormRequest
             'applicationLimits' => [ 'integer', 'max:3'], Rule::in([1, 2]),
             'registrationStatus' => ['boolean'],
             'categories' => ['string', 'max:255'],
+            'isAbroad' => ['boolean'],
+            'rematch' => ['boolean']
         ];
     }
 }

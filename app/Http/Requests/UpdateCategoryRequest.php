@@ -36,6 +36,7 @@ class UpdateCategoryRequest extends FormRequest
             'rematch' => ['boolean'], 
             'soloOrTeam' => ['boolean'],
             'status' => ['boolean'],
+            'isOfficial' => ['boolean'],
         ];
     }
 }

@@ -25,6 +25,7 @@ use App\Models\Registration;
 use App\Models\Roles;
 use App\Models\SpecialPersonal;
 use App\Support\Collection;
+use App\Traits\CompatitionClubsResultsTrait;
 use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\DB;
 class ReusableDataController extends Controller
 {
     use HttpResponses;
+    use CompatitionClubsResultsTrait;
 
     public function index()
     {
@@ -165,45 +167,12 @@ class ReusableDataController extends Controller
     }
     public function registeredClubs(Request $request) 
     {
-        $filter = new ClubsFilter();
-        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $sort = $request->sort == null ? 'id' : $request->sort;
-        $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
-        if(!$request->has('competitionId'))
-        {
-            return $this->error('', 'Mora da postoji parametar competitionId={id}', 422);
-        }
-
         $per_page = $request->has('perPage') ? $request->perPage : 15;
         $competition = Compatition::where('id', $request->competitionId)->first();
-        $registrations = $competition->registrations;
-        $clubs = [];
-
-        foreach ($registrations->countBy('club_id') as $club=>$val) {   
-            $singleRegistrations = $registrations->where('status', 1)->where('team_or_single', 1)->where('club_id', $club);
-            $teamRegistrations = $registrations->where('status', 1)->where('team_or_single', 0)->where('club_id', $club);
-            $gold = $singleRegistrations->where('position', 3)->count() + $teamRegistrations->where('position', 3)->countBy('team_id')->count();
-            $silver = $singleRegistrations->where('position', 2)->count() + $teamRegistrations->where('position', 2)->countBy('team_id')->count();
-            $bronze = $singleRegistrations->where('position', 1)->count() + $teamRegistrations->where('position', 1)->countBy('team_id')->count();
-            $input['club_id'] = $club;            
-            $input['gold'] = $gold;
-            $input['silver'] = $silver;
-            $input['bronze'] = $bronze;
-            $clubs[] = $input;
-            
-        }
-
-
-        $sortingClubs = collect($clubs)->sortByDesc('bronze')->sortByDesc('silver')->sortByDesc('gold');
-        $sortedClubs = [];
-        foreach($sortingClubs as $club) {
-            $sortedClubs[] = Club::where('id', $club['club_id'])->first();
-        }
-        
-        if($request->has('id')){
-            return ClubsOnCompatitionResource::collection(Club::where('id', $request->id['eq'])->where($queryItems)->paginate());
-        }
-        return ClubsOnCompatitionResource::collection((new Collection($sortedClubs))->paginate($per_page));
+        $clubsResults = $competition->compatitionClubsResults->sortByDesc('bronze_medals')->sortByDesc('silver_medals')->sortByDesc('gold_medals');
+        $request->has('id') ? $clubsResults = $clubsResults->where('club_id', $request->id['eq']) : $clubsResults;
+        return ClubsOnCompatitionResource::collection((new Collection($clubsResults))->paginate($per_page));
+       
     }
     public function competitionRoles(Compatition $competition, Request $request)
     {

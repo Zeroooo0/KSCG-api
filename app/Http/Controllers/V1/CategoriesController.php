@@ -81,7 +81,8 @@ class CategoriesController extends Controller
             'repesaz' => $request->rematch,      
             'years_from' => $request->yearsFrom,  
             'years_to' => $request->yearsTuo,  
-            'status' => $request->status   
+            'status' => $request->status,
+            'is_official' => $request->isOfficial        
         ]);
 
         $belts = explode(',', $request->belts);
@@ -127,6 +128,7 @@ class CategoriesController extends Controller
         $request->has('yearsFrom') ? $category->update(['years_from' => $request->yearsFrom == '0' ? NULL : $request->yearsFrom])  : null;
         $request->has('yearsTo') ? $category->update(['years_to' => $request->yearsTo == '0' ? NULL : $request->yearsTo ])  : null;
         $request->has('rematch') ? $category->update(['repesaz' => $request->rematch])  : null;
+        $request->has('isOfficial') ? $category->update(['is_officail' => $request->isOfficial])  : null;
   
 
         $belts = array_filter(explode(',', $request->belts));

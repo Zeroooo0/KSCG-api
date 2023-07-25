@@ -38,11 +38,12 @@ class CategoriesResource extends JsonResource
             'yearsFrom' => $this->years_from,
             'yearsTo' => $this->years_to,
             'dateToPlusYear' => $this->solo_or_team ? date('Y-m-d', strtotime($this->date_to. ' +1 year' )) : date($this->date_to),
-            'soloOrTeam' => $this->solo_or_team,
+            'soloOrTeam' => (string)$this->solo_or_team,
             'rematch' => (boolean)$this->repesaz,
             'lenghtOfMatch' => $this->match_lenght,
             'status' => (boolean)$this->status,
             'belts' => $belts,
+            'isOfficial' => $this->is_official,
             
         ];
     }

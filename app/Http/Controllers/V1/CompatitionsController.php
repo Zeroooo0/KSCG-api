@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Filters\CategoriesFilter;
 use App\Filters\CompatitionsFilter;
 use App\Filters\CompatitorsFilter;
+use App\Filters\RegistrationsFilter;
 use App\Http\Requests\StoreCompatitionRequest;
 use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CategoriesResource;
@@ -87,12 +88,12 @@ class CompatitionsController extends Controller
     }
 
     public function piblicRegistrations(Request $request, Compatition $competition) {
-        //$filter = new CategoriesFilter();
-        //$queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $filterRegistrations = new RegistrationsFilter();
+        $queryItemsRegistrations = $filterRegistrations->transform($request); //[['column', 'operator', 'value']]
         
         $sort = $request->sort == null ? 'compatitor_id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
-        $regResults = Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competition->id);
+        $regResults = Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competition->id)->where($queryItemsRegistrations);
         $request->has('isPrinted') ? $competitionResoults = $regResults->where('position', '!=', null)->where('is_printed', $request->isPrinted) : $competitionResoults = $regResults;
         $per_page = $request->perPage;
         $search = '%'. $request->search . '%';
@@ -147,6 +148,8 @@ class CompatitionsController extends Controller
             'registration_status' => $registrationStatus,
             'application_limits' => $request->applicationLimits,
             'category_start_point' => $request->categoryStartPoint,
+            'is_abroad' => $request->isAbroad,
+            'rematch' => $request->rematch,
         ]);
         if($request->image != null) {
             $path = Storage::putFile('compatition-image', $request->image);
@@ -199,6 +202,8 @@ class CompatitionsController extends Controller
         $request->has('status') && Auth::user()->user_type != 0 ? $competition->update(['status' => $request->status]) : null;
         $request->has('applicationLimits')? $competition->update(['application_limits' => $request->applicationLimits]) : null;
         $request->has('category_start_point')? $competition->update(['category_start_point' => $request->applicationLimits]) : null;
+        $request->has('is_abroad')? $competition->update(['is_abroad' => $request->isAbroad]) : null;
+        $request->has('rematch')? $competition->update(['rematch' => $request->rematch]) : null;
 
         if($request->has('categories') && $competition->registrations->count() == 0) {
             $categories = array_filter(explode(',', $request->categories));
