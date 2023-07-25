@@ -23,7 +23,7 @@ trait CompatitionClubsResultsTrait {
                     $noSingles = $compatitionRegistrations->where('team_or_single', 1)->where('club_id', $club->club_id)->count();
                     $totalPrice = $noTeams * $compatition->price_team + $noSingles * $compatition->price_single;
                     $clubsIds[] = $club->club_id;
-                    return $club->club_id;
+                    return $club;
                     if($compatitionResults->where('club_id', $club->club_id)->count() == 0) {
                         CompatitionClubsResults::create([
                             'compatition_id' => $compatition->id,
