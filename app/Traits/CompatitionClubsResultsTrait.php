@@ -17,6 +17,7 @@ trait CompatitionClubsResultsTrait {
         
         if($calculationType == 'registrations'){        
             if(empty($clubIds)) {
+                return 'kako';
                 foreach($compatitionRegistrations->unique('club_id') as $club) {
                     $noCompatitiors = $compatitionRegistrations->where('club_id', $club->club_id)->unique('compatitor_id')->count();
                     $noTeams = $compatitionRegistrations->where('team_or_single', 0)->where('club_id', $club->club_id)->groupBy('team_id')->count();
