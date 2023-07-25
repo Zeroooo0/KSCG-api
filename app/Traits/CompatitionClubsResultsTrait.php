@@ -72,7 +72,7 @@ trait CompatitionClubsResultsTrait {
                     foreach($notOfficialCategories as $category) {
                         $noOfficials[] = $category->id;
                     }
-                    return $noOfficials;
+                    
                     $noCompatitiors = $compatitionRegistrations->where('status', 1)->where('club_id', $club->club_id)->unique('compatitor_id')->count();
                     $teams = $compatitionRegistrations->where('team_or_single', 0)->where('club_id', $club->club_id);
                     $singles = $compatitionRegistrations->where('team_or_single', 1)->where('club_id', $club->club_id);
