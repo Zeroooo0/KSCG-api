@@ -197,7 +197,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/seminars-form-application/{seminar}', [SeminarApplicationController::class, 'index']);
     Route::get('/seminars-morph-application/{seminar}', [SeminarApplicationController::class, 'indexMorph']);
     //
-    Route::get('/compatition-results-calculate/{compatition}', [RegistrationsController::class, 'calculateResultsNow']);
+    Route::post('/compatition-results-calculate/{compatition}', [RegistrationsController::class, 'calculateResultsNow']);
 });
 //testing
 
