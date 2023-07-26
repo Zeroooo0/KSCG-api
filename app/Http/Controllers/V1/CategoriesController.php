@@ -128,7 +128,7 @@ class CategoriesController extends Controller
         $request->has('yearsFrom') ? $category->update(['years_from' => $request->yearsFrom == '0' ? NULL : $request->yearsFrom])  : null;
         $request->has('yearsTo') ? $category->update(['years_to' => $request->yearsTo == '0' ? NULL : $request->yearsTo ])  : null;
         $request->has('rematch') ? $category->update(['repesaz' => $request->rematch])  : null;
-        $request->has('isOfficial') ? $category->update(['is_officail' => $request->isOfficial])  : null;
+        $request->has('isOfficial') ? $category->update(['is_official' => $request->isOfficial])  : null;
   
 
         $belts = array_filter(explode(',', $request->belts));

@@ -13,6 +13,7 @@ use App\Http\Requests\UpdateCompatitionRequest;
 use App\Http\Resources\CategoriesResource;
 use App\Http\Resources\CompatitionsResource;
 use App\Http\Resources\RegistrationsResource;
+use App\Models\Category;
 use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\Compatitor;
@@ -81,10 +82,17 @@ class CompatitionsController extends Controller
     public function piblicCategories(Request $request, Compatition $competition) {
         $filter = new CategoriesFilter();
         $per_page = $request->perPage;
-
-        $categories = $competition->categories;
-  
-        return CategoriesResource::collection((new Collection($categories))->paginate($per_page));
+        $compatitionCategories = $competition->categories;
+        $filteredCategories = [];
+        $search = '%'. $request->search . '%';
+        foreach($compatitionCategories as $category) {
+            $filteredCategories[] = $category->id;
+        }
+        $categories = Category::whereIn('id', $filteredCategories)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search);
+        if($per_page == '0') {
+            return CategoriesResource::collection($categories->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->get());
+        }
+        return CategoriesResource::collection($categories->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->paginate($per_page));
     }
 
     public function piblicRegistrations(Request $request, Compatition $competition) {
@@ -93,11 +101,16 @@ class CompatitionsController extends Controller
         
         $sort = $request->sort == null ? 'compatitor_id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
+        if($request->has('categoryId')){
+            $sort = 'position';
+            $sortDirection = 'desc';
+        }
         $regResults = Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competition->id)->where($queryItemsRegistrations);
         $request->has('isPrinted') ? $competitionResoults = $regResults->where('position', '!=', null)->where('is_printed', $request->isPrinted) : $competitionResoults = $regResults;
         $per_page = $request->perPage;
         $search = '%'. $request->search . '%';
         $searchedCompetitors = [];
+
         if($request->has('search') || $request->has('gender')) {
             $filter = new CompatitorsFilter();
             $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]

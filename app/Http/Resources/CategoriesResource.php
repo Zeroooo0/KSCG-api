@@ -24,15 +24,15 @@ class CategoriesResource extends JsonResource
         foreach ($this->belts as $belt) {
             $belts[] = (string)$belt->id;
         }
+        $nonOfficialCategory = $this->is_official == 0 ? "| NEOFICIALNA" : null;
 
         return [
             'id' => (string)$this->id,
-            'combinedName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->name . ' ' . $this->category_name  . $ekipno,
+            'combinedName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->name . ' ' . $this->category_name  . $ekipno . $nonOfficialCategory ,
             'name' => $this->name,
             'kataOrKumite' => $this->kata_or_kumite,
             'categoryName' => $this->category_name,
-            'gender' => $this->gender, 
-            'soloOrTeam' => $soloOrTeam,
+            'gender' => (string)$this->gender, 
             'dateFrom' => date($this->date_from),
             'dateTo' => date($this->date_to),
             'yearsFrom' => $this->years_from,
@@ -43,7 +43,7 @@ class CategoriesResource extends JsonResource
             'lenghtOfMatch' => $this->match_lenght,
             'status' => (boolean)$this->status,
             'belts' => $belts,
-            'isOfficial' => $this->is_official,
+            'isOfficial' => (boolean)$this->is_official,
             
         ];
     }
