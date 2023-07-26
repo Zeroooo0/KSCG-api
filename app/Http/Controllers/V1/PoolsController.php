@@ -436,8 +436,11 @@ class PoolsController extends Controller
             }
             
             if($totalRegistrations == 2) {
-                foreach($looserRegistration as $teamReg) {
-                    $teamReg->update(['status' => 0]);
+                if($looserRegistration->count() != 0)
+                {
+                    foreach($looserRegistration as $teamReg) {
+                        $teamReg->update(['status' => 0]);
+                    }
                 }
             }
             
@@ -448,9 +451,12 @@ class PoolsController extends Controller
                 foreach($winnerRegistration as $teamReg) {
                     $teamReg->update(['status' => 1]);
                 }
-                foreach($looserRegistration as $teamReg) {
-                    $teamReg->update(['status' => $looserStatus]);
+                if($looserRegistration->count() != 0){
+                    foreach($looserRegistration as $teamReg) {
+                        $teamReg->update(['status' => $looserStatus]);
+                    }
                 }
+
             }
             if($compatition->rematch == 0 && $category->repesaz == 0 ) {
                 if($request->looserId != 'null'){
