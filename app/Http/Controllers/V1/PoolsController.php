@@ -451,7 +451,7 @@ class PoolsController extends Controller
                 foreach($winnerRegistration as $teamReg) {
                     $teamReg->update(['status' => 1]);
                 }
-                if($looserRegistration->count() != 0){
+                if($looserRegistration != null){
                     foreach($looserRegistration as $teamReg) {
                         $teamReg->update(['status' => $looserStatus]);
                     }
