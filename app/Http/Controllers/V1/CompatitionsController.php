@@ -101,7 +101,7 @@ class CompatitionsController extends Controller
         
         $sort = $request->sort == null ? 'compatitor_id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
-        if($request->has('categoryId')){
+        if($request->has('categoryId') && $request->categoryId['eq'] != ''){
             $sort = 'position';
             $sortDirection = 'desc';
         }
