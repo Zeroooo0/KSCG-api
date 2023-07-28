@@ -18,7 +18,8 @@ class CompatitionClubsResults extends Model
         'no_compatitors',
         'no_teams',
         'no_singles',
-        'total_price'
+        'total_price',
+        'compatition_type'
     ];
     public function club() 
     {

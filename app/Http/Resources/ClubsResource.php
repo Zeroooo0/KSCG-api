@@ -69,7 +69,52 @@ class ClubsResource extends JsonResource
                 'roles' => $competitors             
             ];
         }
+        $resultsType = 'ebeddable';
+        if(str_contains($request->embed, 'resultsType')) {   
+            $wkf = $this->compatitionClubsResults->where('compatition_type', 'WKF');
+            $ekf = $this->compatitionClubsResults->where('compatition_type', 'EKF');
+            $bkf = $this->compatitionClubsResults->where('compatition_type', 'BKF');
+            $mkf = $this->compatitionClubsResults->where('compatition_type', 'MKF');
+            $ssekf = $this->compatitionClubsResults->where('compatition_type', 'SSEKF');
+            $kscg = $this->compatitionClubsResults->where('compatition_type', 'KSCG');
+            $turnaments = $this->compatitionClubsResults->where('compatition_type', 'Turniri');
+            $resultsType = [
+                 [
+                    'type' => 'gold',
+                    'wkf' => (string)$wkf->sum('gold_medals'),
+                    'ekf' => (string)$ekf->sum('gold_medals'),
+                    'bkf' => (string)$bkf->sum('gold_medals'),
+                    'mkf' => (string)$mkf->sum('gold_medals'),
+                    'ssekf' => (string)$ssekf->sum('gold_medals'),
+                    'kscg' => (string)$kscg->sum('gold_medals'),
+                    'turnaments' => (string)$turnaments->sum('gold_medals'),
+                    
+                ],
+                [
+                    'type' => 'silver',
+                    'wkf' => (string)$wkf->sum('silver_medals'),
+                    'ekf' => (string)$ekf->sum('silver_medals'),
+                    'bkf' => (string)$bkf->sum('silver_medals'),
+                    'mkf' => (string)$mkf->sum('silver_medals'),
+                    'ssekf' => (string)$ssekf->sum('silver_medals'),
+                    'kscg' => (string)$kscg->sum('silver_medals'),
+                    'turnaments' => (string)$turnaments->sum('silver_medals'),
 
+                    
+                ],
+                [
+                    'type' => 'bronze',
+                    'wkf' => (string)$wkf->sum('bronze_medals'),
+                    'ekf' => (string)$ekf->sum('bronze_medals'),
+                    'bkf' => (string)$bkf->sum('bronze_medals'),
+                    'mkf' => (string)$mkf->sum('bronze_medals'),
+                    'ssekf' => (string)$ssekf->sum('bronze_medals'),
+                    'kscg' => (string)$kscg->sum('bronze_medals'),
+                    'turnaments' => (string)$turnaments->sum('bronze_medals'),
+                ],
+
+            ];
+        }
       
 
         return [
@@ -90,7 +135,8 @@ class ClubsResource extends JsonResource
             'gold' => $dataTeamGold + $dataSingleGold,
             'silver' => $dataTeamSilver + $dataSingleSilver,
             'bronze' => $dataTeamBronze + $dataSingleBronze,
-            'components' => !$haseComponents ? "ebeddable" : $rolesArray
+            'components' => !$haseComponents ? "ebeddable" : $rolesArray,
+            'resultsType' => $resultsType
         ];
     }
 }

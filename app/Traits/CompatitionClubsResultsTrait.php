@@ -29,6 +29,7 @@ trait CompatitionClubsResultsTrait {
                     if($compatitionResults->where('club_id', $club->club_id)->count() == 0) {
                         $resultsData = CompatitionClubsResults::create([
                             'compatition_id' => $compatition->id,
+                            'compatition_type' => $compatition->type,
                             'club_id' => $club->club_id
                         ]);
                     }
@@ -53,6 +54,7 @@ trait CompatitionClubsResultsTrait {
                     if($compatitionResults->where('club_id', $clubId)->count() == 0) {
                         $resultsData = CompatitionClubsResults::create([
                             'compatition_id' => $compatition->id,
+                            'compatition_type' => $compatition->type,
                             'club_id' => $clubId
                         ]);
                         continue;

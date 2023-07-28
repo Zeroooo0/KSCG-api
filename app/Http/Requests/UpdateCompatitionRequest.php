@@ -39,7 +39,8 @@ class UpdateCompatitionRequest extends FormRequest
             'registrationStatus' => ['boolean'],
             'categories' => ['string', 'max:255'],
             'isAbroad' => ['boolean'],
-            'rematch' => ['boolean']
+            'rematch' => ['boolean'],
+            'type' => ['required', 'string', 'in:WKF,EKF,BKF,MKF,KSCG,SSEKF,Turniri'],
         ];
     }
 }

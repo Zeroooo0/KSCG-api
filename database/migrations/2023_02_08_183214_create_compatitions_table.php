@@ -34,6 +34,8 @@ return new class extends Migration
             $table->boolean('rematch')->default(0);
             //is abroad finished compatition
             $table->boolean('is_abroad')->default(0);
+            //compatition type
+            $table->string('type');
             $table->integer('points_multiplier')->nullable();
             $table->timestamps();
         });

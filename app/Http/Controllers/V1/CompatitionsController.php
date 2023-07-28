@@ -163,6 +163,7 @@ class CompatitionsController extends Controller
             'category_start_point' => $request->categoryStartPoint,
             'is_abroad' => $request->isAbroad,
             'rematch' => $request->rematch,
+            'type' => $request->type,
         ]);
         if($request->image != null) {
             $path = Storage::putFile('compatition-image', $request->image);
@@ -217,6 +218,7 @@ class CompatitionsController extends Controller
         $request->has('category_start_point')? $competition->update(['category_start_point' => $request->applicationLimits]) : null;
         $request->has('is_abroad')? $competition->update(['is_abroad' => $request->isAbroad]) : null;
         $request->has('rematch')? $competition->update(['rematch' => $request->rematch]) : null;
+        $request->has('type')? $competition->update(['type' => $request->type]) : null;
 
         if($request->has('categories') && $competition->registrations->count() == 0) {
             $categories = array_filter(explode(',', $request->categories));

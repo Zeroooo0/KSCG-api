@@ -26,7 +26,8 @@ class Compatition extends Model
         'application_limits',
         'category_start_point',
         'is_abroad',
-        'rematch'
+        'rematch',
+        'type'
     ];
     public function categories() 
     {

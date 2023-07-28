@@ -499,7 +499,10 @@ class RegistrationsController extends Controller
         }
         if($request->has('position') && $registration->compatition->is_abroad) 
         {
-            $registration->update(['position' => $request->position]);
+            $positionConvert = $request->position == 1 ? 3 : ($request->position == 3 ? 1 : $request->position);
+            $registration->update(['position' => $positionConvert]);
+            $this->calculateResults($registration->compatition_id , [$registration->club_id], 'registrations');
+            $this->calculateResults($registration->compatition_id , [$registration->club_id], 'results');
             return $this->success('', 'Uspješno dodata pozicija.');
         }
         return $this->error('', 'Only status can be chaged', 403);
