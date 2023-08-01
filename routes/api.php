@@ -184,7 +184,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('component-image/{component}', [ComponentController::class, 'getComponentImage']);
 
     //Event Schedule
-    Route::resource('event-schedule', EventScheduleController::class);
+    Route::resource('events', EventScheduleController::class);
     //Compatition filtering data
     //Category
     Route::get('/competition-categories/{competition}', [CompatitionsController::class, 'categories']);

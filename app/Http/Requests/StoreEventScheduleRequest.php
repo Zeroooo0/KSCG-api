@@ -25,9 +25,9 @@ class StoreEventScheduleRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'start' => ['required', 'date_format:Y-m-d H:i'],
+            'start' => ['required', 'date'],
             'isAllDay' => ['required', 'boolean'],
-            'end' => ['date_format:Y-m-d H:i'],
+            'end' => ['date'],
             'bgColor' => ['required', 'regex:/^#([a-f0-9]{6}|[a-f0-9]{3})$/i'],
         ];
     }

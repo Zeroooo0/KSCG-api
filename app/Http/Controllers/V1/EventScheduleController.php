@@ -21,10 +21,15 @@ class EventScheduleController extends Controller
     public function index(Request $request)
     {
         $year = $request->year;
-        $dateFrom = date("$year-1-1");
-        $dateTo = date("$year-12-31");
-        $eventSchedule = EventSchedule::orderBy('start', 'desc')->where('start', ">=", $dateFrom)->where('start', "<=", $dateTo);
-        return EventScheduleResource::collection($eventSchedule->get());
+        
+        if($request->has('year')) {
+            $dateFrom = date("$year-1-1");
+            $dateTo = date("$year-12-31");
+            $eventSchedule = EventSchedule::orderBy('start', 'desc')->where('start', ">=", $dateFrom)->where('start', "<=", $dateTo);
+            return EventScheduleResource::collection($eventSchedule->get());
+        }
+        $eventSchedule = EventSchedule::orderBy('id', 'desc');
+        return EventScheduleResource::collection($eventSchedule->paginate($request->perPage));
     }
 
     /**
@@ -52,9 +57,10 @@ class EventScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(EventSchedule $eventSchedule)
+    public function destroy(EventSchedule $event)
     {
-        $eventSchedule->delete();
+        
+        $event->delete();
         return $this->success('', 'Uspjesno obrisan event!');
     }
 }
