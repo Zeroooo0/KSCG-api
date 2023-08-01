@@ -18,10 +18,13 @@ class EventScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $eventSchedule = EventSchedule::orderBy('id', 'desc');
-        return EventScheduleResource::collection($eventSchedule->paginate(15));
+        $year = $request->year;
+        $dateFrom = date("$year-1-1");
+        $dateTo = date("$year-12-31");
+        $eventSchedule = EventSchedule::orderBy('start', 'desc')->where('start', ">=", $dateFrom)->where('start', "<=", $dateTo);
+        return EventScheduleResource::collection($eventSchedule->get());
     }
 
     /**

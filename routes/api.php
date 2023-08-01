@@ -49,6 +49,7 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/pages', [PagesController::class, 'public']);
     Route::get('/seminars', [SeminarController::class, 'index']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPasswordNotification']);
+    Route::get('/events', [EventScheduleController::class, 'index']);
 
 
     //working on
