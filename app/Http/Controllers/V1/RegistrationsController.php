@@ -100,19 +100,19 @@ class RegistrationsController extends Controller
                 $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
                 if(!$competitorsCategory->isEmpty()) {
                     $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
-                    if(!$nextCategories->isEmpty()) {
+                    if($nextCategories != null) {
                         $olderCategoryKata = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
                         $olderCategoryKumite = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
                     }
                     foreach($competitorsCategory as $allowedCat) {
                         $allowedCategories[] = $allowedCat->id;
                     }
-                    if(!$nextCategories->isEmpty() && $applicationLimit == 2 && $competitor->belt_id >= 7) {
+                    if($nextCategories != null && $applicationLimit == 2 && $competitor->belt_id >= 7) {
                         foreach($olderCategoryKata as $nextAllowedCat) {
                             $allowedCategories[] = $nextAllowedCat->id;
                         }
                     }
-                    if($applicationLimit == 2 && !$nextCategories->isEmpty()) {
+                    if($applicationLimit == 2 && $nextCategories != null) {
                         foreach($olderCategoryKumite as $nextAllowedCat) {
                             $allowedCategories[] = $nextAllowedCat->id;
                         }
@@ -180,19 +180,19 @@ class RegistrationsController extends Controller
         if($compatitorsYears < 14) {
             $competitorsCategory = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
             $nextCategories = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
-            if(!$nextCategories->isEmpty()) {
-            $olderCategoryKata = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
-            $olderCategoryKumite = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
+            if($nextCategories != null) {
+                $olderCategoryKata = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
+                $olderCategoryKumite = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
             }
             foreach($competitorsCategory as $allowedCat) {
                 $allowedCategories[] = $allowedCat->id;
             }
-            if($applicationLimit == 2 && $competitor->belt_id >= 7 && !$nextCategories->isEmpty()) {
+            if($applicationLimit == 2 && $competitor->belt_id >= 7 && $nextCategories != null) {
                 foreach($olderCategoryKata as $nextAllowedCat) {
                     $allowedCategories[] = $nextAllowedCat->id;
                 }
             }
-            if($applicationLimit == 2 && !$nextCategories->isEmpty()) {
+            if($applicationLimit == 2 && $nextCategories != null) {
                 foreach($olderCategoryKumite as $nextAllowedCat) {
                     $allowedCategories[] = $nextAllowedCat->id;
                 }
