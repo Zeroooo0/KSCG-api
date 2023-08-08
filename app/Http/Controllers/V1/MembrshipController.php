@@ -287,7 +287,13 @@ class MembrshipController extends Controller
         if(Auth::user()->user_type == 0 && $membershipCompetitors->clubMembership->is_submited) {
             return $this->error('', 'Nije moguće obrisati!', 404);
         }
-
+        $clubMembershis = $membershipCompetitors->clubMembership;
+        if($clubMembershis->type == 'midYearMembership' || $clubMembershis->type == 'yearlyMembership') {
+            $clubMembershis->update([
+                'amount_to_pay' => $clubMembershis->amount_to_pay - $membershipCompetitors->membership_price
+            ]);
+        }
+        
         $membershipCompetitors->delete();
         return $this->success('', 'Uspješno obrisano');
     }

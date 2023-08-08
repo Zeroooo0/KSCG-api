@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('competitor_memberships', function (Blueprint $table) {
             $table->id();
             $table->foreignId('club_membership_id')->references('id')->on('club_memberships');
-            $table->foreignId('belt_id')->references('id')->on('belts')->nullable();
+            $table->foreignId('belt_id')->nullable()->references('id')->on('belts');
             $table->foreignId('competitor_id')->references('id')->on('compatitors');
             $table->decimal('membership_price')->nullable();
             $table->boolean('first_membership')->nullable();
