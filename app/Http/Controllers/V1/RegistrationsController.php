@@ -580,6 +580,7 @@ class RegistrationsController extends Controller
         }
 
         $registration->delete();
+        $this->calculateResults($registration->compatition_id , [], 'registrations');
         return $this->success('', 'Uspješno obrisana registracija!');
     }
     public function calculateResultsNow(Compatition $compatition) {
