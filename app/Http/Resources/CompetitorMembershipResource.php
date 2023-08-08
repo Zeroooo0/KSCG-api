@@ -14,11 +14,20 @@ class CompetitorMembershipResource extends JsonResource
      */
     public function toArray($request)
     {
+
+        $name = $this->competitor->name;
+        $lastName = $this->competitor->last_name;
         return [
             'id' => $this->id,
-            'membershipType' => $this->clubMemberships->name,
-            'membershipPrice' => $this->membership_price,
-            'competitior' => new CompatitorsResource($this->competitior)
+            'membershipType' => $this->clubMembership->type,
+            'membershipPrice' => $this->membership_price == null ? 0 : $this->membership_price,
+            'membershipBelt' => new BeltResource($this->belt),
+            'firstMembership' => $this->first_membership,
+            'competitor' => [
+                'fullName' => "$name $lastName",
+                'firstMembership' => (boolean)$this->competitor->first_membership,
+                'kscgId' => $this->competitor->kscg_compatitor_id
+            ]
         ];
     }
 }

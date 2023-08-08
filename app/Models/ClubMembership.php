@@ -12,6 +12,7 @@ class ClubMembership extends Model
     protected $fillable = [
         'club_id',
         'type',
+        'name',
         'is_paid',
         'status',
         'is_submited',
@@ -19,11 +20,11 @@ class ClubMembership extends Model
         'amount_to_pay'
     ];
 
-    public function clubs() 
+    public function club() 
     {
-        return $this->belongsToMany(Club::class);
+        return $this->belongsTo(Club::class);
     }
-    public function competitiorMemberships()
+    public function competitorMemberships()
     {
         return $this->hasMany(CompetitorMembership::class);
     }

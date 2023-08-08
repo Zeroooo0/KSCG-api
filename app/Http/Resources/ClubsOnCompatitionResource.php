@@ -58,7 +58,7 @@ class ClubsOnCompatitionResource extends JsonResource
             'totalRegistrationNo' => $reg_compatitors->count(),
             'competitorsCount' => $this->no_compatitors,
             'singleRegistrationNo' => $this->no_singles,
-            'teamRegistrationNo' => $this->no_teams,
+            'teamRegistrationNo' => $this->no_teams == null ? 0 : $this->no_teams,
             'totalPrice' => $totalPrice,
             'gold' => $this->gold_medals, 
             'silver' => $this->silver_medals,

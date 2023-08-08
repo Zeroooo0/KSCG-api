@@ -331,8 +331,8 @@ class RegistrationsController extends Controller
         //updates data for registrated clubs
         
         if(count($responseErrorMessage) == 0) {
-            $this->calculateResults($competition->id, [$competitor->club_id]);
             Registration::insert($arrayOfRegistrations);
+            $this->calculateResults($competition->id, [$competitor->club_id], 'registrations');
             return $this->success('', 'Registracija uspješna!');
         }
         return $this->error('', $responseErrorMessage, 403);
@@ -484,8 +484,8 @@ class RegistrationsController extends Controller
         }
         
         if(count($responseErrorMessage) == 0) {
-            $this->calculateResults($competition->id, array_unique($arrayOfClubs));
             Registration::insert($arrayOfRegistrations);
+            $this->calculateResults($competition->id, array_unique($arrayOfClubs));
             return $this->success('', 'Registracija uspješna!');
         }
         return $this->error($responseErrorMessage, 'Provjerite podatke!', 403);

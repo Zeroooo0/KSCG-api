@@ -40,7 +40,7 @@ class UpdateCompatitionRequest extends FormRequest
             'categories' => ['string', 'max:255'],
             'isAbroad' => ['boolean'],
             'rematch' => ['boolean'],
-            'type' => ['required', 'string', 'in:WKF,EKF,BKF,MKF,KSCG,SSEKF,Turniri'],
+            'type' => [ 'string', 'in:WKF,EKF,BKF,MKF,KSCG,SSEKF,Turniri'],
         ];
     }
 }

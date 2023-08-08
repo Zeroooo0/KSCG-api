@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\CompetitorMembership;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ClubMembershipResource extends JsonResource
@@ -14,26 +15,33 @@ class ClubMembershipResource extends JsonResource
      */
     public function toArray($request)
     {
-        $name = '';
-        $date = date('Y', strtotime($this->created_at));
-        if($this->name == 'yearlyMembership'){
-            $name = "Članarina za $date.";
+
+        $competitorMemberships = "embeddable";
+        if(str_contains($request->embed, 'competitorMemberships')) {
+            if($this->competitorMemberships->first() != null) {
+                $competitorMemberships = CompetitorMembershipResource::collection($this->competitorMemberships);
+            } else {
+                $competitorMemberships =  'Nema prijava';
+            }
         }
-        if($this->name == 'midYearMembership'){
-            $name = "Registracija članova";
-        }
-        if($this->name == 'beltsChange'){
-            $name = 'Promjena pojaseva';
-        }
+
         return [
             'id' => $this->id,
-            'name' => $name,
-            'value' => $this->name,
+            'name' => $this->name,
+            'type' => $this->type,
             'membershipPrice' => $this->membership_price,
+            'competitorsCount' => (string)$this->competitorMemberships->count(),
             'amountToPay' => $this->amount_to_pay,
-            'isPaid' => $this->is_paid,
-            'club' => new ClubsResource($this->club),
-            'createdAt' => date($this->created_at)
+            'isPaid' => (boolean)$this->is_paid,
+            'status' => (boolean)$this->status,
+            'isSubmited' => (boolean)$this->is_submited,
+            'club' => [
+                'name' => $this->club->name,
+                'phone' => $this->club->phone_number,
+                'pib' => $this->club->pib,
+            ],
+            'createdAt' => date($this->created_at),
+            'competitorsMemberships' => $competitorMemberships
         ];
     }
 }

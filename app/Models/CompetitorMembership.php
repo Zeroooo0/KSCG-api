@@ -12,14 +12,15 @@ class CompetitorMembership extends Model
         'club_membership_id',
         'belt_id',
         'competitor_id',
-        'membership_price'
+        'membership_price',
+        'first_membership'
     ];
 
-    public function clubMemberships() 
+    public function clubMembership() 
     {
         return $this->belongsTo(ClubMembership::class);
     }
-    public function compatitor() 
+    public function competitor() 
     {
         return $this->belongsTo(Compatitor::class);
     }
@@ -27,8 +28,8 @@ class CompetitorMembership extends Model
     {
         return $this->morphMany(Document::class, 'documentable');
     }
-    public function belts()
+    public function belt()
     {
-        $this->belongsTo(CompetitorMembership::class);
+        return $this->belongsTo(Belt::class);
     }
 }

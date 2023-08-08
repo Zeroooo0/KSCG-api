@@ -44,7 +44,7 @@ class Compatitor extends Model
     {
         return $this->hasMany(Registration::class);
     }
-    public function competitorMembership()
+    public function competitorMemberships()
     {
         return $this->hasMany(CompetitorMembership::class);
     }

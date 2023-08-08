@@ -171,6 +171,9 @@ class ReusableDataController extends Controller
         $competition = Compatition::where('id', $request->competitionId)->first();
         $clubsResults = $competition->compatitionClubsResults->sortByDesc('bronze_medals')->sortByDesc('silver_medals')->sortByDesc('gold_medals');
         $request->has('id') ? $clubsResults = $clubsResults->where('club_id', $request->id['eq']) : $clubsResults;
+        if($request->has('perPage') && $request->perPage == '0'){
+            return ClubsOnCompatitionResource::collection((new Collection($clubsResults))->all());
+        }
         return ClubsOnCompatitionResource::collection((new Collection($clubsResults))->paginate($per_page));
        
     }

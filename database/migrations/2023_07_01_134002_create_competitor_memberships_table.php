@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('belt_id')->references('id')->on('belts')->nullable();
             $table->foreignId('competitor_id')->references('id')->on('compatitors');
             $table->decimal('membership_price')->nullable();
+            $table->boolean('first_membership')->nullable();
             $table->timestamps();
         });
     }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('club_id')->references('id')->on('clubs');
             //name can be yearlyMembership, beltsChange, midYearMembership
             $table->string('type');
+            $table->string('name');
             $table->boolean('is_paid')->nullable();
             $table->boolean('status')->nullable();
             $table->boolean('is_submited')->default(0);

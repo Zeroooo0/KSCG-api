@@ -106,7 +106,7 @@ class CompatitorsController extends Controller
             'date_of_birth' => $request->dateOfBirth,
             'country' => $request->country,
             'status' => Auth::user()->user_type == 0 ? 0 : 1,
-            'first_membership' => 0
+            'first_membership' => 1
         ]);
         if($compatitor->country == 'Crna Gora') {
             $country = 'MNE';

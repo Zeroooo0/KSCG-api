@@ -25,6 +25,7 @@ class CompatitionClubsResults extends Model
     {
         return $this->belongsTo(Club::class);
     }
+
     public function compatition() 
     {
         return $this->belongsTo(Compatition::class);
