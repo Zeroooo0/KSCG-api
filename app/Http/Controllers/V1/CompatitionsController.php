@@ -42,11 +42,13 @@ class CompatitionsController extends Controller
         $per_page = $request->perPage;
         $sort = $request->sort == null ? 'start_time_date' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
-        $compatition = Compatition::orderBy($sort, $sortDirection);
-
         $search = '%'. $request->search . '%';
+        $compatition = Compatition::orderBy($sort, $sortDirection)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search);
 
-        return CompatitionsResource::collection($compatition->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search)->paginate($per_page));
+        if(Auth::user()->user_type == 0) {
+            return CompatitionsResource::collection($compatition->where('is_abroad', '!=', '1')->paginate($per_page));
+        }
+        return CompatitionsResource::collection($compatition->paginate($per_page));
     }
 
     public function public(Request $request)

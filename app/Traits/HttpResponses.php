@@ -23,7 +23,7 @@ trait HttpResponses {
     public function restricted($data, $message = null, $code) 
     {
         return response()->json([
-            'status' => 'warning',
+            'status' => 'error',
             'message' => $message,
             'data' => $data
         ], $code);
