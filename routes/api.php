@@ -20,9 +20,6 @@ use App\Http\Controllers\V1\SpecialPersonalsController;
 use App\Http\Controllers\V1\TeamsController;
 use App\Http\Controllers\V1\TimeTablesController;
 use App\Http\Controllers\V1\UsersController;
-use App\Models\Seminar;
-use App\Models\SeminarFormApplication;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 

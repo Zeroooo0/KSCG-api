@@ -13,6 +13,7 @@ class RegistrationsFilter {
         'position' => ['eq', 'gt'],
         'isPrinted' => ['eq'],
         'categoryId' => ['eq'],
+        'teamOrSingle' => ['eq'],
     ];
 
     protected $columnsMap = [
@@ -20,6 +21,7 @@ class RegistrationsFilter {
         'competitionId' => 'compatition_id',
         'isPrinted' => 'is_printed',
         'categoryId' => 'category_id',
+        'teamOrSingle' => 'team_or_single',
     ];
 
     protected $operatorMap = [

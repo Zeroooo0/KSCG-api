@@ -69,7 +69,8 @@ class RegistrationsResource extends JsonResource
             'competition' => $compatitionData,
             'club' => $clubData,
             'category' => $categoryData,
-            'competitor' => $compatitorData
+            'competitor' => $compatitorData,
+            'team' => $this->team_id != null ? new TeamResource($this->team) : 'pojedinacni nastup'
         ];
     }
 }

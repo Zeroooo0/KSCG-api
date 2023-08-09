@@ -83,6 +83,7 @@ class CompatitionsController extends Controller
     }
     public function piblicCategories(Request $request, Compatition $competition) {
         $filter = new CategoriesFilter();
+        $queryItems = $filter->transform($request);
         $per_page = $request->perPage;
         $compatitionCategories = $competition->categories;
         $filteredCategories = [];
@@ -90,11 +91,11 @@ class CompatitionsController extends Controller
         foreach($compatitionCategories as $category) {
             $filteredCategories[] = $category->id;
         }
-        $categories = Category::whereIn('id', $filteredCategories)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search);
+        $categories = Category::whereIn('id', $filteredCategories)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search);
         if($per_page == '0') {
-            return CategoriesResource::collection($categories->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->get());
+            return CategoriesResource::collection($categories->get());
         }
-        return CategoriesResource::collection($categories->where(DB::raw('CONCAT_WS(" ", name, category_name)'), 'like', $search)->paginate($per_page));
+        return CategoriesResource::collection($categories->paginate($per_page));
     }
 
     public function piblicRegistrations(Request $request, Compatition $competition) {
@@ -112,7 +113,10 @@ class CompatitionsController extends Controller
         $per_page = $request->perPage;
         $search = '%'. $request->search . '%';
         $searchedCompetitors = [];
-
+        if($request->has('teamOrSingle') && $request->teamOrSingle['eq'] == 0) {
+           
+            return RegistrationsResource::collection((new Collection($regResults->get()->unique('team_id')))->paginate($per_page));
+        }
         if($request->has('search') || $request->has('gender')) {
             $filter = new CompatitorsFilter();
             $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
