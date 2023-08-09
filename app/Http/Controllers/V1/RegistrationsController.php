@@ -102,6 +102,7 @@ class RegistrationsController extends Controller
                         }
                     }
                 }
+
             }
 
             if($compatitorsYears < 14) {                
@@ -126,7 +127,24 @@ class RegistrationsController extends Controller
                         }
                     }
                 }
-
+                if($competitorsCategory->isEmpty()) {
+                    $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from','>=', $competitor->date_of_birth)->sortBy('date_to');
+                    $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
+                    if($nextCategories != null) {
+                        $olderCategoryKata = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
+                        $olderCategoryKumite = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
+                    }
+                    if($nextCategories != null && $applicationLimit == 2 && $competitor->belt_id >= 7) {
+                        foreach($olderCategoryKata as $nextAllowedCat) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
+                    }
+                    if($applicationLimit == 2 && $nextCategories != null) {
+                        foreach($olderCategoryKumite as $nextAllowedCat) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
+                    }
+                }
             }
         }
         return CategoriesResource::collection((new Collection($competition->categories->whereIn('id', $allowedCategories)))->paginate($request->perPage));
@@ -206,6 +224,24 @@ class RegistrationsController extends Controller
             if($applicationLimit == 2 && $nextCategories != null) {
                 foreach($olderCategoryKumite as $nextAllowedCat) {
                     $allowedCategories[] = $nextAllowedCat->id;
+                }
+            }
+            if($competitorsCategory->isEmpty()) {
+                $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from','>=', $competitor->date_of_birth)->sortBy('date_to');
+                $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_to')->first();
+                if($nextCategories != null) {
+                    $olderCategoryKata = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
+                    $olderCategoryKumite = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
+                }
+                if($nextCategories != null && $applicationLimit == 2 && $competitor->belt_id >= 7) {
+                    foreach($olderCategoryKata as $nextAllowedCat) {
+                        $allowedCategories[] = $nextAllowedCat->id;
+                    }
+                }
+                if($applicationLimit == 2 && $nextCategories != null) {
+                    foreach($olderCategoryKumite as $nextAllowedCat) {
+                        $allowedCategories[] = $nextAllowedCat->id;
+                    }
                 }
             }
         }
