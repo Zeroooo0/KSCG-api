@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
     {
         //$schedule->command('sanctum:prune-expired --hours=24')->everyTwoMinutes();
         // $schedule->command('inspire')->hourly();
-        $schedule->command('yearlyStatus:cron')->everyMinute();
+        $schedule->command('yearlyStatus:cron')->yearly();
     }
 
     /**
