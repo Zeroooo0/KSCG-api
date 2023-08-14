@@ -56,7 +56,19 @@ Route::group(['prefix' => 'v1/public'], function () {
 });
 
 // Verify email
-
+Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,club,commission,editor']], function () {    
+    Route::resource('/users', UsersController::class);
+});
+Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,commission,editor']], function () {    
+    Route::get('/news', [PostsController::class, 'index']);
+    Route::get('/news/{news}', [PostsController::class, 'show']);
+    Route::post('/news', [PostsController::class, 'store']);
+    Route::post('/news/{news}', [PostsController::class, 'update']);
+    Route::delete('/news/{news}', [PostsController::class, 'destroy']);
+    Route::get('/news-components/{news}', [PostsController::class, 'postComponents']);
+    Route::post('/add-news-images/{news}', [FileController::class, 'addPostImage']);
+    Route::post('/news-documents/{news}', [FileController::class, 'addDocumentPost']);
+});
 
 
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,club,commission']], function () {    
@@ -70,7 +82,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('/special-personnel-image/{personal}', [FileController::class, 'setSpecPersonImage']);
     Route::post('/competition-image/{compatition}', [FileController::class, 'setCompatitionImage']);
     //Image add
-    Route::post('/add-news-images/{news}', [FileController::class, 'addPostImage']);
+
     Route::post('/add-page-images/{page}', [FileController::class, 'addPageImage']);
     //Image delete
     Route::delete('/delete-image/{image}', [FileController::class, 'deleteImage']);
@@ -80,7 +92,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('/special-personnel-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
     Route::post('/competition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
     Route::post('/page-documents/{page}', [FileController::class, 'addDocumentPage']);
-    Route::post('/news-documents/{news}', [FileController::class, 'addDocumentPost']);
+
     
     //get
     Route::get('/competitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
@@ -118,7 +130,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::resource('/competitors', CompatitorsController::class);  
     Route::get('/competitor-results/{competitor}', [ReusableDataController::class, 'getCompatitorResults']);
     //Users control
-    Route::resource('/users', UsersController::class);
+    // Route::resource('/users', UsersController::class);
     //Registration of compatitiors on compatition
     Route::resource('/teams', TeamsController::class);
   
@@ -150,12 +162,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Compatition
     Route::post('/competition-personnel/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Posts
-    Route::get('/news', [PostsController::class, 'index']);
-    Route::get('/news/{news}', [PostsController::class, 'show']);
-    Route::post('/news', [PostsController::class, 'store']);
-    Route::post('/news/{news}', [PostsController::class, 'update']);
-    Route::delete('/news/{news}', [PostsController::class, 'destroy']);
-    Route::get('/news-components/{news}', [PostsController::class, 'postComponents']);
+    // Route::get('/news', [PostsController::class, 'index']);
+    // Route::get('/news/{news}', [PostsController::class, 'show']);
+    // Route::post('/news', [PostsController::class, 'store']);
+    // Route::post('/news/{news}', [PostsController::class, 'update']);
+    // Route::delete('/news/{news}', [PostsController::class, 'destroy']);
+    // Route::get('/news-components/{news}', [PostsController::class, 'postComponents']);
     //Pages
     //Route::resource('/pages', PagesController::class);
     Route::get('/pages', [PagesController::class, 'index']);

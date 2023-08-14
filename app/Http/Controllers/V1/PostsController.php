@@ -57,6 +57,9 @@ class PostsController extends Controller
      */
     public function store(StorePostsRequest $request)
     {
+        if(Auth::user()->user_type == 0 || Auth::user()->status == 0) {
+            return $this->error('','Ova funkcionalnost vam nije dozvoljena!', 403); 
+        }
         $request->validated($request->except('slug'));
 
         $news = Post::create([
@@ -113,6 +116,9 @@ class PostsController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $news)
     {
+        if(Auth::user()->user_type == 0 || Auth::user()->status == 0) {
+            return $this->error('','Ova funkcionalnost vam nije dozvoljena!', 403); 
+        }
         $request->validated($request->all());
         $news->update($request->except('image'));
         if($request->has('image')){
@@ -138,6 +144,9 @@ class PostsController extends Controller
      */
     public function destroy(Post $news)
     {
+        if(Auth::user()->user_type == 0 || Auth::user()->status == 0) {
+            return $this->error('','Ova funkcionalnost vam nije dozvoljena!', 403); 
+        }
         foreach($news->images()->get() as $image) {
             Storage::delete($image->url);
         }

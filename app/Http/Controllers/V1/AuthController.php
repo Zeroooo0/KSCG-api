@@ -37,6 +37,9 @@ class AuthController extends Controller
         }
         if(Auth::user()->user_type == 2) {
             $token_ability = ['admin'];
+        } 
+        if(Auth::user()->user_type == 3) {
+            $token_ability = ['editor'];
         }
         
 

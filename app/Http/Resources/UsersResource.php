@@ -23,6 +23,9 @@ class UsersResource extends JsonResource
         if($this->user_type == 2) {
             $userType = 'Administrator';
         }
+        if($this->user_type == 3) {
+            $userType = 'Editor';
+        }
         
         if($this->user_type == 0 && $this->club != null) {
             $data = [
