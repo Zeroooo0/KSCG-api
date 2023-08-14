@@ -75,13 +75,37 @@ class RegistrationsController extends Controller
         //competitior data
         if($request->has('competitorId') && $request->competitorId != null) {
             $competitor = Compatitor::where('id', $request->competitorId)->first();
-            //return $competitor->date_of_birth < date(now());
+           
             $compatitorsBhirtDay = new DateTime($competitor->date_of_birth);
             $compatitorsYears = $compatitorsBhirtDay->diff($competitionStartTime)->y;
-            //return $catTimeSpan;
+         
             if($compatitorsYears >= 14) {
-                
                 $competitorsCategory = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>', $compatitorsYears) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
+                if($competitorsCategory->isEmpty()) {
+                    $compNextCatYears = $compatitorsYears + 2;
+                    $compNextCatDate = date('Y-m-d', strtotime('-2 year',strtotime($competitor->date_of_birth)));
+                    
+                    $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compNextCatYears)->where('years_to', '>', $compNextCatYears)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $compNextCatDate)->where('date_to', '>=', $compNextCatDate)->sortByDesc('date_from');
+                    if($nextCategories != null) {
+                        $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
+                        $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
+                    }
+                    foreach($competitorsCategory as $allowedCat) {
+                        $allowedCategories[] = $allowedCat->id;
+                    }
+                    if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                        foreach($nextCategoriesKata as $nextAllowedCat) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
+                    }
+                    if($applicationLimit == 2) {
+                        foreach($nextCategoriesKumite as $nextAllowedCat) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
+                    }
+                }
+
+                
                 if(!$competitorsCategory->isEmpty()) {
                     $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from');
                     if($nextCategories != null) {
@@ -188,44 +212,77 @@ class RegistrationsController extends Controller
         
 
         if($compatitorsYears >= 14) {
-            $competitorsCategory = $catTimeSpan ? $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>=', $compatitorsYears) : $competition->categories->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
-            $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from');
-            if($nextCategories != null) {
-                $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
-                $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
-            }
-            foreach($competitorsCategory as $allowedCat) {
-                $allowedCategories[] = $allowedCat->id;
-            }
-            if($applicationLimit == 2 && $competitor->belt_id >= 7 && $nextCategories != null) {
-                foreach($nextCategoriesKata as $nextAllowedCat) {
-                    $allowedCategories[] = $nextAllowedCat->id;
+            $competitorsCategory = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>', $compatitorsYears) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
+            if($competitorsCategory->isEmpty()) {
+                $compNextCatYears = $compatitorsYears + 2;
+                $compNextCatDate = date('Y-m-d', strtotime('-2 year',strtotime($competitor->date_of_birth)));
+                
+                $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compNextCatYears)->where('years_to', '>', $compNextCatYears)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $compNextCatDate)->where('date_to', '>=', $compNextCatDate)->sortByDesc('date_from');
+                if($nextCategories != null) {
+                    $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
+                    $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
+                }
+                foreach($competitorsCategory as $allowedCat) {
+                    $allowedCategories[] = $allowedCat->id;
+                }
+                if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                    foreach($nextCategoriesKata as $nextAllowedCat) {
+                        $allowedCategories[] = $nextAllowedCat->id;
+                    }
+                }
+                if($applicationLimit == 2) {
+                    foreach($nextCategoriesKumite as $nextAllowedCat) {
+                        $allowedCategories[] = $nextAllowedCat->id;
+                    }
                 }
             }
-            if($applicationLimit == 2 && $nextCategories != null) {
-                foreach($nextCategoriesKumite as $nextAllowedCat) {
-                    $allowedCategories[] = $nextAllowedCat->id;
+
+            
+            if(!$competitorsCategory->isEmpty()) {
+                $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from');
+                if($nextCategories != null) {
+                    $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
+                    $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
+                }
+                foreach($competitorsCategory as $allowedCat) {
+                    $allowedCategories[] = $allowedCat->id;
+                }
+                if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                    foreach($nextCategoriesKata as $nextAllowedCat) {
+                        $allowedCategories[] = $nextAllowedCat->id;
+                    }
+                }
+                if($applicationLimit == 2) {
+                    foreach($nextCategoriesKumite as $nextAllowedCat) {
+                        $allowedCategories[] = $nextAllowedCat->id;
+                    }
                 }
             }
+
         }
-        if($compatitorsYears < 14) {
-            $competitorsCategory = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
-            $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<', $competitorsCategory->first()->date_from)->sortByDesc('date_to')->first();
-            if($nextCategories != null) {
-                $olderCategoryKata = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
-                $olderCategoryKumite = $competition->categories->where('gender', $competitor->gender)->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
-            }
-            foreach($competitorsCategory as $allowedCat) {
-                $allowedCategories[] = $allowedCat->id;
-            }
-            if($applicationLimit == 2 && $competitor->belt_id >= 7 && $nextCategories != null) {
-                foreach($olderCategoryKata as $nextAllowedCat) {
-                    $allowedCategories[] = $nextAllowedCat->id;
+
+        if($compatitorsYears < 14) {                
+            $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
+            
+            //return $competitorsCategory;
+            if(!$competitorsCategory->isEmpty()) {
+                $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<', $competitorsCategory->first()->date_from)->sortByDesc('date_to')->first();
+                if($nextCategories != null) {
+                    $olderCategoryKata = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 1);
+                    $olderCategoryKumite = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', $nextCategories->date_from)->where('date_to', $nextCategories->date_to)->where('kata_or_kumite', 0);
                 }
-            }
-            if($applicationLimit == 2 && $nextCategories != null) {
-                foreach($olderCategoryKumite as $nextAllowedCat) {
-                    $allowedCategories[] = $nextAllowedCat->id;
+                foreach($competitorsCategory as $allowedCat) {
+                    $allowedCategories[] = $allowedCat->id;
+                }
+                if($nextCategories != null && $applicationLimit == 2 && $competitor->belt_id >= 7) {
+                    foreach($olderCategoryKata as $nextAllowedCat) {
+                        $allowedCategories[] = $nextAllowedCat->id;
+                    }
+                }
+                if($applicationLimit == 2 && $nextCategories != null) {
+                    foreach($olderCategoryKumite as $nextAllowedCat) {
+                        $allowedCategories[] = $nextAllowedCat->id;
+                    }
                 }
             }
             if($competitorsCategory->isEmpty()) {
@@ -247,7 +304,6 @@ class RegistrationsController extends Controller
                 }
             }
         }
-        
 
 
      
