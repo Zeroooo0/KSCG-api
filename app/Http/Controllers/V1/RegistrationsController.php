@@ -82,10 +82,9 @@ class RegistrationsController extends Controller
             if($compatitorsYears >= 14) {
                 $competitorsCategory = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>', $compatitorsYears) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
                 if($competitorsCategory->isEmpty()) {
-                    $compNextCatYears = $compatitorsYears + 2;
-                    $compNextCatDate = date('Y-m-d', strtotime('-2 year',strtotime($competitor->date_of_birth)));
-                    
-                    $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compNextCatYears)->where('years_to', '>', $compNextCatYears)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $compNextCatDate)->where('date_to', '>=', $compNextCatDate)->sortByDesc('date_from');
+                    $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from','>=', $competitor->date_of_birth)->sortBy('date_to');
+                    $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from');
+                    return $nextCategories;
                     if($nextCategories != null) {
                         $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
                         $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
@@ -107,7 +106,9 @@ class RegistrationsController extends Controller
 
                 
                 if(!$competitorsCategory->isEmpty()) {
-                    $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from');
+                    
+                    $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->sortByDesc('date_from')->first()->years_to)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from');
+                    
                     if($nextCategories != null) {
                         $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
                         $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
@@ -214,10 +215,12 @@ class RegistrationsController extends Controller
         if($compatitorsYears >= 14) {
             $competitorsCategory = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compatitorsYears)->where('years_to','>', $compatitorsYears) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth);
             if($competitorsCategory->isEmpty()) {
+                
                 $compNextCatYears = $compatitorsYears + 2;
                 $compNextCatDate = date('Y-m-d', strtotime('-2 year',strtotime($competitor->date_of_birth)));
                 
                 $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $compNextCatYears)->where('years_to', '>', $compNextCatYears)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $compNextCatDate)->where('date_to', '>=', $compNextCatDate)->sortByDesc('date_from');
+                
                 if($nextCategories != null) {
                     $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
                     $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
@@ -239,6 +242,7 @@ class RegistrationsController extends Controller
 
             
             if(!$competitorsCategory->isEmpty()) {
+                
                 $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from');
                 if($nextCategories != null) {
                     $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
