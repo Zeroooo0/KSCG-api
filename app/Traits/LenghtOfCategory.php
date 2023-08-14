@@ -79,6 +79,14 @@ trait LenghtOfCategory {
                 $pools = 6;
                 $pool = 7;
                 break;
+            case $registrationCount <= 256:
+                $totalTimePerCat = $registrationCount / 2 * $timePerCategory + 64 * $timePerCategory + 32 * $timePerCategory + 16 * $timePerCategory + 8 * $timePerCategory + 4 * $timePerCategory + 2 * $timePerCategory + $timePerCategory + 5 * $repesaz;
+                $neededReg = 256;
+                $groups = 127;
+                $groupsReal = 128;
+                $pools = 7;
+                $pool = 8;
+                break;
         }
     return [
             'categoryDuration' =>$totalTimePerCat,
