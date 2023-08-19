@@ -8,6 +8,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UsersResource;
 use App\Models\Club;
+use App\Models\SpecialPersonal;
 use App\Models\User;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -76,7 +77,15 @@ class UsersController extends Controller
             'user_type' => $user_type,
             'status' => Auth::user()->user_type == 2 ? 1 : 0
         ]);
-
+        if($user_type == 4) {
+            $request->validated([
+                'personelId' => 'required|integer'
+            ]);
+            $personnel = SpecialPersonal::where('id', 'personelId')->first();
+            $personnel->update([
+                'user_id' => $user->id,
+            ]);
+        }
         return new UsersResource($user);
     }
 

@@ -64,8 +64,8 @@ class RegistrationsResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'status' => $this->status,
-            'position' => $this->position,
-            'isPrinted' => $this->is_printed,
+            'position' => (string)$this->position,
+            'isPrinted' => (boolean)$this->is_printed,
             'competition' => $compatitionData,
             'club' => $clubData,
             'category' => $categoryData,

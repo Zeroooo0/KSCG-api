@@ -28,7 +28,6 @@ return new class extends Migration
             $table->decimal('price_compatitor');
             $table->decimal('price_coach');
             $table->boolean('is_hidden')->default('0');
-            
             $table->timestamps();
         });
     }

@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SeminarFormApplication extends Model
+class SpecialPersonnelForms extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'seminar_id',
         'personnel_id',
         'form_type',
         'full_name',
@@ -39,9 +38,4 @@ class SeminarFormApplication extends Model
     {
         return $this->belongsTo(SpecialPersonal::class);
     }
-    public function seminar() 
-    {
-        return $this->belongsTo(Seminar::class);
-    }
 }
-

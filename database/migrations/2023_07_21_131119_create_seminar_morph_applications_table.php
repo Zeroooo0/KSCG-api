@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('seminar_morph_applications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('seminar_id')->references('id')->on('seminars')->onDelete('cascade');
-            $table->foreignId('club_id')->references('id')->on('clubs')->onDelete('cascade');
+            $table->foreignId('club_id')->nullable()->references('id')->on('clubs')->onDelete('cascade');
             $table->morphs('applicable');
             $table->timestamps();
         });

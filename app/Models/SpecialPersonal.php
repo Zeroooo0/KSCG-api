@@ -22,6 +22,10 @@ class SpecialPersonal extends Model
         'title'
     ];
     
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function image() 
     {
@@ -35,8 +39,8 @@ class SpecialPersonal extends Model
     {
         return $this->morphMany(SeminarMorphApplication::class, 'applicable');
     }
-    public function seminarFormAplications() 
+    public function specialPersonnelForm() 
     {
-        return $this->hasMany(SeminarFormApplication::class);
+        return $this->hasOne(SpecialPersonnelForms::class, 'personnel_id');
     }
 }

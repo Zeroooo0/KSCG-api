@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('special_personals', function (Blueprint $table) {
             $table->id();
+            $table->foreign('user_id')->nullable()->reference('id')->on('users')->onDelete('cascade');
             $table->boolean('status')->default(true);
             $table->string('name');
             $table->string('last_name');

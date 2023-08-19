@@ -23,10 +23,6 @@ class Seminar extends Model
         'price_coach',
         'is_hidden',
     ];
-    public function seminarFormApplications() {
-        return $this->hasMany(SeminarFormApplication::class);
-    }
-
     public function document()
     {
         return $this->morphMany(Document::class, 'documentable');

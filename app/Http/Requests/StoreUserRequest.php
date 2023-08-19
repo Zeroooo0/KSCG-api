@@ -30,7 +30,7 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['min:6','required_with:passwordConfirmation', 'same:passwordConfirmation', Rules\Password::defaults()],
             'passwordConfirmation' => ['min:6'],
-            'userType' => ['integer', 'max:3']
+            'userType' => ['integer', 'max:4']
         ];
     }
 }
