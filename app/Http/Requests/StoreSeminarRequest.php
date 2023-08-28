@@ -28,15 +28,19 @@ class StoreSeminarRequest extends FormRequest
             'name' => ['required', 'string'],
             'deadline' => ['required', 'date'],
             'start' => ['required', 'date'],
+            'country' => ['required', 'string'],
+            'city' => ['required', 'string'],
             'address' => ['required', 'string'],
+            'host' => ['required', 'string'],
             'seminarType' => ['required', 'in:licenceSeminar,educationSeminar'],
             'hasJudge' => ['required', 'boolean'],
             'hasCompetitor' => ['required', 'boolean'],
             'hasCoach' => ['required', 'boolean'],
-            'priceJudge' => ['required', 'numeric'],
-            'priceCompatitor' => ['required', 'numeric'],
-            'priceCoach' => ['required', 'numeric'],
-            'isHidden' => ['required', 'boolean'],
+            'priceJudge' => [ 'numeric', 'required_if:hasCoach,1'],
+            'priceCompetitor' => ['numeric', 'required_if:hasCoach,1'],
+            'priceCoach' => ['numeric', 'required_if:hasCoach,1'],
+            'isHidden' => [ 'boolean'],
+            'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:2048'],
         ];
     }
 }

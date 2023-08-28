@@ -18,7 +18,10 @@ return new class extends Migration
             $table->string('name');
             $table->date('deadline');
             $table->date('start');
+            $table->string('country');
+            $table->string('city');
             $table->string('address');
+            $table->string('host');
             // licenceSeminar educationSeminar
             $table->string('seminar_type');
             $table->boolean('has_judge');

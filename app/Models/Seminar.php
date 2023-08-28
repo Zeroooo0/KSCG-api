@@ -14,6 +14,9 @@ class Seminar extends Model
         'deadline',
         'start',
         'address',
+        'country',
+        'city',
+        'host',
         'seminar_type',
         'has_judge',
         'has_compatitor',
@@ -22,6 +25,7 @@ class Seminar extends Model
         'price_compatitor',
         'price_coach',
         'is_hidden',
+        'image'
     ];
     public function document()
     {
@@ -30,7 +34,7 @@ class Seminar extends Model
 
     public function image()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->morphOne(Image::class, 'imageable');
     }
     public function seminarMorphApplications() 
     {

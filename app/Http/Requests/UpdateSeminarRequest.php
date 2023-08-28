@@ -27,7 +27,10 @@ class UpdateSeminarRequest extends FormRequest
             'name' => ['string'],
             'deadline' => ['date'],
             'start' => ['date'],
+            'country' => ['string'],
+            'city' => ['string'],
             'address' => ['string'],
+            'host' => ['string'],
             'seminarType' => ['in:licenceSeminar,educationSeminar'],
             'hasJudge' => ['boolean'],
             'hasCompetitor' => ['boolean'],
@@ -36,7 +39,7 @@ class UpdateSeminarRequest extends FormRequest
             'priceCompatitor' => ['numeric'],
             'priceCoach' => ['numeric'],
             'isHidden' => ['boolean'],
-            'isPaid' => ['boolean'],
+            'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:2048'],
         ];
     }
 }

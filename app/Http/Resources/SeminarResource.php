@@ -15,11 +15,19 @@ class SeminarResource extends JsonResource
     public function toArray($request)
     {
         $typeSeminar = $this->seminar_type == 'licenceSeminar' ? 'Seminar za licenciranje' : 'Edukativni seminar';
+        $storage_url = env('APP_URL') . 'api/file/';
+        $imageUrl = $storage_url . 'default/default-competition-poster.jpg';
+        if($this->image != null) {
+            $imageUrl = $storage_url . $this->image->url;
+        }
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
             'nameForSeminarType' => $typeSeminar,
+            'country' => $this->country,
+            'city' => $this->city,
             'address' => $this->address,
+            'host' => $this->host,
             'deadline' => $this->deadline,
             'start' => $this->start,
             'seminarType' => $this->seminar_type,
@@ -30,6 +38,7 @@ class SeminarResource extends JsonResource
             'priceCompatitor' => $this->price_compatitor,
             'priceCoach' => $this->price_coach,
             'isHidden' => (boolean)$this->is_hidden,
+            'posterImage' => $imageUrl
         ];
     }
 }
