@@ -415,7 +415,7 @@ class RegistrationsController extends Controller
                         $responseErrorMessage[] = $error;
                         $noErrors = false;
                         continue;
-                    }  ;
+                    }  
                 }
                 if($kumiteCount > $applicationLimit) {
                     $error['message'] = "Takmičar $competitor->name $competitor->last_name ne može biti prijavljen u više od $kumiteRealCount. $katText Kumite!";
