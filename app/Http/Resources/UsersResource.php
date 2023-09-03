@@ -39,6 +39,11 @@ class UsersResource extends JsonResource
         } else {
             $data = 'Ne posjeduje Klub';
         }
+        if($this->user_type == 4 && $this->specialPersonnel != null) {
+            $personnel = $this->specialPersonnel->id;
+        } else {
+            $personnel = null;
+        }
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
@@ -47,7 +52,8 @@ class UsersResource extends JsonResource
             'email' => $this->email,
             'status' => (boolean)$this->status,
             'userType' =>  $userType,
-            'club' => $data
+            'club' => $data,
+            'personnelId' => $personnel
         ];
     }
 }

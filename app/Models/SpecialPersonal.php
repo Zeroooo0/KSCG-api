@@ -19,7 +19,8 @@ class SpecialPersonal extends Model
         'country',
         'gender',
         'clubId',
-        'title'
+        'title',
+        'user_id'
     ];
     
     public function user()

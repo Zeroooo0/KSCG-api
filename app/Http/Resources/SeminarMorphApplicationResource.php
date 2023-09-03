@@ -15,15 +15,23 @@ class SeminarMorphApplicationResource extends JsonResource
     public function toArray($request)
     {
         $user = null;
+        $userType = null;
         if($this->applicable_type == 'App\Models\Compatitor') {
             $user = new CompatitorsResource($this->applicable);
+            $userType = 'Takmičar';
         }
         if($this->applicable_type == 'App\Models\SpecialPersonal') {
             $user = new SpecialPersonalsResource($this->applicable);
+            if($this->applicable->role == 1) {
+                $userType = 'Sudija';  
+            }
+            if($this->applicable->role == 2) {
+                $userType = 'Trener';  
+            }
         }
         return [
             'id' => (string)$this->id,
-            'userType' => $this->applicable_type,
+            'userType' => $userType,
             'seminarName' => $this->seminar->name,
             'userData' => $user
         ];

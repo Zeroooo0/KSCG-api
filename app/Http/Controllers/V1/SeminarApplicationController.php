@@ -24,8 +24,24 @@ class SeminarApplicationController extends Controller
      */
     public function index(Request $request, Seminar $seminar)
     {
+
         $seminarApplications = SeminarMorphApplication::where('seminar_id', $seminar->id);
-        return SeminarMorphApplicationResource::collection($seminarApplications->paginate($request->perPage));
+        if(Auth::user() == null) {
+            return SeminarMorphApplicationResource::collection($seminarApplications->paginate($request->perPage));
+        }
+        $userType = Auth::user()->user_type;
+        if($userType == 2) {
+            return SeminarMorphApplicationResource::collection($seminarApplications->paginate($request->perPage));
+        }
+        if($userType == 0) {
+            return SeminarMorphApplicationResource::collection($seminarApplications->where('club_id', Auth::user()->club_id)->paginate($request->perPage));
+        }
+        if($userType == 4) {
+            $personnelId = Auth::user()->specialPersonnel->id;
+   
+            return SeminarMorphApplicationResource::collection($seminarApplications->where('applicable_type', 'App\Models\SpecialPersonal')->where('applicable_id', $personnelId)->paginate($request->perPage));
+        }
+        return $userType;
     }
     // public function specialPersonnelGet(Request $request, Seminar $seminar)
     // {
@@ -45,23 +61,30 @@ class SeminarApplicationController extends Controller
         $hasCompetitiors = $seminar->has_compatitor;
         $hasCoach = $seminar->has_coach;
         $hasJudge = $seminar->has_judge;
+        if(Auth::user()->user_type != 2 && $seminar->deadline <= now()) {
+            return $this->error('', 'Prijave su istekle.', 403);
+        }
         if($seminar->seminar_type == 'licenceSeminar') {
 
             //email notification with form data i view blade
             //check does judge and couch if has Form filled up
             //check does judge if has
             
-            if(!$request->has('personnelId') && $request->personnelId != null) {
+            if(!$request->has('personnelId')) {
                 return $this->error('', 'Potrebno je da odaberete Stručno lice!', 403);
             }
-            if(!$hasCompetitiors && $request->has('competitorId')) {
+            if($request->has('competitorId') && $request->personnelId != null) {
                 return $this->error('', 'Ovaj seminar nije za Takmičare!', 403);
             }
-           
+
             $personnel =  SpecialPersonal::where('id', $request->personnelId)->first();
             $isAppliedAlready = $seminar->seminarMorphApplications->where('applicable_type', 'App\Models\SpecialPersonal')->where('applicable_id', $personnel->id);
-            $isFormFilledCount = $personnel->specialPersonnelForm->count();
+            $isFormFilledCount = $personnel->specialPersonnelForm != null ? $personnel->specialPersonnelForm->count() : 0;
             
+            if($personnel->status == 1) {
+                return $this->error('', "$personnel->name $personnel->last_name posjeduje pozitivan status pa ga nije moguće prijaviti!", 401);
+            }
+
             if($isAppliedAlready->count() >= 1) {
                 return $this->error('', "$personnel->name $personnel->last_name posjeduje aplikaciju za ovaj seminar!", 401);
             }
@@ -69,7 +92,7 @@ class SeminarApplicationController extends Controller
                 return $this->error('', "$personnel->name $personnel->last_name mora da ima ispunjene dodatne podatke", 401);
             }
             if($personnel->role == 2) {
-                if(Auth::user()->user_type != 0) {
+                if(Auth::user()->user_type == 2 || Auth::user()->user_type == 1) {
                     if(!$request->has('clubId')){
                         return $this->error('', 'Potrebno je da odaberete Klub za registraciju trenera!', 403);
                     }
@@ -92,17 +115,14 @@ class SeminarApplicationController extends Controller
                 ]);
             }
             if($personnel->role == 0) {
-                
                 return $this->error('', 'Uprava kluba se ne moze prijaviti na Seminar!', 403);
-                
             }
             return $this->success('', 'Uspješno kreirana aplikacija!');
 
         }
         if($seminar->seminar_type == 'educationSeminar') {
             //education seminar for all
-        
-        
+            
             if($request->has('personnelId')) {
                 $personnel =  SpecialPersonal::where('id', $request->personnelId)->first();
                 if($personnel->role == 1 && !$hasJudge) {
@@ -146,6 +166,13 @@ class SeminarApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function update(SeminarMorphApplication $seminarMorphApplication, Request $request) {
+        if($request->has('status')) {
+            $seminarMorphApplication->applicable->update([
+                'status' => $request->status,
+            ]);
+        }
+    }
 
     public function destroy(SeminarMorphApplication $seminarMorphApplication)
     {

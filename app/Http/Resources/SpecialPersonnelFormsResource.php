@@ -16,7 +16,7 @@ class SpecialPersonnelFormsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name_of_parent' => $this->nameOfParent,
+            'nameOfParent' => $this->name_of_parent,
             'jmbg' => $this->jmbg,
             'birthDate' => $this->birth_date,
             'birthPlace' => $this->birth_place,

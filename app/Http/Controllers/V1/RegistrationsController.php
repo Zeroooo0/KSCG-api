@@ -84,7 +84,7 @@ class RegistrationsController extends Controller
                 if($competitorsCategory->isEmpty()) {
                     $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from','>=', $competitor->date_of_birth)->sortBy('date_to');
                     $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '=', $competitorsCategory->first()->years_to)->sortByDesc('date_from') : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_to', '<', $competitorsCategory->first()->date_to)->sortByDesc('date_from');
-                    return $nextCategories;
+                
                     if($nextCategories != null) {
                         $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
                         $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
@@ -133,7 +133,6 @@ class RegistrationsController extends Controller
             if($compatitorsYears < 14) {                
                 $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
                 
-                //return $competitorsCategory;
                 if(!$competitorsCategory->isEmpty()) {
                     $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<', $competitorsCategory->first()->date_from)->sortByDesc('date_to')->first();
                     if($nextCategories != null) {
@@ -174,6 +173,7 @@ class RegistrationsController extends Controller
                 }
             }
         }
+
         return CategoriesResource::collection((new Collection($competition->categories->whereIn('id', $allowedCategories)))->paginate($request->perPage));
     }
 
@@ -205,7 +205,6 @@ class RegistrationsController extends Controller
         
 
         $registrations = $competition->registrations->where('compatitor_id', $competitor->id);
-        //return $competitor->club_id;
 
 
         $arrayOfRegistrations = [];
@@ -268,7 +267,6 @@ class RegistrationsController extends Controller
         if($compatitorsYears < 14) {                
             $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
             
-            //return $competitorsCategory;
             if(!$competitorsCategory->isEmpty()) {
                 $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<', $competitorsCategory->first()->date_from)->sortByDesc('date_to')->first();
                 if($nextCategories != null) {

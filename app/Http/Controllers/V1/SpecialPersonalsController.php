@@ -45,7 +45,7 @@ class SpecialPersonalsController extends Controller
                 $spec_personal[] = $id->special_personals_id;
             }
 
-            return SpecialPersonalsResource::collection($specialPersonal->whereNotIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search)->get());
+            return SpecialPersonalsResource::collection($specialPersonal->whereNotIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search)->get());
         }
         if(Auth::user()->user_type == 0){
             $club_personal = Club::where('id', Auth::user()->club->id)->first()->roles;
@@ -54,11 +54,16 @@ class SpecialPersonalsController extends Controller
                 $spec_personal[] = $id->special_personals_id;
             }
 
-            $specPerson = $specialPersonal->whereIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search);
+            $specPerson = $specialPersonal->whereIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search);
             return SpecialPersonalsResource::collection($per_page == 0 ? $specPerson->get() : $specPerson->paginate($per_page));
     
         }
-        $specPerson = $specialPersonal->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email)'), 'like', $search);
+        if(Auth::user()->user_type == 4){
+            $specPerson = $specialPersonal->where('user_id', Auth::user()->id);
+            return SpecialPersonalsResource::collection($specPerson->paginate($per_page));
+    
+        }
+        $specPerson = $specialPersonal->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search);
         return SpecialPersonalsResource::collection($per_page == 0 ? $specPerson->get() : $specPerson->paginate($per_page));
     }
 
@@ -70,8 +75,16 @@ class SpecialPersonalsController extends Controller
      */
     public function store(StoreSpecialPersonalRequest $request)
     {
-        $request->validated($request->all());
 
+        if(Auth::user()->user_type == 3) {
+            return $this->error('', 'Nije Vam dozvoljeno kreirati strucna lica!', 404);
+        }
+        if(Auth::user()->user_type == 4 && Auth::user()->specialPersonnel != null) {
+
+            return $this->error('', 'Možete kreirati samo jedno stručno lice!', 404);
+        }
+        $request->validated($request->all());
+        
 
 
         $role = $request->role;
@@ -153,7 +166,7 @@ class SpecialPersonalsController extends Controller
             $role = $request->role;
         }
 
-        $special_personnel->update($request->except('lastName', 'role', 'status'));
+        $special_personnel->update($request->except('lastName', 'role', 'status', 'phone'));
         if($request->has('lastName')){ 
             $special_personnel->update([
                 'last_name' => $request->lastName
@@ -163,6 +176,11 @@ class SpecialPersonalsController extends Controller
         if($request->has('role')){ 
             $special_personnel->update([
                 'role' => $role
+            ]);
+        }
+        if($request->has('phone')){ 
+            $special_personnel->update([
+                'phone_number' => "+$request->phone"
             ]);
         }
 

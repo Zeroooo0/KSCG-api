@@ -39,6 +39,8 @@ class RolesResource extends JsonResource
         if($this->role == 2) {
             $role = 'Trener';
         }
+        $compatition = null;
+        
         
         return [
             'id' => (string)$this->id,
@@ -50,8 +52,8 @@ class RolesResource extends JsonResource
             'role' => $role,
             'status' => (boolean)$specialPersonal->status,
             'image' => $path,
-            'positionIn' => $this->role == 1 ? null : $this->roleable->name,
-            'competitionName' => $this->role != 1 ? null : $this->roleable->name,
+            'positionIn' =>  $this->roleable?->short_name,
+            'competitionName' => $this->roleable_type == "App\Models\Compatition" ,
             'registeredOn' => date('Y-m-d H:m:s', strtotime($this->roleable->created_at))
         ];
     }

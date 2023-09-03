@@ -81,7 +81,7 @@ class UsersController extends Controller
             $request->validated([
                 'personelId' => 'required|integer'
             ]);
-            $personnel = SpecialPersonal::where('id', 'personelId')->first();
+            $personnel = SpecialPersonal::where('id', $request->personnelId)->first();
             $personnel->update([
                 'user_id' => $user->id,
             ]);

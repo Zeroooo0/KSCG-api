@@ -22,16 +22,20 @@ class SeminarController extends Controller
     public function index(Request $request)
     {
         $notAlowed = [0, 3, 4];
-
+        $seminars = Seminar::orderBy('id', 'desc');
+        if($request->has('isHidden') && $request->isHidden == "1") {
+            $seminars = Seminar::orderBy('id', 'desc')->where('is_hidden', 1);
+        }
+        
         if(Auth::user() == null ) {
-            return SeminarResource::collection(Seminar::orderBy('id', 'desc')->where('is_hidden', 0)->paginate($request->perPage));
+            return SeminarResource::collection($seminars->where('is_hidden', 0)->paginate($request->perPage));
         } 
         if(Auth::user() != null && in_array(Auth::user()->user_type, $notAlowed) ) {
-            return SeminarResource::collection(Seminar::orderBy('id', 'desc')->paginate($request->perPage));
+            return SeminarResource::collection($seminars->paginate($request->perPage));
 
         }
         if(Auth::user()->user_type == 2) {
-            return SeminarResource::collection(Seminar::orderBy('id', 'desc')->paginate($request->perPage));
+            return SeminarResource::collection($seminars->paginate($request->perPage));
         }
     }
 

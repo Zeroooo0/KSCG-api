@@ -62,6 +62,7 @@ Route::group(['prefix' => 'v1/public'], function () {
 // Verify email
 Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,club,commission,editor,judge']], function () {    
     Route::resource('/users', UsersController::class);
+    Route::get('/belts', [ReusableDataController::class, 'index']);
 });
 Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,commission,editor']], function () {    
     Route::get('/news', [PostsController::class, 'index']); 
@@ -85,7 +86,20 @@ Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,c
 
     Route::get('/seminar-applications/{seminar}', [SeminarApplicationController::class, 'index']);
     Route::post('/seminar-applications/{seminar}', [SeminarApplicationController::class, 'store']);
-    Route::post('/form_personnel/{personnel}', [SpecialPersonnelFormsController::class, 'store']);
+    Route::patch('/seminar-applications/{seminarMorphApplication}', [SeminarApplicationController::class, 'update']);
+    Route::post('/form-personnel/{personnel}', [SpecialPersonnelFormsController::class, 'store']);
+    
+    Route::resource('/seminars', SeminarController::class);
+
+    Route::post('/special-personnel-image/{personal}', [FileController::class, 'setSpecPersonImage']);
+    Route::post('/special-personnel-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
+    Route::get('/special-personnel-documents/{specialPersonal}', [FileController::class, 'specialPersonalDocuments']);
+
+    Route::get('/special-personal-competition/{specPersonnels}', [ReusableDataController::class, 'specPersonnelCompetitionRoles']);
+    Route::get('/special-personal-roles/{specPersonnels}', [ReusableDataController::class, 'specPersonnelRoles']);
+    Route::resource('/special-personnel', SpecialPersonalsController::class);
+    Route::get('/perosnnel-forms/{seminar}', [SpecialPersonnelFormsController::class, 'index']);
+
 });
 
 
@@ -97,7 +111,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Images update
     Route::post('/competitor-image/{compatitor}', [FileController::class, 'setCompatitorImage']);
     Route::post('/club-image/{club}', [FileController::class, 'setClubImage']);
-    Route::post('/special-personnel-image/{personal}', [FileController::class, 'setSpecPersonImage']);
+
     Route::post('/competition-image/{compatition}', [FileController::class, 'setCompatitionImage']);
     //Image add
 
@@ -107,14 +121,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Documents
     //Set
     Route::post('/competitor-documents/{compatitor}', [FileController::class, 'addDocumentCompatitor']);
-    Route::post('/special-personnel-documents/{special_personal}', [FileController::class, 'addDocumentSpecialPersonal']);
     Route::post('/competition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
     Route::post('/page-documents/{page}', [FileController::class, 'addDocumentPage']);
 
     
     //get
     Route::get('/competitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
-    Route::get('/special-personnel-documents/{specialPersonal}', [FileController::class, 'specialPersonalDocuments']);
     //Delete
     Route::delete('/document-delete/{document}', [FileController::class, 'deleteDocument']);
 
@@ -130,9 +142,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Belts
     Route::post('/belts-bulk-store', [ReusableDataController::class, 'bulkStoreBelts']);
     Route::post('/belts-store', [ReusableDataController::class, 'bulkStore']);
-    Route::get('/belts', [ReusableDataController::class, 'index']);
     //Special personal
-    Route::resource('/special-personnel', SpecialPersonalsController::class);
     //Special Persona in club
     Route::get('/club-administration/{club}', [ReusableDataController::class, 'getClubsAdministration']);
     Route::post('/club-administration', [ReusableDataController::class, 'clubsAdministration']);
@@ -177,8 +187,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Roles delete
     Route::delete('/role/{roles}', [ReusableDataController::class, 'deleteRole']);
     //Roles get
-    Route::get('/special-personal-competition/{specPersonnels}', [ReusableDataController::class, 'specPersonnelCompetitionRoles']);
-    Route::get('/special-personal-roles/{specPersonnels}', [ReusableDataController::class, 'specPersonnelRoles']);
+
     //Compatition
     Route::post('/competition-personnel/{competition}', [CompatitionsController::class, 'specialPersonalOnCompatition']);
     //Pages
@@ -218,8 +227,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
 
 
     //Seminar
-    Route::resource('/seminars', SeminarController::class);
-    Route::get('/perosnnel-forms/{seminar}', [SpecialPersonnelFormsController::class, 'index']);
+
     //Route::get('/seminars-applications/{seminar}', [SeminarApplicationController::class, 'index']);
     //
     Route::post('/compatition-results-calculate/{compatition}', [RegistrationsController::class, 'calculateResultsNow']);

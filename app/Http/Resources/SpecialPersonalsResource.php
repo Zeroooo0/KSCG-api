@@ -44,13 +44,24 @@ class SpecialPersonalsResource extends JsonResource
                 $rolesCollection =  (string)$roles->count();
             }
         }
-
+        if($roles->first() != null) {
+            $roleInClub = new RolesResource($roles->where('roleable_type', 'App\Models\Club')->first());
+        } else {
+            $roleInClub =  null;
+        }
+        $extraData = 'Nema podataka';
         if($this->role == 1) {
             $role = 'Sudija';
-         
+            if($this->specialPersonnelForm != null) {
+                $extraData = new SpecialPersonnelFormsResource($this->specialPersonnelForm);
+            }
+
         } 
         if($this->role == 2) {
             $role = 'Trener';
+            if($this->specialPersonnelForm != null) {
+                $extraData = $extraData = new SpecialPersonnelFormsResource($this->specialPersonnelForm);
+            }
         } 
         if($this->role == 0) {
             $role = 'Uprava';
@@ -68,11 +79,13 @@ class SpecialPersonalsResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone_number,
             'role' => $role,
-            'gender' => $this->gender,
+            'gender' => (string)$this->gender,
             'status' => (boolean)$this->status,
+            'coachIn' => $roleInClub,
             'image' => $path,
             'documents' => $documents,
-            'roles' => $rolesCollection
+            'roles' => $rolesCollection,
+            'extraData' => $extraData
         ];
     }
 }
