@@ -52,6 +52,7 @@ class UsersResource extends JsonResource
             'email' => $this->email,
             'status' => (boolean)$this->status,
             'userType' =>  $userType,
+            'userTypeVal' => (string)$this->user_type,
             'club' => $data,
             'personnelId' => $personnel
         ];

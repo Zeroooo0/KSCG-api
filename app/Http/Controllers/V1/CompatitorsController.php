@@ -184,12 +184,29 @@ class CompatitorsController extends Controller
             return $this->error('', 'Takmičar posjeduje prijave, zamolite administratora da promijeni podatak!', 403);
         }
         
-        $competitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status', 'belt']));
+        $competitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status', 'belt', 'country']));
 
         if ($request->has('lastName')) {
             $competitor->update([
                 'last_name' => $request->lastName
             ]);
+        }
+        if ($request->has('country')) {
+            $competitor->update([
+                'country' => $request->country
+            ]);
+            if($competitor->country == 'Crna Gora') {
+                $country = 'MNE';
+                $kscgNewNo = '100000' + $competitor->id;
+                $kscgId = $country . substr($kscgNewNo, 1);
+                $competitor->update(['kscg_compatitor_id'=> $kscgId]);
+            }
+            if($competitor->country != 'Crna Gora') {
+                $world = 'WKF';
+                $kscgNewNo = '100000' + $competitor->id;
+                $kscgId = $world . substr($kscgNewNo, 1);
+                $competitor->update(['kscg_compatitor_id'=> $kscgId]);
+            }
         }
         if ($request->has('dateOfBirth')) {
             $competitor->update([

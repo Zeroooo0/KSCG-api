@@ -69,9 +69,16 @@ class SpecialPersonalsResource extends JsonResource
         if($this->role == 3) {
             $role = 'Uprava';
         } 
+        $kscgNo = "100000";
+        $code = 'KSCG';
+        $kscgNewNo = $kscgNo  + $this->id;
+        $kscgId = $code . substr($kscgNewNo, 1);
+      
+        
 
         return [
             'id' => (string)$this->id,
+            'kscgId' => $kscgId,
             'name' => $this->name,
             'lastName' => $this->last_name,
             'combinedName' => $this->name . ' ' . $this->last_name,
@@ -79,6 +86,7 @@ class SpecialPersonalsResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone_number,
             'role' => $role,
+            'roleVal' => (string)$this->role,
             'gender' => (string)$this->gender,
             'status' => (boolean)$this->status,
             'coachIn' => $roleInClub,

@@ -62,6 +62,7 @@ Route::group(['prefix' => 'v1/public'], function () {
 // Verify email
 Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,club,commission,editor,judge']], function () {    
     Route::resource('/users', UsersController::class);
+    Route::post('/user-update/{user}', [UsersController::class, 'update']);
     Route::get('/belts', [ReusableDataController::class, 'index']);
 });
 Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,commission,editor']], function () {    
@@ -87,6 +88,7 @@ Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,c
     Route::get('/seminar-applications/{seminar}', [SeminarApplicationController::class, 'index']);
     Route::post('/seminar-applications/{seminar}', [SeminarApplicationController::class, 'store']);
     Route::patch('/seminar-applications/{seminarMorphApplication}', [SeminarApplicationController::class, 'update']);
+    Route::delete('/seminar-applications/{seminarMorphApplication}', [SeminarApplicationController::class, 'destroy']);
     Route::post('/form-personnel/{personnel}', [SpecialPersonnelFormsController::class, 'store']);
     
     Route::resource('/seminars', SeminarController::class);

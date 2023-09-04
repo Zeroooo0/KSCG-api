@@ -700,9 +700,9 @@ class RegistrationsController extends Controller
             }
             
         }
-
+        $clubId = $registration->club_id;
         $registration->delete();
-        $this->calculateResults($registration->compatition_id , [], 'registrations');
+        $this->calculateResults($registration->compatition_id , [$clubId], 'registrations');
         return $this->success('', 'Uspješno obrisana registracija!');
     }
     public function calculateResultsNow(Compatition $compatition) {

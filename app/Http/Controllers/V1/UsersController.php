@@ -63,6 +63,7 @@ class UsersController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        
         if(Auth::user()->user_type != 2){
             return $this->restricted('', 'Not alowed!', 403);
         }
@@ -117,31 +118,42 @@ class UsersController extends Controller
             return $this->restricted('', 'Not alowed!', 403);
         }
         if(Auth::user()->user_type != 2) {
-            if($request->user_type != null || $request->status != 0) {
+            if($request->status != 0) {
                 return $this->restricted('', 'Not alowed!', 403);
             }
         }
-        $user->update($request->except(['password', 'status', 'userType']));
+        $user->update($request->except(['password', 'status', 'userType', 'email']));
         if($request->has('status')) {
-            $user->update(['status' => $request->status]);
-            if($user->club != null) {
-                $user->club->update(['status' => $request->status]);
+            if(Auth::user()->user_type == 2 || (Auth::user()->user_type == 1 && Auth::user()->status == 1)) {
+                $user->update(['status' => $request->status]);
+                if($user->club != null) {
+                    $user->club->update(['status' => $request->status]);
+                }
             }
         }
-        if($request->has('password')) {
-            if(Auth::user()->user_type == 2) {
-                $user->update([
-                    'password' => Hash::make($request->password),
-                    'passwordConfirmation' => Hash::make($request->passwordConfirmation)
-                ]);
-            } 
+        if($request->has('password') && $request->password != null) {
+            $user->update([
+                'password' => Hash::make($request->password),
+                'passwordConfirmation' => Hash::make($request->passwordConfirmation)
+            ]);
             return $this->success('', 'Uspješno izmjenjen korisnik!');
+        }
+        if($request->has('email')) {
+            $emailCheck = User::where('email', $request->email)->get()->count();
+            if($user->email == $request->email && $emailCheck > 1) {
+                return $this->error('', 'Ovaj mail je zauzet!', 401);
+            }
+            $user->update([
+                'email' => $request->email
+            ]);
         }
         if($request->has('userType')) {
             if($user->user_type == 2) {
                 return $this->error('','Nije moguće degradirati administratora!',403);
             }
-            $user->update(['user_type' => $request->userType]);
+            if(Auth::user()->user_type == 2 || (Auth::user()->user_type == 1 && Auth::user()->status == 1)) {
+                $user->update(['user_type' => $request->userType]);
+            }
         }
         
         

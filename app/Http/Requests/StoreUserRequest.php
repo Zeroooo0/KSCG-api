@@ -31,7 +31,6 @@ class StoreUserRequest extends FormRequest
             'password' => ['min:6','required_with:passwordConfirmation', 'same:passwordConfirmation', Rules\Password::defaults()],
             'passwordConfirmation' => ['min:6'],
             'userType' => ['integer', 'max:4'],
-            'personnelId' => [ 'exists:special_personals,id']
         ];
     }
 }

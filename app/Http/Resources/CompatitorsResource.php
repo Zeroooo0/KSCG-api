@@ -56,7 +56,7 @@ class CompatitorsResource extends JsonResource
             'kscgId' => $this->kscg_compatitor_id,
             'name' => $this->name,
             'lastName' => $this->last_name,
-            'gender' => $this->gender,
+            'gender' => (string)$this->gender,
             'jmbg' => $jmbg,
             'country' => $this->country,
             'birthDay' => date($this->date_of_birth),
