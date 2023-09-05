@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use ImagesResize;
 
 class SpecialPersonalsController extends Controller
 {
@@ -129,8 +130,12 @@ class SpecialPersonalsController extends Controller
             ]);
         }
 
-        if($request->image != null){
-            $path = Storage::putFile('special-personal-image', $request->image);
+        if($request?->image != null){
+            $tempImage = $request->image;
+            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $storePath = storage_path('app/special-personal-image/') . $image_name;
+            $path = 'special-personal-image/' . $image_name;
+            ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
             $special_personal->image()->create([
                 'url' => $path
             ]);

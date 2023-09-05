@@ -14,6 +14,7 @@ use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use ImagesResize;
 
 class PostsController extends Controller
 {
@@ -74,7 +75,12 @@ class PostsController extends Controller
         $news->update(['slug' => $news->slug . '-' . $news->id]);
 
         if($request->has('image')){
-            $path = Storage::putFile('post-image', $request->image);
+            $tempImage = $request->image;
+            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $storePath = storage_path('app/post-image/') . $image_name;
+            $path = 'post-image/' . $image_name;
+            ImagesResize::make($tempImage->getRealPath())->resize(1920, 1080)->save($storePath);
+            
             $image = $news->images()->create([
                 'url' => $path
             ]);
@@ -122,7 +128,11 @@ class PostsController extends Controller
         $request->validated($request->all());
         $news->update($request->except('image'));
         if($request->has('image')){
-            $path = Storage::putFile('post-image', $request->image);
+            $tempImage = $request->image;
+            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $storePath = storage_path('app/post-image/') . $image_name;
+            $path = 'post-image/' . $image_name;
+            ImagesResize::make($tempImage->getRealPath())->resize(1920, 1080)->save($storePath);
             $image = $news->images()->create([
                 'url' => $path
             ]);

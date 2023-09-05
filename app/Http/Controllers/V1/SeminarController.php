@@ -10,7 +10,7 @@ use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
+use ImagesResize;
 class SeminarController extends Controller
 {
     use HttpResponses;
@@ -72,7 +72,11 @@ class SeminarController extends Controller
 
         ]);
         if($request->has('image') && $request->image != null) {
-            $path = Storage::putFile('seminars-image', $request->image);
+            $tempImage = $request->image;
+            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $storePath = storage_path('app/seminars-image/') . $image_name;
+            $path = 'seminars-image/' . $image_name;
+            ImagesResize::make($tempImage->getRealPath())->resize(595, 842)->save($storePath);
             $seminar->image()->create([
                 'url' => $path
             ]);

@@ -25,7 +25,7 @@ use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
+use ImagesResize;
 class CompatitionsController extends Controller
 {
     use HttpResponses;
@@ -172,7 +172,11 @@ class CompatitionsController extends Controller
             'type' => $request->type,
         ]);
         if($request->image != null) {
-            $path = Storage::putFile('compatition-image', $request->image);
+            $tempImage = $request->image;
+            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $storePath = storage_path('app/compatition-image/') . $image_name;
+            $path = 'compatition-image/' . $image_name;
+            ImagesResize::make($tempImage->getRealPath())->resize(595, 842)->save($storePath);
             $compatition->image()->create([
                 'url' => $path
             ]);

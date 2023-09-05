@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
+use ImagesResize;
 class CompatitorsController extends Controller
 {
     use HttpResponses;
@@ -131,7 +131,11 @@ class CompatitorsController extends Controller
         }
 
         if($request->has('image')) {
-            $path = Storage::putFile('compatitor-image', $request->image);
+            $tempImage = $request->image;
+            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $storePath = storage_path('app/compatitor-image/') . $image_name;
+            $path = 'compatitor-image/' . $image_name;
+            ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
             $compatitor->image()->create([
                 'url' => $path
             ]);

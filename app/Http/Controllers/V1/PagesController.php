@@ -13,7 +13,7 @@ use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
+use ImagesResize;
 class PagesController extends Controller
 {
     use HttpResponses;
@@ -59,7 +59,11 @@ class PagesController extends Controller
         ]);
 
         if($request->has('image')){
-            $path = Storage::putFile('post-image', $request->image);
+            $tempImage = $request->image;
+            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $storePath = storage_path('app/page-image/') . $image_name;
+            $path = 'page-image/' . $image_name;
+            ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
             $image = $page->images()->create([
                 'url' => $path
             ]);
@@ -98,7 +102,11 @@ class PagesController extends Controller
             'updated_at'=> date('Y:m:d H:i:s')
         ]);
         if($request->has('image')){
-            $path = Storage::putFile('post-image', $request->image);
+            $tempImage = $request->image;
+            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $storePath = storage_path('app/page-image/') . $image_name;
+            $path = 'page-image/' . $image_name;
+            ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
             $image = $page->images()->create([
                 'url' => $path
             ]);

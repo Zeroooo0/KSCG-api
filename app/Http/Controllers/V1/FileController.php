@@ -12,7 +12,6 @@ use App\Http\Resources\DocumentsResource;
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\PagesResource;
 use App\Http\Resources\PostsResource;
-use App\Http\Resources\RolesResource;
 use App\Http\Resources\SpecialPersonalsResource;
 use App\Models\Club;
 use App\Models\Compatition;
@@ -27,7 +26,7 @@ use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
-
+use ImagesResize;
 class FileController extends Controller
 {
     use HttpResponses;
@@ -46,9 +45,20 @@ class FileController extends Controller
         if(Auth::user()->user_type == 0 && Auth::user()->club->id != $compatitor->club_id) {
             return $this->error('', 'Mozete da promijenite sliku samo članovima kluba!', 403);
         }
+        
         $image = $compatitor->image()->get()->first();
 
-        $path = Storage::putFile('compatitor-image', $request->image);
+        //resize Image
+        $tempImage = $request->image;
+        $image_name = time().'_'.$tempImage->getClientOriginalName();
+        $storePath = storage_path('app/compatitor-image/') . $image_name;
+        $path = 'compatitor-image/' . $image_name;
+        ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
+        
+
+ 
+        
+
 
         if($image != null) {
             $url = $compatitor->image()->get()->first()->url;
@@ -72,8 +82,12 @@ class FileController extends Controller
         }
         $image = $club->image()->get()->first();
 
-        $path = Storage::putFile('club-image', $request->image);
-
+   
+        $tempImage = $request->image;
+        $image_name = time().'_'.$tempImage->getClientOriginalName();
+        $storePath = storage_path('app/club-image/') . $image_name;
+        $path = 'club-image/' . $image_name;
+        ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
         
         if($image != null) {
             $url = $club->image()->get()->first()->url;
@@ -94,7 +108,12 @@ class FileController extends Controller
         }
         $image = $compatition->image()->get()->first();
 
-        $path = Storage::putFile('club-image', $request->image);
+
+        $tempImage = $request->image;
+        $image_name = time().'_'.$tempImage->getClientOriginalName();
+        $storePath = storage_path('app/compatition-image/') . $image_name;
+        $path = 'compatition-image/' . $image_name;
+        ImagesResize::make($tempImage->getRealPath())->resize(595, 842)->save($storePath);
 
         
         if($image != null) {
@@ -117,8 +136,13 @@ class FileController extends Controller
         }
         $image = $personal->image()->get()->first();
 
-        $path = Storage::putFile('special-personal-image', $request->image);
+
         
+        $tempImage = $request->image;
+        $image_name = time().'_'.$tempImage->getClientOriginalName();
+        $storePath = storage_path('app/special-personal-image/') . $image_name;
+        $path = 'special-personal-image/' . $image_name;
+        ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
         
         if($image != null) {
             $url = $personal->image()->get()->first()->url;
@@ -137,7 +161,13 @@ class FileController extends Controller
         
         $request->safe()->except('coverImage');
        
-        $path = Storage::putFile('post-image', $request->image);
+  
+
+        $tempImage = $request->image;
+        $image_name = time().'_'.$tempImage->getClientOriginalName();
+        $storePath = storage_path('app/post-image/') . $image_name;
+        $path = 'post-image/' . $image_name;
+        ImagesResize::make($tempImage->getRealPath())->resize(1920, 1080)->save($storePath);
         
         $image = $news->images()->create([
             'url' => $path
@@ -153,7 +183,12 @@ class FileController extends Controller
     public function addPageImage(StoreImageRequest $request, Page $page) 
     {
         $request->validated($request->all());
-        $path = Storage::putFile('page-image', $request->image);
+
+        $tempImage = $request->image;
+        $image_name = time().'_'.$tempImage->getClientOriginalName();
+        $storePath = storage_path('app/page-image/') . $image_name;
+        $path = 'page-image/' . $image_name;
+        ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
         
         $image = $page->images()->create([
             'url' => $path
