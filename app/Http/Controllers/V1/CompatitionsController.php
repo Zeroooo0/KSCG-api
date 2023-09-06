@@ -215,26 +215,47 @@ class CompatitionsController extends Controller
      */
     public function update(UpdateCompatitionRequest $request, Compatition $competition)
     {
+        if($competition->registrations->count() > 0 && $request->hasAny(['isAbroad', 'priceSingle', 'priceTeam','applicationLimits','categoryStartPoint','categories'])) {
+            return $this->error('', 'Takmičenje ima prijava pa nije moguće mijenjati neke podatke', 401);
+        }
+        if(Auth::user()->user_type != 2 || Auth::user()->user_type == 1 && Auth::user()->status == 0 ) {
+            return $this->error('', 'Ove izmjene mogu raditi samo administratori i komisija sa aktivnim statusom!', 401);
+        }
         $request->validated($request->all());
-        $competition->update($request->except(['hostName', 'startTimeDate', 'registrationDeadline', 'priceSingle', 'priceTeam', 'registrationStatus', 'status']));
+        $competition->update($request->except(['hostName', 'startTimeDate', 'registrationDeadline', 'priceSingle', 'priceTeam', 'registrationStatus', 'status', 'document']));
+        if($request?->document != null) {
+            $path = Storage::putFile('compatition-docs', $request->document);
+            $competition->document()->create([
+                'name' => "Bilten $request->name",
+                'doc_link' => $path
+            ]);
+        }
+        if($request?->image != null) {
+            $tempImage = $request->image;
+            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $storePath = storage_path('app/compatition-image/') . $image_name;
+            $path = 'compatition-image/' . $image_name;
+            ImagesResize::make($tempImage->getRealPath())->resize(595, 842)->save($storePath);
+            $competition->image()->create([
+                'url' => $path
+            ]);
+        };
         $request->has('hostName') ? $competition->update(['host_name' => $request->hostName]) : null;
         $request->has('startTimeDate') ? $competition->update(['start_time_date' => $request->startTimeDate]) : null;
         $request->has('registrationDeadline') ? $competition->update(['registration_deadline' => $request->registrationDeadline]) : null;
-        $request->has('priceSingle') ? $competition->update(['price_single' => $request->priceSingle]) : null;
-        $request->has('priceTeam') ? $competition->update(['price_team' => $request->priceTeam]) : null;
-        $request->has('registrationStatus') ? $competition->update(['registration_status' => $request->registrationStatus]) : null;
-        $request->has('status') && Auth::user()->user_type != 0 ? $competition->update(['status' => $request->status]) : null;
-        $request->has('applicationLimits')? $competition->update(['application_limits' => $request->applicationLimits]) : null;
-        $request->has('category_start_point')? $competition->update(['category_start_point' => $request->applicationLimits]) : null;
-        $request->has('is_abroad')? $competition->update(['is_abroad' => $request->isAbroad]) : null;
+        $request->has('status') && Auth::user()->user_type != 0 ? $competition->update(['status' => $request->status, 'registration_status' => $request->status]) : null;
         $request->has('rematch')? $competition->update(['rematch' => $request->rematch]) : null;
         $request->has('type')? $competition->update(['type' => $request->type]) : null;
-
+        $request->has('isAbroad')? $competition->update(['is_abroad' => $request->isAbroad]) : null;
+        $request->has('priceSingle') ? $competition->update(['price_single' => $request->priceSingle]) : null;
+        $request->has('priceTeam') ? $competition->update(['price_team' => $request->priceTeam]) : null;
+        $request->has('applicationLimits')? $competition->update(['application_limits' => $request->applicationLimits]) : null;
+        $request->has('categoryStartPoint')? $competition->update(['category_start_point' => $request->applicationLimits]) : null;
         if($request->has('categories') && $competition->registrations->count() == 0) {
             $categories = array_filter(explode(',', $request->categories));
             $competition->categories()->sync($categories);
         }
-
+        
         return new CompatitionsResource($competition);
     }
 

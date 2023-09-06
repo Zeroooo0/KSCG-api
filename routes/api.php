@@ -151,6 +151,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/club-competitors/{club}', [ReusableDataController::class, 'clubCompatitors']);
     //COMPATITION
     Route::resource('/competitions', CompatitionsController::class);
+    Route::post('/competition-update/{competition}', [CompatitionsController::class, 'update']);
     Route::get('/competition-roles/{competition}', [ReusableDataController::class, 'competitionRoles']);
     Route::get('/registered-clubs', [ReusableDataController::class, 'registeredClubs']);
     Route::post('/rebuild-pool', [PoolsController::class, 'rebuildCategoryPool']);
