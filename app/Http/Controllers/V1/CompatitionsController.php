@@ -224,6 +224,10 @@ class CompatitionsController extends Controller
         $request->validated($request->all());
         $competition->update($request->except(['hostName', 'startTimeDate', 'registrationDeadline', 'priceSingle', 'priceTeam', 'registrationStatus', 'status', 'document']));
         if($request?->document != null) {
+            foreach($competition->document as $document) {
+                Storage::delete($document->doc_link);
+                $document->delete();
+            }            
             $path = Storage::putFile('compatition-docs', $request->document);
             $competition->document()->create([
                 'name' => "Bilten $request->name",
