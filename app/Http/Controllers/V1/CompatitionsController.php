@@ -218,7 +218,7 @@ class CompatitionsController extends Controller
         if($competition->registrations->count() > 0 && $request->hasAny(['isAbroad', 'priceSingle', 'priceTeam','applicationLimits','categoryStartPoint','categories'])) {
             return $this->error('', 'Takmičenje ima prijava pa nije moguće mijenjati neke podatke', 401);
         }
-        if(Auth::user()->user_type != 2 || Auth::user()->user_type == 1 && Auth::user()->status == 0 ) {
+        if(Auth::user()->user_type != 2 || (Auth::user()->user_type == 1 && Auth::user()->status == 0) ) {
             return $this->error('', 'Ove izmjene mogu raditi samo administratori i komisija sa aktivnim statusom!', 401);
         }
         $request->validated($request->all());
