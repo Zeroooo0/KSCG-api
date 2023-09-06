@@ -38,7 +38,7 @@ class UpdateCompatitionRequest extends FormRequest
             'categories' =>['string'],
             'tatamiNo' =>['numeric'],
             'applicationLimits' => ['integer', 'max:3'], Rule::in([1, 2]),
-            'categoryStartPoint' => ['integer', 'max:3'], Rule::in([1, 2]),
+            'categoryStartPoint' => ['integer', 'max:3'], Rule::in([0, 1]),
             'image' => ['mimes:jpg,jpeg,svg,gif,png', 'max:20480'],
             'document' => ['mimes:doc,docx,pdf,xml,html', 'max:20480' ],
             'isAbroad' => ['boolean'],
