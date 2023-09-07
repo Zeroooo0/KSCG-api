@@ -80,7 +80,7 @@ class CategoriesController extends Controller
             'match_lenght' => $request->matchLenght,      
             'repesaz' => $request->rematch,      
             'years_from' => $request->yearsFrom,  
-            'years_to' => $request->yearsTuo,  
+            'years_to' => $request->yearsTo,  
             'status' => $request->status,
             'is_official' => $request->isOfficial        
         ]);
