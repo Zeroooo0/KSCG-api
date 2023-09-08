@@ -107,7 +107,9 @@ class RegistrationsController extends Controller
                     $yearCompetitor = date('Y' ,strtotime($competitor->date_of_birth));
                     $yearCategory = date('Y' ,strtotime($competitorsCategory->first()->date_from));
                     $substractYears = 1 + ($yearCompetitor - $yearCategory);
-                    
+                }
+                if($compatitorsYears >= 13) {
+                    $substractYears = 2;
                 }
                 $competitorNextCatDate =  date( 'Y-m-d' ,strtotime(" - $substractYears year", strtotime($competitor->date_of_birth)));
                 $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitorNextCatDate)->where('date_to','>=', $competitorNextCatDate);
@@ -206,6 +208,9 @@ class RegistrationsController extends Controller
                     $yearCategory = date('Y' ,strtotime($competitorsCategory->first()->date_from));
                     $substractYears = 1 + ($yearCompetitor - $yearCategory);
                     
+                }
+                if($compatitorsYears >= 13) {
+                    $substractYears = 2;
                 }
                 $competitorNextCatDate =  date( 'Y-m-d' ,strtotime(" - $substractYears year", strtotime($competitor->date_of_birth)));
                 $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitorNextCatDate)->where('date_to','>=', $competitorNextCatDate);
