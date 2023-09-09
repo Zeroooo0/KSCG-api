@@ -10,7 +10,7 @@ use App\Models\CompatitionClubsResults;
 trait CompatitionClubsResultsTrait {
 
 
-    public function calculateResults($compatitionId, $clubIds = [], $calculationType = 'registrations') {
+    public function calculateResults(string $compatitionId, array $clubIds = [], string $calculationType = 'registrations') {
         $compatition = Compatition::where('id', $compatitionId)->first();
         $compatitionResults = $compatition->compatitionClubsResults;
         $compatitionRegistrations = $compatition->registrations;
@@ -57,7 +57,6 @@ trait CompatitionClubsResultsTrait {
                             'compatition_type' => $compatition->type,
                             'club_id' => $clubId
                         ]);
-                        continue;
                     }
                     
                     $resultsData->update([

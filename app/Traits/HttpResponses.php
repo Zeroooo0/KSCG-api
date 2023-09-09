@@ -4,7 +4,7 @@ namespace App\Traits;
 
 trait HttpResponses {
 
-    public function success($data, $message = null, $code = 200) 
+    public function success($data, $message = null, int $code = 200) 
     {
         return response()->json([
             'status' => 'success',
@@ -12,7 +12,7 @@ trait HttpResponses {
             'data' => $data
         ], $code);
     }
-    public function error($data, $message = null, $code) 
+    public function error($data, $message = null, int $code = 401) 
     {
         return response()->json([
             'status' => 'error',
@@ -20,7 +20,7 @@ trait HttpResponses {
             'data' => $data
         ], $code);
     }
-    public function restricted($data, $message = null, $code) 
+    public function restricted($data, $message = null, int $code = 401) 
     {
         return response()->json([
             'status' => 'error',
