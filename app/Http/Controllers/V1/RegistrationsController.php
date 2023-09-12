@@ -150,7 +150,10 @@ class RegistrationsController extends Controller
             $competition->update(['registration_status' => 0]);
         }
         if(Auth::user()->user_type != 2 && $competition->registration_status == 0) {
-            return $this->error('', 'Zatvorene su prijave!', 403);
+            return $this->error('', [['message' => 'Zatvorene su prijave!']], 403);
+        }
+        if(Auth::user()->user_type != 2 && Auth::user()->club->status == 0) {
+            return $this->error('', [['message' => 'Vaš nalog nije aktivan!']], 403);
         }
         //competition limits and data
         $applicationLimit = $competition->application_limits;

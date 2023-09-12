@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Models\Category;
-use App\Models\Club;
 use App\Models\Compatition;
 use App\Models\CompatitionClubsResults;
 
