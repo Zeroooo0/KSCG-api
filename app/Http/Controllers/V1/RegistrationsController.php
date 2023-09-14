@@ -573,7 +573,8 @@ class RegistrationsController extends Controller
      */
     public function destroy(Registration $registration)
     {
-        if(Auth::user()->user_type != 2 && $registration->competition->registration_status == 0) {
+    
+        if(Auth::user()->user_type != 2 && $registration->compatition->registration_status == 0) {
             $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
         }
         $category = Category::where('id', $registration->category_id)->first();
