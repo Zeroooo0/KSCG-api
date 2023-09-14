@@ -102,12 +102,11 @@ class RegistrationsController extends Controller
             }
             if($compatitorsYears < 14 ) {                
                 $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
-                $substractYears = 1;
-                if($compatitorsYears < 7) {
-                    $yearCompetitor = date('Y' ,strtotime($competitor->date_of_birth));
-                    $yearCategory = date('Y' ,strtotime($competitorsCategory->first()->date_from));
-                    $substractYears = 1 + ($yearCompetitor - $yearCategory);
-                }
+                
+                $yearCompetitor = date('Y' ,strtotime($competitor->date_of_birth));
+                $yearCategory = date('Y' ,strtotime($competitorsCategory->first()->date_from));
+                $substractYears = 1 + ($yearCompetitor - $yearCategory);
+                
                 if($compatitorsYears >= 13) {
                     $substractYears = 2;
                 }
@@ -205,13 +204,11 @@ class RegistrationsController extends Controller
             }
             if($compatitorsYears < 14 ) {                
                 $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
-                $substractYears = 1;
-                if($compatitorsYears < 7) {
-                    $yearCompetitor = date('Y' ,strtotime($competitor->date_of_birth));
-                    $yearCategory = date('Y' ,strtotime($competitorsCategory->first()->date_from));
-                    $substractYears = 1 + ($yearCompetitor - $yearCategory);
-                    
-                }
+                
+                $yearCompetitor = date('Y' ,strtotime($competitor->date_of_birth));
+                $yearCategory = date('Y' ,strtotime($competitorsCategory->first()->date_from));
+                $substractYears = 1 + ($yearCompetitor - $yearCategory);
+                
                 if($compatitorsYears >= 13) {
                     $substractYears = 2;
                 }

@@ -119,7 +119,9 @@ class CategoriesController extends Controller
         }
         $request->validated($request->all());
         
-        $category->update($request->except(['kateOrKumite', 'dateFrom', 'dateTo']));
+        $category->update($request->all());
+
+        $request->has('categoryName') ? $category->update(['category_name' => $request->categoryName]) : null;
         $request->has('kataOrKumite') ? $category->update(['kata_or_kumite' => $request->kataOrKumite]) : null;
         $request->has('dateFrom') ? $category->update(['date_from' => $request->dateFrom])  : null;
         $request->has('dateTo') ? $category->update(['date_to' => $request->dateTo])  : null;
