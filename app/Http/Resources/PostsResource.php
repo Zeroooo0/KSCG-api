@@ -20,8 +20,8 @@ class PostsResource extends JsonResource
         if($this->user_id != null) {
             $userData = [
                 'id' => (string)$this->user->id,
-                'name' => $this->user->name,
-                'lastName' => $this->user->last_name
+                'name' => 'Karate Savez',
+                'lastName' => 'Crne Gore'
             ];
         }
         $image = null;

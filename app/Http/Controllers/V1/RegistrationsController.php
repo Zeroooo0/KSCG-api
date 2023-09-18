@@ -104,7 +104,7 @@ class RegistrationsController extends Controller
                 $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
                 
                 $yearCompetitor = date('Y' ,strtotime($competitor->date_of_birth));
-                $yearCategory = date('Y' ,strtotime($competitorsCategory->first()->date_from));
+                $yearCategory = date('Y' ,strtotime($competitorsCategory->first()?->date_from));
                 $substractYears = 1 + ($yearCompetitor - $yearCategory);
                 
                 if($compatitorsYears >= 13) {
@@ -206,7 +206,7 @@ class RegistrationsController extends Controller
                 $competitorsCategory = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitor->date_of_birth)->where('date_to','>=', $competitor->date_of_birth)->sortByDesc('date_from');
                 
                 $yearCompetitor = date('Y' ,strtotime($competitor->date_of_birth));
-                $yearCategory = date('Y' ,strtotime($competitorsCategory->first()->date_from));
+                $yearCategory = date('Y' ,strtotime($competitorsCategory->first()?->date_from));
                 $substractYears = 1 + ($yearCompetitor - $yearCategory);
                 
                 if($compatitorsYears >= 13) {
