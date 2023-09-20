@@ -215,7 +215,7 @@ class CompatitionsController extends Controller
      */
     public function update(UpdateCompatitionRequest $request, Compatition $competition)
     {
-        if($competition->registrations->count() > 0 && $request->hasAny(['isAbroad', 'priceSingle', 'priceTeam','applicationLimits','categoryStartPoint','categories'])) {
+        if($competition->registrations->count() > 0 && $request->hasAny(['isAbroad', 'priceSingle', 'priceTeam','applicationLimits','categoryStartPoint'])) {
             return $this->error('', 'Takmičenje ima prijava pa nije moguće mijenjati neke podatke', 401);
         }
         if(Auth::user()->user_type != 2 || (Auth::user()->user_type == 1 && Auth::user()->status == 0) ) {
