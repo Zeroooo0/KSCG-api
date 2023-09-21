@@ -255,7 +255,7 @@ class CompatitionsController extends Controller
         $request->has('priceTeam') ? $competition->update(['price_team' => $request->priceTeam]) : null;
         $request->has('applicationLimits')? $competition->update(['application_limits' => $request->applicationLimits]) : null;
         $request->has('categoryStartPoint')? $competition->update(['category_start_point' => $request->categoryStartPoint]) : null;
-        if($request->has('categories') && $competition->registrations->count() == 0) {
+        if($request->has('categories')) {
             $categories = array_filter(explode(',', $request->categories));
             $competition->categories()->sync($categories);
         }
