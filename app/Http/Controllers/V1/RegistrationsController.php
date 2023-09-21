@@ -163,7 +163,7 @@ class RegistrationsController extends Controller
         $competitor = Compatitor::where('id', $request->competitorId)->first();
         $compatitorsBhirtDay = new DateTime($competitor->date_of_birth);
         $compatitorsYears = $compatitorsBhirtDay->diff($competitionStartTime)->y;
-
+        $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->country == 'Crna Gora' ? $competitor->status : 1;
         $categories = $competition->categories->whereIn('id', $request->categories);
         
 
@@ -255,7 +255,7 @@ class RegistrationsController extends Controller
             $noErrors = true;
             
             
-            if($competitor->club->country == 'Montenegro' && $competitor->club->status == 0 || $competitor->status == 0) {
+            if($competitor->club->country == 'Montenegro' && $competitor->club->status == 0 || $competitorStatus == 0) {
                 $error['message'] = "Takmičaru $competitor->name $competitor->last_name nema validan status!";
                 $responseErrorMessage[] = $error;
                 $noErrors = false;
@@ -400,6 +400,7 @@ class RegistrationsController extends Controller
         $competitorsIds = $request->competitors;
         $competitiors = Compatitor::whereIn('id',$competitorsIds)->get();
         $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
+        $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->country == 'Crna Gora' ? $competitor->status : 1;
         $arrayOfRegistrations = [];
         $arrayOfClubs = [];
         $responseErrorMessage = [];
@@ -464,7 +465,7 @@ class RegistrationsController extends Controller
                 $generationError = true;
             }
 
-            if($competitor->club->country == 'Montenegro' &&  $competitor->club->status == 0 || $competitor->status == 0) {
+            if($competitor->club->country == 'Montenegro' &&  $competitor->club->status == 0 || $competitorStatus == 0) {
                 $error['message'] = "Takmičaru $competitor->name $competitor->last_name nema validan status!";
                 $responseErrorMessage[] = $error;
             }
