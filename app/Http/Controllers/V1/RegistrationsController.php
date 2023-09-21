@@ -163,7 +163,7 @@ class RegistrationsController extends Controller
         $competitor = Compatitor::where('id', $request->competitorId)->first();
         $compatitorsBhirtDay = new DateTime($competitor->date_of_birth);
         $compatitorsYears = $compatitorsBhirtDay->diff($competitionStartTime)->y;
-        $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->country == 'Crna Gora' ? $competitor->status : 1;
+        $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->club->country == 'Crna Gora' ? $competitor->status : 1;
         $categories = $competition->categories->whereIn('id', $request->categories);
         
 
@@ -400,7 +400,7 @@ class RegistrationsController extends Controller
         $competitorsIds = $request->competitors;
         $competitiors = Compatitor::whereIn('id',$competitorsIds)->get();
         $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
-        $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->country == 'Crna Gora' ? $competitor->status : 1;
+        $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->club->country == 'Crna Gora' ? $competitor->status : 1;
         $arrayOfRegistrations = [];
         $arrayOfClubs = [];
         $responseErrorMessage = [];
