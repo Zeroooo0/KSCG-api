@@ -161,11 +161,7 @@ class FileController extends Controller
 
     public function addPostImage(StoreImageRequest $request, Post $news) 
     {
-        
         $request->safe()->except('coverImage');
-       
-  
-
         $tempImage = $request->image;
         $image_name = time().'_'.$tempImage->getClientOriginalName();
         $storePath = storage_path('app/post-image/') . $image_name;
