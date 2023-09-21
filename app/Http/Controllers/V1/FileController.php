@@ -103,8 +103,11 @@ class FileController extends Controller
     public function setCompatitionImage(StoreImageRequest $request, Compatition $compatition) 
     {
         $request->safe()->except('coverImage');
-        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
+        if(Auth::user()->user_type != 2 &&  Auth::user()->status == 0) {
             return $this->error('', 'Vaš nalog je suspendovan Kontatirajte KSCG!', 403);
+        }
+        if(Auth::user()->user_type == 0) {
+            return $this->error('', 'Klubovi ne mogu promijeniti sliku takmicenja!', 403);
         }
         $image = $compatition->image()->get()->first();
 
