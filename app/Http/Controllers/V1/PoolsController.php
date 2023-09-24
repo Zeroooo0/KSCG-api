@@ -242,7 +242,7 @@ class PoolsController extends Controller
             $winnerRegistration->update(['position' => null]);
         }
        
-        if($pool->pool_type == 'SF' && $compatition->rematch == 0 && $category->repesaz == 0) {
+        if($pool->pool_type == 'SF' && $compatition->rematch == 0) {
             $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
             $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
             $winnerRegistration->update(['position' => null]);
@@ -391,7 +391,7 @@ class PoolsController extends Controller
         }
 
        
-        if($poolTeam->pool_type == 'SF' && $compatition->rematch == 0 && $category->repesaz == 0) {
+        if($poolTeam->pool_type == 'SF' && $compatition->rematch == 0 ) {
             $poolTeam->looser_id != 'null' ? $looserResult =  1 : $looserResult = null;
 
             if($request->looserId != 'null') {
