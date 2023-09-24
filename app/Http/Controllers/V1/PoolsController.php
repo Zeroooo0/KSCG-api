@@ -273,7 +273,7 @@ class PoolsController extends Controller
                 $winnerRegistration->update(['status' => 1]);
                 $looserRegistration->update(['status' => $looserStatus]);
             }
-            if($compatition->rematch == 0 && $category->repesaz == 0) {
+            if($compatition->rematch == 0) {
                 $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
                 $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
             }
@@ -458,7 +458,7 @@ class PoolsController extends Controller
                 }
 
             }
-            if($compatition->rematch == 0 && $category->repesaz == 0 ) {
+            if($compatition->rematch == 0 ) {
                 if($request->looserId != 'null'){
                     foreach($looserRegistration as $teamReg) {
                         $teamReg->update(['position' => $looserResult]);
