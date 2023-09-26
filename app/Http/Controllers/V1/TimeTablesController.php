@@ -7,7 +7,10 @@ use App\Filters\TimeTableFilter;
 use App\Http\Requests\StoreTimeTableMassRequest;
 use App\Http\Requests\UpdateTimeTableRequest;
 use App\Http\Resources\TimeTableResource;
+use App\Models\Category;
 use App\Models\Compatition;
+use App\Models\Pool;
+use App\Models\PoolTeam;
 use App\Models\TimeTable;
 use App\Traits\HttpResponses;
 use App\Traits\LenghtOfCategory;
@@ -98,6 +101,8 @@ class TimeTablesController extends Controller
 
     public function updateTime(Request $request, TimeTable $time_table) 
     {
+
+        
         if($request->has('status')) {
 
             if($request->status == 1 && $time_table->status < 1) {
@@ -116,5 +121,36 @@ class TimeTablesController extends Controller
 
         return  $this->success($time_table, 'Uspješno ispravljen Time Table.');
         
+    }
+    public function updateTimeTablePoolManual(Request $request, TimeTable $time_table) {
+        $request->validate([
+            'competitors' => 'array|required'
+        ]);
+        $isSoloCategory = Category::where('id', $time_table->category_id)->first()->solo_or_team;
+        if($isSoloCategory) {
+            $pools = Pool::where('compatition_id', $time_table->category_id)->where('category_id', $time_table->category_id)->get();
+
+            foreach($pools as $i=>$pool ) {
+                $first = $i * 2;
+                $second = $first + 1;
+                $pool->update([
+                    'registration_one' => $request->competitors[$first],
+                    'registration_two' => $request->competitors[$second]
+                ]);
+            }
+            return $this->success('', 'Uspješno dopunjen Time Table.');
+        } else{
+            $teamPools = PoolTeam::where('compatition_id', $time_table->category_id)->where('category_id', $time_table->category_id)->get();
+
+            foreach($teamPools as $i=>$pool) {
+                $first = $i * 2;
+                $second = $first + 1;
+                $pool->update([
+                    'team_one' => $request->competitors[$first],
+                    'team_two' => $request->competitors[$second]
+                ]);
+            }
+            return $this->success('', 'Uspješno dopunjen Time Table.');
+        }
     }
 }

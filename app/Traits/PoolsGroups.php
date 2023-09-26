@@ -145,4 +145,23 @@ trait PoolsGroups {
         }
         return $sortedGroups;
     }
+    public function roundRobin($registrationsNo, $catMatchLenght, $catTimeStart, $objectSmall, $object) 
+    {
+        if($registrationsNo == 3 || $registrationsNo == 4){
+            $combinations = 0;
+            switch($registrationsNo) {
+                case 3:
+                    $combinations = 3;
+                    $arrOfIndexes = [0,1,0,2,1,2];
+                    break;
+                case 4:
+                    $combinations = 6;
+                    $arrOfIndexes = [0,1,0,2,0,3,1,2,1,3,2,3];
+                    break;
+            }
+
+        }
+
+        
+    }
 }
