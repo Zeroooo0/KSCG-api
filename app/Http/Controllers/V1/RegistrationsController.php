@@ -461,7 +461,6 @@ class RegistrationsController extends Controller
         $competitorsIds = $request->competitors;
         $competitiors = Compatitor::whereIn('id',$competitorsIds)->get();
         $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
-        $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->club->country == 'Crna Gora' ? $competitor->status : 1;
         $arrayOfRegistrations = [];
         $arrayOfClubs = [];
         $responseErrorMessage = [];
@@ -495,6 +494,8 @@ class RegistrationsController extends Controller
             $beltError = false;
             $generationError = false;
             $arrayOfClubs[] = $competitor->club_id;
+            $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->club->country == 'Crna Gora' ? $competitor->status : 1;
+
 
 
 
