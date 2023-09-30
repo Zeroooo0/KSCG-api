@@ -82,16 +82,31 @@ class RegistrationsController extends Controller
                 $competitorNextCatDate =  date( 'Y-m-d' ,strtotime(' - 2 year', strtotime($competitor->date_of_birth)));
                 $competitorNextCatYear = $compatitorsYears + 2;
                 $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $competitorNextCatYear)->where('years_to','>', $competitorNextCatYear) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitorNextCatDate)->where('date_to','>=', $competitorNextCatDate);
+                $maxBelt = 1;
+                $alowedBelts = [];
+                foreach($competitorsCategory as $allowedCat) {
+                    $allowedCategories[] = $allowedCat->id;
+                    foreach($competitorsCategory as $kateBelts) {
+                        
+                        $belts = $kateBelts?->belts;
+                        foreach($belts as $belt) {
+                            $alowedBelts[] = $belt->id;
+                        }
+                    }
+                }
+                if(!empty($alowedBelts)) {
+                    rsort($alowedBelts);
+                    $maxBelt = $alowedBelts[0] + 1;
+                }
                 if($nextCategories != null) {
                     $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
                     $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
                 }
-                foreach($competitorsCategory as $allowedCat) {
-                    $allowedCategories[] = $allowedCat->id;
-                }
-                if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                if($applicationLimit == 2 && $competitor->belt_id >= $maxBelt) {
                     foreach($nextCategoriesKata as $nextAllowedCat) {
-                        $allowedCategories[] = $nextAllowedCat->id;
+                        if($nextAllowedCat->belts->isEmpty()) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
                     }
                 }
                 if($applicationLimit == 2) {
@@ -112,17 +127,33 @@ class RegistrationsController extends Controller
                 }
                 $competitorNextCatDate =  date( 'Y-m-d' ,strtotime(" - $substractYears year", strtotime($competitor->date_of_birth)));
                 $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitorNextCatDate)->where('date_to','>=', $competitorNextCatDate);
-                
+                $alowedBelts = [];
+                $maxBelt = 1;
+
+                foreach($competitorsCategory as $allowedCat) {
+                    $allowedCategories[] = $allowedCat->id;
+                    foreach($competitorsCategory as $kateBelts) {
+                        $belts = $kateBelts?->belts;
+                        foreach($belts as $belt) {
+                            $alowedBelts[] = $belt->id;
+                        }
+                    }      
+                }
+                if(!empty($alowedBelts)) {
+                    rsort($alowedBelts);
+                    $maxBelt = $alowedBelts[0] + 1;
+                }
+
                 if($nextCategories != null) {
                     $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
                     $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
                 }
-                foreach($competitorsCategory as $allowedCat) {
-                    $allowedCategories[] = $allowedCat->id;
-                }
-                if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                
+                if($applicationLimit == 2 && $competitor->belt_id >= $maxBelt) {
                     foreach($nextCategoriesKata as $nextAllowedCat) {
-                        $allowedCategories[] = $nextAllowedCat->id;
+                        if($nextAllowedCat->belts->isEmpty()) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
                     }
                 }
                 if($applicationLimit == 2) {
@@ -184,16 +215,30 @@ class RegistrationsController extends Controller
                 $competitorNextCatDate =  date( 'Y-m-d' ,strtotime(' - 2 year', strtotime($competitor->date_of_birth)));
                 $competitorNextCatYear = $compatitorsYears + 2;
                 $nextCategories = $catTimeSpan ? $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('years_from', '<=', $competitorNextCatYear)->where('years_to','>', $competitorNextCatYear) : $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitorNextCatDate)->where('date_to','>=', $competitorNextCatDate);
+                $maxBelt = 1;
+                $alowedBelts = [];
+                foreach($competitorsCategory as $allowedCat) {
+                    $allowedCategories[] = $allowedCat->id;
+                    foreach($competitorsCategory as $kateBelts) {
+                        $belts = $kateBelts?->belts;
+                        foreach($belts as $belt) {
+                            $alowedBelts[] = $belt->id;
+                        }
+                    }
+                }
+                if(!empty($alowedBelts)) {
+                    rsort($alowedBelts);
+                    $maxBelt = $alowedBelts[0] + 1;
+                }
                 if($nextCategories != null) {
                     $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
                     $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
                 }
-                foreach($competitorsCategory as $allowedCat) {
-                    $allowedCategories[] = $allowedCat->id;
-                }
-                if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                if($applicationLimit == 2 && $competitor->belt_id >= $maxBelt) {
                     foreach($nextCategoriesKata as $nextAllowedCat) {
-                        $allowedCategories[] = $nextAllowedCat->id;
+                        if($nextAllowedCat->belts->isEmpty()) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
                     }
                 }
                 if($applicationLimit == 2) {
@@ -214,17 +259,33 @@ class RegistrationsController extends Controller
                 }
                 $competitorNextCatDate =  date( 'Y-m-d' ,strtotime(" - $substractYears year", strtotime($competitor->date_of_birth)));
                 $nextCategories = $competition->categories->whereIn('gender', [$competitor->gender, 3])->where('solo_or_team', 1)->where('date_from', '<=', $competitorNextCatDate)->where('date_to','>=', $competitorNextCatDate);
-                
+                $alowedBelts = [];
+                $maxBelt = 1;
+
+                foreach($competitorsCategory as $allowedCat) {
+                    $allowedCategories[] = $allowedCat->id;
+                    foreach($competitorsCategory as $kateBelts) {
+                        $belts = $kateBelts?->belts;
+                        foreach($belts as $belt) {
+                            $alowedBelts[] = $belt->id;
+                        }
+                    }      
+                }
+                if(!empty($alowedBelts)) {
+                    rsort($alowedBelts);
+                    $maxBelt = $alowedBelts[0] + 1;
+                }
+
                 if($nextCategories != null) {
                     $nextCategoriesKata =  $nextCategories->where('kata_or_kumite', 1);
                     $nextCategoriesKumite = $nextCategories->where('kata_or_kumite', 0);
                 }
-                foreach($competitorsCategory as $allowedCat) {
-                    $allowedCategories[] = $allowedCat->id;
-                }
-                if($applicationLimit == 2 && $competitor->belt_id >= 7) {
+                
+                if($applicationLimit == 2 && $competitor->belt_id >= $maxBelt) {
                     foreach($nextCategoriesKata as $nextAllowedCat) {
-                        $allowedCategories[] = $nextAllowedCat->id;
+                        if($nextAllowedCat->belts->isEmpty()) {
+                            $allowedCategories[] = $nextAllowedCat->id;
+                        }
                     }
                 }
                 if($applicationLimit == 2) {
@@ -400,7 +461,6 @@ class RegistrationsController extends Controller
         $competitorsIds = $request->competitors;
         $competitiors = Compatitor::whereIn('id',$competitorsIds)->get();
         $registrations = $competition->registrations->where('team_or_single', $isItSingle)->where('kata_or_kumite', $isItKata);
-        $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->club->country == 'Crna Gora' ? $competitor->status : 1;
         $arrayOfRegistrations = [];
         $arrayOfClubs = [];
         $responseErrorMessage = [];
@@ -434,6 +494,8 @@ class RegistrationsController extends Controller
             $beltError = false;
             $generationError = false;
             $arrayOfClubs[] = $competitor->club_id;
+            $competitorStatus = Auth::user()->user_type == 0 && Auth::user()->club->country == 'Crna Gora' ? $competitor->status : 1;
+
 
 
 

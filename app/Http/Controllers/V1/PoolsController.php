@@ -402,7 +402,7 @@ class PoolsController extends Controller
         }
 
        
-        if($poolTeam->pool_type == 'SF' && $compatition->rematch == 0 && $category->repesaz == 0) {
+        if($poolTeam->pool_type == 'SF' && $compatition->rematch == 0 ) {
             $poolTeam->looser_id != 'null' ? $looserResult =  1 : $looserResult = null;
 
             if($request->looserId != 'null') {
@@ -469,7 +469,7 @@ class PoolsController extends Controller
                 }
 
             }
-            if($compatition->rematch == 0 && $category->repesaz == 0 ) {
+            if($compatition->rematch == 0 ) {
                 if($request->looserId != 'null'){
                     foreach($looserRegistration as $teamReg) {
                         $teamReg->update(['position' => $looserResult]);
