@@ -30,7 +30,7 @@ class CategoriesResource extends JsonResource
             'id' => (string)$this->id,
             'combinedName' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->name . ' ' . $this->category_name  . $ekipno . $nonOfficialCategory ,
             'name' => $this->name,
-            'kataOrKumite' => $this->kata_or_kumite,
+            'kataOrKumite' => (string)$this->kata_or_kumite,
             'categoryName' => $this->category_name,
             'gender' => (string)$this->gender, 
             'dateFrom' => date($this->date_from),
