@@ -395,7 +395,7 @@ class RegistrationsController extends Controller
                 if($registeredKumite->count() > 0) {
                     $registeredkumiteCat = Category::where('id', $registeredKumite->first()->category_id)->first();
                     if($registeredkumiteCat->category_name != 'OPEN' && $category->category_name != 'OPEN' && $registeredkumiteCat->date_from == $category->date_from) {
-                        $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu222!";
+                        $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu!";
                         $error['category'] = (string)$category->id;
                         $responseErrorMessage[] = $error;
                         $noErrors = false;
@@ -409,14 +409,13 @@ class RegistrationsController extends Controller
                     $noErrors = false;
                     continue;
                 }   
-
-                if($category->category_name != 'OPEN' && $dateKumiteFrom == $category->date_from) {
-                    $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu!";
-                    $error['category'] = (string)$category->id;
-                    $responseErrorMessage[] = $error;
-                    $noErrors = false;
-                    continue;
-                }   
+                // if($category->category_name != 'OPEN' && $dateKumiteFrom == $category->date_from) {
+                //     $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu!";
+                //     $error['category'] = (string)$category->id;
+                //     $responseErrorMessage[] = $error;
+                //     $noErrors = false;
+                //     continue;
+                // }   
  
                 $dateKumiteFrom = $category->date_from;
             }
