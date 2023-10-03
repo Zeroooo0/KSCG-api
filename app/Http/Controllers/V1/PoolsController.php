@@ -165,14 +165,8 @@ class PoolsController extends Controller
                     $groupsReal = 64;
                     break;
             }
-            if($compatition->rematch == 0 || $compatition->rematch == 1 && $category->repesaz == 1 && ($registrationCount <= 2 || $registrationCount >= 7)) {
-                $singleArr[] = $this->sortGroups($groupsReal, $cleaned, $timePerCategory, $catTimeStart, 'single');          
-            }
-            if($compatition->rematch == 1 && $category->repesaz == 1 && ($registrationCount > 2 || $registrationCount < 7)) {
-                if($registrationCount == 3 || $registrationCount == 4) {
-                    //
-                }
-            }
+            //return $this->roundRobin($registrationCount, $timePerCategory, $catTimeStart, $cleaned);
+            $singleArr[] = $this->newSortGroups($groupsReal, $cleaned, $timePerCategory, $catTimeStart, 'single', $registrationCount );          
         }
         
         PoolTeam::insert(Arr::collapse($teamArr));
@@ -228,113 +222,114 @@ class PoolsController extends Controller
         $winnerRegistration ? $clubsArray[] = $winnerRegistration->club_id : null;
 
 
-        if($compatition->rematch == 1 && $category->repesaz == 1 && ($totalRegistrations <= 2 || $totalRegistrations >= 7) || $compatition->rematch == 0 && $category->repesaz == 0) {
-            if($pool->pool == 1 && $pool->group == 1 && $timeTable->status == 0) {
-                $nowTime = now();
-                $timeTable->update(['status'=> 1, 'started_time' => Date("H:i:s", strtotime("$nowTime - $categoryLenght minutes"))]);
+    
+        if($pool->pool == 1 && $pool->group == 1 && $timeTable->status == 0) {
+            $nowTime = now();
+            $timeTable->update(['status'=> 1, 'started_time' => Date("H:i:s", strtotime("$nowTime - $categoryLenght minutes"))]);
+        }
+        if($request->has('nextMatchId') && $request->nextMatchId !== 'null') {
+            $nextMetch = Pool::where('id', $request->nextMatchId)->first();
+            if(!str_contains($nextMetch->pool_type, 'R')){
+                $isOdd = $pool->group % 2 == 0 ? 1 : 0;
+                $isOdd == 0 ? $nextMetch->update(['registration_one' => $winnerId]) : $nextMetch->update(['registration_two' => $winnerId]);
+            } else {
+                $request->nextMatchId != 'null' ? $nextMetch->update(['registration_one' => $winnerId]) : null;
             }
-            if($request->has('nextMatchId') && $request->nextMatchId !== 'null') {
-                $nextMetch = Pool::where('id', $request->nextMatchId)->first();
-                if(!str_contains($nextMetch->pool_type, 'R')){
-                    $isOdd = $pool->group % 2 == 0 ? 1 : 0;
-                    $isOdd == 0 ? $nextMetch->update(['registration_one' => $winnerId]) : $nextMetch->update(['registration_two' => $winnerId]);
-                } else {
-                    $request->nextMatchId != 'null' ? $nextMetch->update(['registration_one' => $winnerId]) : null;
-                }
+        }
+        //return response()->json(!in_array($pool->pool_type, ['FM', 'SF', 'RFM', 'RSF']));
+        if(!in_array($pool->pool_type, ['FM', 'SF', 'RFM', 'RSF'])) {
+            $request->looserId != 'null' ? $looserRegistration->update(['position' => null]) : null;
+            $winnerRegistration->update(['position' => null]);
+        }
+        
+        if($pool->pool_type == 'SF' && $compatition->rematch == 0) {
+            $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
+            $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
+            $winnerRegistration->update(['position' => null]);
+            if($totalRegistrations < 4 && $request->looserId == 'null') {
+                $winnerRegistration->update(['status' => 0]);
             }
-            //return response()->json(!in_array($pool->pool_type, ['FM', 'SF', 'RFM', 'RSF']));
-            if(!in_array($pool->pool_type, ['FM', 'SF', 'RFM', 'RSF'])) {
-                $request->looserId != 'null' ? $looserRegistration->update(['position' => null]) : null;
-                $winnerRegistration->update(['position' => null]);
+            if($totalRegistrations < 4 && $request->looserId != 'null') {
+                $looserRegistration->update(['status' => 0]);
+                $winnerRegistration->update(['status' => 1]);
             }
-           
-            if($pool->pool_type == 'SF' && $compatition->rematch == 0 && $category->repesaz == 0) {
-                $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
-                $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
-                $winnerRegistration->update(['position' => null]);
-                if($totalRegistrations < 4 && $request->looserId == 'null') {
-                    $winnerRegistration->update(['status' => 0]);
-                }
-                if($totalRegistrations < 4 && $request->looserId != 'null') {
-                    $looserRegistration->update(['status' => 0]);
-                    $winnerRegistration->update(['status' => 1]);
-                }
+        }
+        
+        if($pool->pool_type == 'FM') {
+            $request->looserId != 'null' ? $looserResult =  2 : $looserResult = null;
+            $request->winnerId != 'null' ? $winnerResult =  3 : $winnerResult = null;
+            $winnerRegistration->update(['position' => $winnerResult]);
+            $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
+            if($totalRegistrations == 1) {
+                $winnerRegistration->update(['status' => 0]);
             }
-            
-            if($pool->pool_type == 'FM') {
-                $request->looserId != 'null' ? $looserResult =  2 : $looserResult = null;
-                $request->winnerId != 'null' ? $winnerResult =  3 : $winnerResult = null;
-                $winnerRegistration->update(['position' => $winnerResult]);
-                $request->looserId != 'null' ? $looserRegistration->update(['position' => $looserResult]) : null;
-                if($totalRegistrations == 1) {
-                    $winnerRegistration->update(['status' => 0]);
-                }
-                if($totalRegistrations == 2 ) {
-                    $winnerRegistration->update(['status' => 1]);
-                    $looserRegistration->update(['status' => 0]);
-                }
-                if($totalRegistrations == 3 ) {
-                    $poolsWinningCount = Pool::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id)->where('winner_id', $request->looserId)->where('looser_id', '!=', null)->where('id', '!=', $pool->id)->count();
-                    $poolsWinningCount >= 1 ? $looserStatus = 1 : $looserStatus = 0;
-                    $winnerRegistration->update(['status' => 1]);
-                    $looserRegistration->update(['status' => $looserStatus]);
-                }
-                if($compatition->rematch == 0 && $category->repesaz == 0) {
+            if($totalRegistrations == 2 ) {
+                $winnerRegistration->update(['status' => 1]);
+                $looserRegistration->update(['status' => 0]);
+            }
+            if($totalRegistrations == 3 ) {
+                $poolsWinningCount = Pool::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id)->where('winner_id', $request->looserId)->where('looser_id', '!=', null)->where('id', '!=', $pool->id)->count();
+                $poolsWinningCount >= 1 ? $looserStatus = 1 : $looserStatus = 0;
+                $winnerRegistration->update(['status' => 1]);
+                $looserRegistration->update(['status' => $looserStatus]);
+            }
+            if($compatition->rematch == 0) {
+                $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
+            }
+            if($compatition->rematch == 1) {
+                if($category->repesaz == 0) {
                     $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
+                } else {
+                    $repesazData = $this->rematchBuilding($pool);
+                    Pool::insert($repesazData);
                 }
             }
         }
-        //Round robin
-        if($compatition->rematch == 1 && $category->repesaz == 1 && ($totalRegistrations > 2 || $totalRegistrations < 7)) {
-            if($totalRegistrations == 3) {
-                //
-            }
-            //
-        }
+        
         //Repasaz
-        if($pool->pool_type == 'FM' && $compatition->rematch == 1 && $category->repesaz == 1 ) {
-            $getPool = Pool::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id);
-            $getLoosers = $getPool->where('winner_id', $winnerId)->where('looser_id', '!=', null)->where('looser_id', '!=', $request->looserId)->orderBy('pool', 'asc')->get();
-            if($getPool->where('pool_type','like',  "%R%")->get()->count() > 0){
-                $getPool->where('pool_type','like',  "%R%")->delete();
-            }
-            $countLoosers = $getLoosers->count();
+        // if($pool->pool_type == 'FM' && $compatition->rematch == 1 && $category->repesaz == 1 ) {
+        //     $getPool = Pool::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id);
+        //     $getLoosers = $getPool->where('winner_id', $winnerId)->where('looser_id', '!=', null)->where('looser_id', '!=', $request->looserId)->orderBy('pool', 'asc')->get();
+        //     if($getPool->where('pool_type','like',  "%R%")->get()->count() > 0){
+        //         $getPool->where('pool_type','like',  "%R%")->delete();
+        //     }
+        //     $countLoosers = $getLoosers->count();
 
-            $repesazData = [];
-            for($i = 1; $i <= $countLoosers; $i++) {
-                switch($i) {
-                    case $i == $countLoosers:
-                        $poolType = 'RFM';
-                        break;
-                    default:
-                        $poolType = 'R';
-                        break;
-                }
-                $input['compatition_id'] = $pool->compatition_id;
-                $input['category_id'] = $pool->category_id;
-                $input['pool'] = $pool->pool + 1;
-                $input['pool_type'] = $poolType;
-                $input['group'] =  $i - 1;
+        //     $repesazData = [];
+        //     for($i = 1; $i <= $countLoosers; $i++) {
+        //         switch($i) {
+        //             case $i == $countLoosers:
+        //                 $poolType = 'RFM';
+        //                 break;
+        //             default:
+        //                 $poolType = 'R';
+        //                 break;
+        //         }
+        //         $input['compatition_id'] = $pool->compatition_id;
+        //         $input['category_id'] = $pool->category_id;
+        //         $input['pool'] = $pool->pool + 1;
+        //         $input['pool_type'] = $poolType;
+        //         $input['group'] =  $i - 1;
                 
-                $input['status'] = 0;
-                $firstCompetitor = $i - 2;
-                $otherCompetitors = $i - 1;
+        //         $input['status'] = 0;
+        //         $firstCompetitor = $i - 2;
+        //         $otherCompetitors = $i - 1;
                 
-                $lastPoolTime = $pool->start_time;
-                $timeTracking = $otherCompetitors * $categoryLenght;
-                $input['registration_one'] = $i == 2 ? $getLoosers[$firstCompetitor]->looser_id : null;
-                $input['registration_two'] = $getLoosers[$otherCompetitors]->looser_id;
-                $input['start_time'] = Date("H:i:s", strtotime("$lastPoolTime + $timeTracking minutes"));
-                $repesazData[] = $input;  
-            }
+        //         $lastPoolTime = $pool->start_time;
+        //         $timeTracking = $otherCompetitors * $categoryLenght;
+        //         $input['registration_one'] = $i == 2 ? $getLoosers[$firstCompetitor]->looser_id : null;
+        //         $input['registration_two'] = $getLoosers[$otherCompetitors]->looser_id;
+        //         $input['start_time'] = Date("H:i:s", strtotime("$lastPoolTime + $timeTracking minutes"));
+        //         $repesazData[] = $input;  
+        //     }
 
 
           
-            Pool::insert($repesazData);
+        //     Pool::insert($repesazData);
             
             
-        }
-        if($pool->pool_type == 'RSF') {
+        // }
+        if($pool->pool_type == 'REFM') {
             $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
             Registration::where('id', $looserId)->first()->update(['position' => $looserResult]);
             Registration::where('id', $winnerId)->first()->update(['position' => null]);

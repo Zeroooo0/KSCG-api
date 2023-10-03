@@ -68,15 +68,19 @@ class PoolResource extends JsonResource
                 $name = "Finale";
                 $nextMatchId = null;
                 break;
-            case 'R':
+            case 'RE':
                 $name = "Repesaž";
                 $nextMatchId = $pools->where('pool', $this->pool)->where('group', $nextGroup)->first()->id;
                 break;
-            case 'RSF':
+            case 'REFM':
                 $name = "Repesaž";
-                $nextMatchId = $pools->where('pool', $this->pool)->where('group', $nextGroup)->first()->id;
+                $nextMatchId = null;
                 break;
-            case 'RFM':
+            case 'RR':
+                $name = "Round Robin";
+                $nextMatchId = $this->id + 1;
+                break;
+            case 'RRFM':
                 $name = "Repesaž";
                 $nextMatchId = null;
                 break;
