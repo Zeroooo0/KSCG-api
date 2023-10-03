@@ -390,10 +390,11 @@ class RegistrationsController extends Controller
                 $kumiteRealCount = $kumiteCount;
                 $kumiteCount = $kumiteCount + 1;
                 $katText = $kumiteRealCount == 1 ? 'kategoriji' : 'kategorije';
+
                 $registeredKumite = $registrations->where('kata_or_kumite', 0);
                 if($registeredKumite->count() > 0) {
                     $registeredkumiteCat = Category::where('id', $registeredKumite->first()->category_id)->first();
-                    if($registeredkumiteCat->date_from == $category->date_from) {
+                    if($category->category_name != 'OPEN' && $registeredkumiteCat->date_from == $category->date_from) {
                         $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu!";
                         $error['category'] = (string)$category->id;
                         $responseErrorMessage[] = $error;
@@ -409,7 +410,7 @@ class RegistrationsController extends Controller
                     continue;
                 }   
 
-                if($dateKumiteFrom == $category->date_from) {
+                if($category->category_name != 'OPEN' && $dateKumiteFrom == $category->date_from) {
                     $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu!";
                     $error['category'] = (string)$category->id;
                     $responseErrorMessage[] = $error;
