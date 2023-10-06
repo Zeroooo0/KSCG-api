@@ -183,7 +183,7 @@ trait PoolsGroups {
             for($i = 1; $i <= $combinations; $i = $i + 2) {
                 $random = rand(0,1);
                 if($j == 1) {
-                    $groupType = $registrationsNo == 5 && $i == 1 ? 'SF' : 'RR';
+                    $groupType = $registrationsNo == 5 && $i == 1 ? 'RRSF' : 'RR';
                 } else {
                     $groupType = 'RRFM';
                 }
@@ -230,7 +230,8 @@ trait PoolsGroups {
         } else {
             if($category->repesaz == 0) {
                 return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
-            } else {
+            } 
+            if($category->repesaz == 1 && $category->kata_or_kumite == 0) {
                 $roundRobinCount = [3,4,5,6];
                 if(in_array($registrationsNo, $roundRobinCount)) {
                     
@@ -238,6 +239,9 @@ trait PoolsGroups {
                 } else {
                     return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
                 }
+            }
+            if($category->repesaz == 1 && $category->kata_or_kumite == 1) {
+                return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
             }
         }
     }

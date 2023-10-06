@@ -59,7 +59,7 @@ class TimeTableResource extends JsonResource
             ],              
             'etoStart' => date('H:i', strtotime($this->eto_start)),
             'etoFinish' => date('H:i', strtotime($this->eto_finish)),
-            'delay' => -$delay,
+            'delay' => -(int)$delay,
             'startedAt' => $this->started_time != null ? date('H:i', strtotime($this->started_time)) : null,
             'finishedAt' => $this->finish_time != null ? date('H:i', strtotime($this->finish_time)) : null,
             'status' => $this->status,

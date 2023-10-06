@@ -51,7 +51,7 @@ class PoolsController extends Controller
         foreach($timeTable as $timeTableCategory) {
             $timeTableCategories [] = $timeTableCategory->category_id;
         }
-        
+ 
         
         $registrations = $compatition->registrations;
         $reg_single = $registrations->where('team_or_single', 1)->whereIn('category_id', $timeTableCategories)->countBy('category_id');
@@ -329,20 +329,110 @@ class PoolsController extends Controller
             
             
         // }
+        if($pool->pool_type == 'RR') {
+            $request->winnerId != 'null' ? $pool->update(['winner_id' => $winnerId]) : $pool->update(['winner_id' => null]);
+            $request->looserId != 'null' ? $pool->update(['looser_id' => $looserId]) : $pool->update(['looser_id' => null]);
+            $poolsRR = Pool::where('compatition_id', $pool->compatition_id)->where('category_id',$pool->category_id)->where('pool_type', 'RR')->get();
+            $poolsRRFM = Pool::where('compatition_id', $pool->compatition_id)->where('category_id',$pool->category_id)->where('pool_type', 'RRFM')->first();
+            $groupOne = [1,2,3];
+            $groupTwo = [4,5,6];
+            $totalRRPools = $poolsRR->count();
+
+            $totalFinishedGroupOne = $poolsRR->whereIn('group', $groupOne)->where('winner_id', '!=', 'null')->count();
+            $totalFinishedGroupTwo = $poolsRR->whereIn('group', $groupTwo)->where('winner_id', '!=', 'null')->count();
+            $registeredRR = Registration::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id)->get();
+            if($totalRRPools == 3 && $totalFinishedGroupOne == 3) {
+                //$registeredRR = Registration::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id)->get();
+                
+
+            }
+            if($totalRRPools == 6 ) {
+                if($pool->group <= 3 && $totalFinishedGroupOne == 3) {
+                    $firstPlaceRRGroupOne = null;
+                    $secondPlaceRRGroupOne = null;
+                    $thirdPlaceRRGroupOne = null;
+
+                    foreach($registeredRR as $regCompa) {
+                        $winingCount = $poolsRR->whereIn('group', $groupOne)->where('winner_id', $regCompa->id)->count();
+                        $loosingCount = $poolsRR->whereIn('group', $groupOne)->where('looser_id', $regCompa->id)->count();
+
+                        $loosingCount == 2 ? $thirdPlaceRRGroupOne = $regCompa->id : null;
+                        switch($winingCount){
+                            case 2:
+                                $firstPlaceRRGroupOne = $regCompa->id;
+                                break;
+                            case 1:
+                                $secondPlaceRRGroupOne = $regCompa->id;
+                                break;
+                        }
+                    }
+                    $registrationsPositionCount = Registration::whereIn('id', [$firstPlaceRRGroupOne, $secondPlaceRRGroupOne, $thirdPlaceRRGroupOne])->get();
+                    if($firstPlaceRRGroupOne != null) {
+                        $poolsRRFM->update(['registration_one' => $firstPlaceRRGroupOne]);
+                    }
+                    if($secondPlaceRRGroupOne != null) {
+                        $registrationUpdate = Registration::where('id', $secondPlaceRRGroupOne)->first();
+                        $registrationUpdate->update(['position' => '1']);
+                    }
+                    return $registrationUpdate;
+                }
+                if($pool->group > 3 && $totalFinishedGroupTwo == 3) {
+                    $firstPlaceRRGroupTwo = null;
+                    $secondPlaceRRGroupTwo = null;
+                    $thirdPlaceRRGroupTwo = null;
+
+
+                    foreach($registeredRR as $regCompa) {
+                        $winingCount = $poolsRR->whereIn('group', $groupTwo)->where('winner_id', $regCompa->id)->count();
+                        $loosingCount = $poolsRR->whereIn('group', $groupTwo)->where('looser_id', $regCompa->id)->count();
+                        $loosingCount == 2 ? $thirdPlaceRRGroupTwo = $regCompa->id : null;
+
+                        switch($winingCount){
+                            case 2:
+                                $firstPlaceRRGroupTwo = $regCompa->id;
+                                break;
+                            case 1:
+                                $secondPlaceRRGroupTwo = $regCompa->id;
+                                break;
+                        }
+                    }
+                    $registrationsPositionCount = Registration::whereIn('id', [$firstPlaceRRGroupTwo, $secondPlaceRRGroupTwo, $thirdPlaceRRGroupTwo])->where('position', '!=', 'null')->get();
+                    return $registrationsPositionCount->count();
+                    if($firstPlaceRRGroupTwo != null) {
+                        $poolsRRFM->update(['registration_two' => $firstPlaceRRGroupTwo]);
+                    }
+                    if($secondPlaceRRGroupTwo != null) {
+                        $registrationUpdate = Registration::where('id', $secondPlaceRRGroupTwo)->first();
+                        $registrationUpdate->update(['position' => '1']);
+                    }
+                    return $registrationUpdate;
+                }
+                
+                return "$registeredRR 111";
+
+            }
+            return 1;
+            if($totalRRPools == 5) {
+                //
+            }
+
+        }
         if($pool->pool_type == 'REFM') {
             $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
             Registration::where('id', $looserId)->first()->update(['position' => $looserResult]);
             Registration::where('id', $winnerId)->first()->update(['position' => null]);
         }
-        if($pool->pool_type == 'RFM') {
-            $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
-            $request->winnerId != 'null' ? $winnerResult =  2 : $winnerResult = null;
-            Registration::where('id', $winnerId)->first()->update(['position' => $winnerResult ]);
-            Registration::where('id', $looserId)->first()->update(['position' => $looserResult]);
-            $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
-        } 
-        $request->winnerId != 'null' ? $pool->update(['winner_id' => $winnerId]) : $pool->update(['winner_id' => null]);
-        $request->looserId != 'null' ? $pool->update(['looser_id' => $looserId]) : $pool->update(['looser_id' => null]);
+        // if($pool->pool_type == 'RFM') {
+        //     $request->looserId != 'null' ? $looserResult =  1 : $looserResult = null;
+        //     $request->winnerId != 'null' ? $winnerResult =  2 : $winnerResult = null;
+        //     Registration::where('id', $winnerId)->first()->update(['position' => $winnerResult ]);
+        //     Registration::where('id', $looserId)->first()->update(['position' => $looserResult]);
+        //     $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
+        // } 
+        if($pool->pool_type != 'RR') {
+            $request->winnerId != 'null' ? $pool->update(['winner_id' => $winnerId]) : $pool->update(['winner_id' => null]);
+            $request->looserId != 'null' ? $pool->update(['looser_id' => $looserId]) : $pool->update(['looser_id' => null]);
+        }
         //update results
         //return 22;
         $this->calculateResults($pool->compatition_id ,array_unique($clubsArray), 'results');
