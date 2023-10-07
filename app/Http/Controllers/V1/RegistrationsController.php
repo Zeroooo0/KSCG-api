@@ -452,6 +452,7 @@ class RegistrationsController extends Controller
     public function newStore(Request $request, Compatition $competition) 
     {
         $applicationLimit = $competition->application_limits;
+        $competitionType = $competition->type;
         $category = $competition->categories->where('id',$request->categoryId)->first();
         $isItSingle = $category->solo_or_team;
         $isItKata = $category->kata_or_kumite;
@@ -474,7 +475,15 @@ class RegistrationsController extends Controller
             $team ['message'] =  "Nema dovoljno takmičara u ekipi, minimum 3 a maksimum 4 takmičara!";
             $responseErrorMessage [] =  $team;
         }
-        if(!$isItSingle && !$isItKata && $isItMale && ($competitiors->count() < 5 || $competitiors->count() > 7)) {
+        if($competitionType== 'Turniri' && !$isItSingle && !$isItKata && ($isItMale || $isItFemale) && ($competitiors->count() < 3 || $competitiors->count() > 4)) {
+            $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 5 a maksimum 7 takmičara!";
+            $responseErrorMessage [] =  $team;
+        }
+        if($competitionType== 'KSCG' && !$isItSingle && !$isItKata && $isItFemale && ($competitiors->count() < 3 || $competitiors->count() > 4)) {
+            $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 5 a maksimum 7 takmičara!";
+            $responseErrorMessage [] =  $team;
+        }
+        if($competitionType== 'KSCG' && !$isItSingle && !$isItKata && $isItMale && ($competitiors->count() < 5 || $competitiors->count() > 7)) {
             $team ['message'] =  "Nema dovoljno takmičara u ekipi minimum 5 a maksimum 7 takmičara!";
             $responseErrorMessage [] =  $team;
         }
@@ -648,7 +657,14 @@ class RegistrationsController extends Controller
             $toUpdate = 0;
  
            //should be 5
-            if($category->kata_or_kumite == 0 && $categoryGender == 1 && $teamDelete->count() - 1 < 5) {
+            if($registration->compatition->type == 'KSCG' && $category->kata_or_kumite == 0 && $categoryGender == 1 && $teamDelete->count() - 1 < 5) {
+                $toUpdate = 1;
+                foreach($teamDelete as $teamMember) {
+                    $teamMember->delete();
+                }   
+                $team->delete();
+            }
+            if($registration->compatition->type == 'Turniri' && $category->kata_or_kumite == 0 && $categoryGender == 1 && $teamDelete->count() - 1 < 3) {
                 $toUpdate = 1;
                 foreach($teamDelete as $teamMember) {
                     $teamMember->delete();
