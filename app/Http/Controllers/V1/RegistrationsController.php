@@ -468,7 +468,8 @@ class RegistrationsController extends Controller
 
 
         if(Auth::user()->user_type != 2 && $competition->registration_status == 0) {
-            $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
+            $team ['message'] = 'Prijave su trenutno onemogućene ili su istekle!';
+            $responseErrorMessage [] =  $team;
         }
 
         if(!$isItSingle && $isItKata && ($isItMale || $isItFemale) && ($competitiors->count() < 3 || $competitiors->count() > 4)) {
