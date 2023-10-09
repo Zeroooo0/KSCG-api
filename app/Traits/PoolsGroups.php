@@ -246,20 +246,24 @@ trait PoolsGroups {
         }
     }
     public function rematchBuilding($finalMatch) {
-        $pools = Pool::where('compatition_id', $finalMatch->compatition_id)->where('category_id', $finalMatch->category_id)->where('pool', '<', $finalMatch->pool);
-        $firstPlace = $pools->where('winner_id', $finalMatch->winner_id)->get();
-        $secondPlace = $pools->where('winner_id', $finalMatch->looser_id)->get();
+        $pools = Pool::where('compatition_id', $finalMatch->compatition_id)->where('category_id', $finalMatch->category_id)->where('pool', '<', $finalMatch->pool)->get();
+        
+        $firstPlace = $pools->where('winner_id', $finalMatch->winner_id)->values();
+        $secondPlace = $pools->where('winner_id', $finalMatch->looser_id)->values();
+        $firstPlaceCount = $firstPlace->count() - 1;
+        $secondPlaceCount = $secondPlace->count() - 1;
         $poolsCount = $finalMatch->pool - 1;
         $finalMatchStart = $finalMatch->start_time;
         $catMatchLenght = Category::where('id', $finalMatch->category_id)->first()->match_lenght;
         $timeTracking = Date("H:i:s", strtotime("$finalMatchStart + $catMatchLenght minutes"));
         $sortedGroups = [];
         $nextGroupTime = 0;
-        for($j = 1; $j <= $poolsCount; $j++) {
-            $groupType = $j == $poolsCount ?  "REFM" : "RE";
-            $first = $j == 1 ? $firstPlace[0]->looser_id : null;
-            $second = $firstPlace[$j]->looser_id;
-    
+        for($j = 1; $j <= $firstPlaceCount; $j++) {
+            $groupType = $j == $firstPlaceCount ?  "REFM" : "RE";
+        
+            $first = $j == 1 ? Arr::get($firstPlace, '0.looser_id') : null;
+            $second = Arr::get($firstPlace, $j . '.looser_id');
+
             $input['compatition_id'] = $finalMatch->compatition_id;
             $input['category_id'] = $finalMatch->category_id;
             $input['pool'] = $j;
@@ -275,17 +279,18 @@ trait PoolsGroups {
                 $timeTracking = $timeTracking;
             } else {
                 $timeTracking = Date("H:i:s", strtotime("$timeTracking + $catMatchLenght minutes"));
-                if($j == $poolsCount) {
+                if($j == $firstPlaceCount) {
                     $nextGroupTime = $timeTracking;
                 }
             }
             $sortedGroups[] = $input;
             
         }
-        for($k = 1; $k <= $poolsCount; $k++) {
-            $groupType = $k == $poolsCount ?  "REFM" : "RE";
-            $first = $k == 1 ? $secondPlace[0]->looser_id : null;
-            $second = $secondPlace[$k]->looser_id;
+        for($k = 1; $k <= $secondPlaceCount; $k++) {
+            $groupType = $k == $secondPlaceCount ?  "REFM" : "RE";
+            $first = $k == 1 ? Arr::get($secondPlace,  '0.looser_id') : null;
+            $second = Arr::get($secondPlace, $k . '.looser_id');
+            
     
             $inputNew['compatition_id'] = $finalMatch->compatition_id;
             $inputNew['category_id'] = $finalMatch->category_id;

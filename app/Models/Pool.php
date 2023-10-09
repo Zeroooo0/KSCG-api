@@ -19,6 +19,7 @@ class Pool extends Model
         'winner_id',
         'looser_id',
         'start_time'
+        
     ];
 
     public function compatition()

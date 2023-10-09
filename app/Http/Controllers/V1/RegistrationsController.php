@@ -466,7 +466,7 @@ class RegistrationsController extends Controller
         $arrayOfClubs = [];
         $responseErrorMessage = [];
 
-        
+
         if(Auth::user()->user_type != 2 && $competition->registration_status == 0) {
             $this->error('', 'Prijave su trenutno onemogućene ili su istekle!', 403);
         }

@@ -32,7 +32,8 @@ class TimeTableResource extends JsonResource
         $groupsTotal = $this->categoryDuration($competiton, $category);
         
         $data = $ekipno == null  ? $pools->whereIn('pool_type', ['G', 'SF', 'FM']) : $poolsTeam->whereIn('pool_type', ['G', 'SF', 'FM']);
-        $repesaz = $ekipno == null  ? $pools->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->whereIn('pool_type', ['RE', 'REFM']);
+        $repesazOne = $ekipno == null  ? $pools->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']);
+        $repesazTwo = $ekipno == null  ? $pools->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']);
         $roundRobin = $ekipno == null ? $pools->whereIn('pool_type', ['RR', 'RRFM']) : $poolsTeam->whereIn('pool_type', ['RR', 'RRFM']);
         $delay = 0;
         $etoStart = 0;
@@ -65,7 +66,8 @@ class TimeTableResource extends JsonResource
             'status' => $this->status,
             'roundsTotal' => $pool->where('pool_type', 'FM')->count() != 0 ? $pool->where('pool_type', 'FM')->first()->pool : 0,
             'groups' => $request->has('embed') && str_contains($request->embed, 'groups') ? $data->toArray() : 'embbedable',
-            'rematch' => $request->has('embed') && str_contains($request->embed, 'rematch') ? $repesaz->toArray() : 'embbedable',
+            'rematchOne' => $request->has('embed') && str_contains($request->embed, 'rematch') ? $repesazOne->toArray() : 'embbedable',
+            'rematchTwo' => $request->has('embed') && str_contains($request->embed, 'rematch') ? $repesazTwo->toArray() : 'embbedable',
             'roundRobin' => $request->has('embed') && str_contains($request->embed, 'roundRobin') ? $roundRobin->toArray() : 'embbedable'
 
         ];

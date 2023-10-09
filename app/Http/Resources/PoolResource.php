@@ -70,7 +70,7 @@ class PoolResource extends JsonResource
                 break;
             case 'RE':
                 $name = "Repesaž";
-                $nextMatchId = $pools->where('pool', $this->pool)->where('group', $nextGroup)->first()->id;
+                $nextMatchId = $this->id + 1;
                 break;
             case 'REFM':
                 $name = "Repesaž Finale";
