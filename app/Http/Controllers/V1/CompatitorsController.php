@@ -184,7 +184,7 @@ class CompatitorsController extends Controller
         if(Auth::user()->user_type == 0 && $competitor->club_id != Auth::user()->club->id) {
             return $this->restricted('', 'Možete vršiti izmjene samo članova Vašeg kluba!', 403);
         }
-        if(Auth::user()->user_type == 0 && $competitor->registrations->count() > 0) {
+        if(Auth::user()->user_type == 0 && $competitor->registrations->count() > 0 && $request->hasAny(['dateOfBirth'])) {
             return $this->error('', 'Takmičar posjeduje prijave, zamolite administratora da promijeni podatak!', 403);
         }
         

@@ -18,7 +18,7 @@ class CategoriesFilter {
         'status' => ['eq'],
         'belts' => ['eq'],
     ];
-
+    
     protected $columnsMap = [
         'kataOrKumite' => 'kata_or_kumite',
         'categoryName' => 'category_name',
