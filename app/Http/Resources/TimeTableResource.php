@@ -34,7 +34,7 @@ class TimeTableResource extends JsonResource
         $data = $ekipno == null  ? $pools->whereIn('pool_type', ['G', 'SF', 'FM']) : $poolsTeam->whereIn('pool_type', ['G', 'SF', 'FM']);
         $repesazOne = $ekipno == null  ? $pools->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']);
         $repesazTwo = $ekipno == null  ? $pools->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']);
-        $roundRobin = $ekipno == null ? $pools->whereIn('pool_type', ['RR', 'RRFM']) : $poolsTeam->whereIn('pool_type', ['RR', 'RRFM']);
+        $roundRobin = $ekipno == null ? $pools->whereIn('pool_type', ['RR', 'RRSF', 'RRFM']) : $poolsTeam->whereIn('pool_type', ['RR', 'RRFM']);
         $delay = 0;
         $etoStart = 0;
         if($this->finish_time == null && $this->started_time != null) {
