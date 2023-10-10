@@ -317,22 +317,22 @@ class CompatitionsController extends Controller
             $title = "$clubName Trener";
         }
         
-        if(Auth::user()->user_type == 0 && Auth::user()->club != null) {
-            $clubId = Auth::user()->club;
-            $clubData = Club::where('id', $clubId->id)->first();
-            $clubRoles = [];
-            foreach($clubData->roles as $role){
+        // if(Auth::user()->user_type == 0 && Auth::user()->club != null) {
+        //     $clubId = Auth::user()->club;
+        //     $clubData = Club::where('id', $clubId->id)->first();
+        //     $clubRoles = [];
+        //     foreach($clubData->roles as $role){
 
-                if($competition->roles->where('special_personals_id', $role->special_personals_id)->first() != null ) {
-                    $clubRoles[] = $role->special_personals_id;
-                }
-            }
-            $foundRoles = $competition->roles->whereIn('special_personals_id', $clubRoles);
-            foreach($foundRoles as $oneRole) {
-                $oneRole->delete();
-            }
+        //         if($competition->roles->where('special_personals_id', $role->special_personals_id)->first() != null ) {
+        //             $clubRoles[] = $role->special_personals_id;
+        //         }
+        //     }
+        //     $foundRoles = $competition->roles->whereIn('special_personals_id', $clubRoles);
+        //     foreach($foundRoles as $oneRole) {
+        //         $oneRole->delete();
+        //     }
 
-        }
+        // }
 
         
 

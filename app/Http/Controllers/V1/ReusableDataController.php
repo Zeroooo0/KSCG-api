@@ -180,12 +180,18 @@ class ReusableDataController extends Controller
     public function competitionRoles(Compatition $competition, Request $request)
     {
         $per_page = !$request->has('perPage') ? 15 : $request->perPage;
-        $specPersonnels = [];
-        foreach($competition->roles as $val) {
-            $specPersonnels[] = $val->special_personals_id;
+        $specPersonnels = $competition->roles;
+        $filteredSpecPersonnel = [];
+        if($request?->clubId) {
+            $clubsData = Club::where('id', $request->clubId)->first();
+            $clubsPersonnel = $clubsData->roles->where('role', '2');
+            foreach($clubsPersonnel as $coach) {
+                $filteredSpecPersonnel[] = $coach->special_personals_id;
+            }
+            $specPersonnels = $specPersonnels->whereIn('special_personals_id', $filteredSpecPersonnel);
         }
        
-        return RolesResource::collection((new Collection($competition->roles))->paginate($per_page));
+        return RolesResource::collection((new Collection($specPersonnels))->paginate($per_page));
     }
 
     public function storeComponentRole(Request $request, Component $component)
