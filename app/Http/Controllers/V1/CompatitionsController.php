@@ -251,6 +251,7 @@ class CompatitionsController extends Controller
         $request->has('rematch')? $competition->update(['rematch' => $request->rematch]) : null;
         $request->has('type')? $competition->update(['type' => $request->type]) : null;
         $request->has('isAbroad')? $competition->update(['is_abroad' => $request->isAbroad]) : null;
+        $request->has('tatamiNo')? $competition->update(['tatami_no' => $request->tatamiNo]) : null;
         $request->has('priceSingle') ? $competition->update(['price_single' => $request->priceSingle]) : null;
         $request->has('priceTeam') ? $competition->update(['price_team' => $request->priceTeam]) : null;
         $request->has('applicationLimits')? $competition->update(['application_limits' => $request->applicationLimits]) : null;
