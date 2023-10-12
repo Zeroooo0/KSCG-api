@@ -9,6 +9,7 @@ use App\Http\Controllers\V1\CompatitionsController;
 use App\Http\Controllers\V1\EventScheduleController;
 use App\Http\Controllers\V1\FileController;
 use App\Http\Controllers\V1\MembrshipController;
+use App\Http\Controllers\V1\OfficialKatasController;
 use App\Http\Controllers\V1\PagesController;
 use App\Http\Controllers\V1\PoolsController;
 use App\Http\Controllers\V1\PostsController;
@@ -236,6 +237,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Route::get('/seminars-applications/{seminar}', [SeminarApplicationController::class, 'index']);
     //
     Route::post('/compatition-results-calculate/{compatition}', [RegistrationsController::class, 'calculateResultsNow']);
+
+
+    //kata list store
+    // Route::post('/official-kata', [OfficialKatasController::class, 'store']);
+    Route::get('/official-kata', [OfficialKatasController::class, 'index']);
 });
 //testing
 

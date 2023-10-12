@@ -18,7 +18,9 @@ class Pool extends Model
         'registration_two',
         'winner_id',
         'looser_id',
-        'start_time'
+        'start_time',
+        'kata_one_id',
+        'kata_two_id'
         
     ];
 
@@ -30,6 +32,10 @@ class Pool extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+    public function officialKata()
+    {
+        return $this->belongsTo(OfficialKata::class);
     }
     public function registrations()
     {

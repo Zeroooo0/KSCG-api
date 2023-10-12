@@ -221,7 +221,9 @@ class PoolsController extends Controller
         $looserRegistration ? $clubsArray[] = $looserRegistration->club_id : null;
         $winnerRegistration ? $clubsArray[] = $winnerRegistration->club_id : null;
 
-
+        
+        $request?->kataOne ? $pool->update(['kata_one_id' => $request->kataOne]) : $pool->update(['kata_one_id' => null]);
+        $request?->kataTwo ? $pool->update(['kata_two_id' => $request->kataTwo]) : $pool->update(['kata_two_id' => null]);
     
         if($pool->pool == 1 && $pool->group == 1 && $timeTable->status == 0) {
             $nowTime = now();

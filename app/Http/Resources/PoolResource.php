@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\OfficialKata;
 use App\Models\Pool;
 use App\Models\Registration;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -30,12 +31,14 @@ class PoolResource extends JsonResource
                 'name' => $compatitorOne != null ? "$compatitorOne->name $compatitorOne->last_name ($compatitorOneClub)" : null,
                 'isWinner' => $isWinnerOne,
                 'resultText' => $isWinnerOne !== null ? ($isWinnerOne ? 'Pobjeda' : 'Poraz') : null ,
+                'kataName' => $this->kata_one_id ? OfficialKata::where('id', $this->kata_one_id)->first()->name : null,
             ];
             $two = [
                 'registrationId' => $this->registration_two,
                 'name' => $compatitorTwo != null ? "$compatitorTwo->name $compatitorTwo->last_name ($compatitorTwoClub)" : null,
                 'isWinner' => $isWinnerTwo,
                 'resultText' => $isWinnerTwo !== null  ? ($isWinnerTwo ? 'Pobjeda' : 'Poraz') : null ,
+                'kataName' => $this->kata_two_id ? OfficialKata::where('id', $this->kata_two_id)->first()->name : null,
             ];
         } else{
             $one = null;
