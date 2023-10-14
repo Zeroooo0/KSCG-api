@@ -15,6 +15,11 @@ trait PoolsGroups {
         // Taking data of registrations and number of groups
         $sortedGroups = [];
         $arrOfIndexes = [];
+        $targetCat = $teamOrSingle == 'single' ? Arr::get($object, '0.category_id') : Arr::get($object, '0.0.category_id');
+        $targetCompetition = $teamOrSingle == 'single' ? Arr::get($object, '0.compatition_id') : Arr::get($object, '0.0.compatition_id');
+        $category = Category::where('id', $targetCat)->first();
+        $competition = Compatition::where('id', $targetCompetition )->first();
+
         //return $groupsNo;
         switch($groupsNo) {
             case $groupsNo == 1:
@@ -83,8 +88,7 @@ trait PoolsGroups {
                 case $counting = 1:
                     $groupType = 'FM';
                     break;
-            }
-                
+            }                
             if($teamOrSingle == 'single') {
                 for($i = 0; $i <= ($counting - 1); $i++) {
                     $random = rand(0,1);
@@ -148,13 +152,180 @@ trait PoolsGroups {
         }
         return $sortedGroups;
     }
+    public function firstPoolKataRematch( $objectIterating, $groupType, $poolsWithComp, $groupTotal, $catMatchLenght, $catTimeStart, $teamOrSingle) { 
+            $timeTracking = $catTimeStart;
+            $startingIndex = 0;
+            $poolsCount = 1;
+            $finishedGroup = [];
+            for($p = 1; $p <= $poolsWithComp; $p++) {
+                $groupTotal == 1 ? $groupsInPool = 1 : $groupsInPool = 2;
+                for($g = 1; $g <= $groupsInPool; $g++){
+                    for($i = $startingIndex; $i < count($objectIterating); $i = $i + $groupTotal) {     
+                        $input['compatition_id'] = $teamOrSingle == 'single' ? Arr::get($objectIterating, '0.compatition_id') : Arr::get($objectIterating, '0.0.compatition_id');
+                        $input['category_id'] = $teamOrSingle == 'single' ? Arr::get($objectIterating, '0.category_id') : Arr::get($objectIterating, '0.0.category_id');
+                        $input['pool_type'] = $groupType;
+                        $input['pool'] = $p;
+                        $input['group'] =  $g;
+                        $input['status'] = 0;
+                        $teamOrSingle == 'single' ? $input['registration_one'] = Arr::get($objectIterating, $i . '.id') : $input['team_one'] = Arr::get($objectIterating, $i . '.0.team_id');
+                        $teamOrSingle == 'single' ? $input['registration_two'] = null : $input['team_two'] = null;
+                        $input['start_time'] =  $timeTracking;
+                        $timeTracking = Date("H:i:s", strtotime("$timeTracking + $catMatchLenght minutes"));
+                        $finishedGroup[] = $input;
+                    }
+                    $startingIndex++;
+                }
+                $poolsCount++;
+            }
+
+            $shouldCreateG = false;
+            $shouldCreateSFM = false;
+            $shouldCreateFM = false;
+            $groupCount = 0;
+            switch($groupType) {
+                case 'KRG4':
+                    $shouldCreateG = false;
+                    $shouldCreateSFM = false;
+                    $shouldCreateFM = true;
+                    break;
+                case 'KRG10':
+                    $shouldCreateG = false;
+                    $shouldCreateSFM = true;
+                    $shouldCreateFM = true;
+                    break;
+                case 'KRG24':
+                    $shouldCreateG = true;
+                    $groupCount = $poolsCount;
+                    $shouldCreateSFM = true;
+                    $shouldCreateFM = true;
+                    break;
+                case 'KRG48':
+                    $shouldCreateG = true;
+                    $groupCount = $poolsCount + 2;
+                    $shouldCreateSFM = true;
+                    $shouldCreateFM = true;
+                    break;
+                case 'KRG96':
+                    $shouldCreateG = true;
+                    $groupCount = $poolsCount + 6;
+                    $shouldCreateSFM = true;
+                    $shouldCreateFM = true;
+                    break;
+                
+            }
+            if($shouldCreateG) {
+                for($po = $poolsCount; $po <= $groupCount; $po++) {
+                    for($gr = 1; $gr <= 2; $gr++){
+                        for($it = 0; $it <= 3; $it++) {
+                            $input['compatition_id'] = $teamOrSingle == 'single' ? Arr::get($objectIterating, '0.compatition_id') : Arr::get($objectIterating, '0.0.compatition_id');
+                            $input['category_id'] = $teamOrSingle == 'single' ? Arr::get($objectIterating, '0.category_id') : Arr::get($objectIterating, '0.0.category_id');
+                            $input['pool_type'] = "KRGA";
+                            $input['pool'] = $po;
+                            $input['group'] = $gr;
+                            $input['status'] = 0;
+                            $teamOrSingle == 'single' ? $input['registration_one'] = null : $input['team_one'] = null;
+                            $teamOrSingle == 'single' ? $input['registration_two'] = null : $input['team_two'] = null;
+                            $input['start_time'] =  $timeTracking;
+                            $timeTracking = Date("H:i:s", strtotime("$timeTracking + $catMatchLenght minutes"));
+                            $finishedGroup[] = $input;
+                        }
+                    }
+                    $poolsCount++;
+                }
+            }
+            if($shouldCreateSFM) {
+                $finalPool = $poolsCount;
+                for($gro = 1; $gro <= 2; $gro++){
+                    $input['compatition_id'] = $teamOrSingle == 'single' ? Arr::get($objectIterating, '0.compatition_id') : Arr::get($objectIterating, '0.0.compatition_id');
+                    $input['category_id'] = $teamOrSingle == 'single' ? Arr::get($objectIterating, '0.category_id') : Arr::get($objectIterating, '0.0.category_id');
+                    $input['pool_type'] = "KRSF";
+                    $input['pool'] = $finalPool;
+                    $input['group'] = $gro;
+                    $input['status'] = 0;
+                    $teamOrSingle == 'single' ? $input['registration_one'] = null : $input['team_one'] = null;
+                    $teamOrSingle == 'single' ? $input['registration_two'] = null : $input['team_two'] = null;
+                    $input['start_time'] =  $timeTracking;
+                    $timeTracking = Date("H:i:s", strtotime("$timeTracking + $catMatchLenght minutes"));
+                    $finishedGroup[] = $input;
+                }
+            }
+            if($shouldCreateFM) {
+                $finalPool = $poolsCount;
+                $input['compatition_id'] = $teamOrSingle == 'single' ? Arr::get($objectIterating, '0.compatition_id') : Arr::get($objectIterating, '0.0.compatition_id');
+                $input['category_id'] = $teamOrSingle == 'single' ? Arr::get($objectIterating, '0.category_id') : Arr::get($objectIterating, '0.0.category_id');
+                $input['pool_type'] = "KRFM";
+                $input['pool'] = $finalPool;
+                $input['group'] = 3;
+                $input['status'] = 0;
+                $teamOrSingle == 'single' ? $input['registration_one'] = null : $input['team_one'] = null;
+                $teamOrSingle == 'single' ? $input['registration_two'] = null : $input['team_two'] = null;
+                $input['start_time'] =  $timeTracking;
+                $timeTracking = Date("H:i:s", strtotime("$timeTracking + $catMatchLenght minutes"));
+                $finishedGroup[] = $input;
+            }
+            return $finishedGroup;
+        }
+    public function sortKataRepGroups($registrationNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle)
+    {
+        // index one calculation
+        // Taking data of registrations and number of groups
+        $sortedGroups = [];
+
+        switch($registrationNo) {
+            case $registrationNo <= 3:
+                $groupTotal = 1;
+                $poolsWithComp = 1;
+                $groupType = 'KRG3';
+                $sortedGroups[] = $this->firstPoolKataRematch( $object, $groupType, $poolsWithComp, $groupTotal, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                break;
+            case $registrationNo == 4:
+                $groupTotal = 2;
+                $poolsWithComp = 1;
+                $groupType = 'KRG4';
+                $sortedGroups[] = $this->firstPoolKataRematch( $object, $groupType, $poolsWithComp, $groupTotal, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                break;
+            case $registrationNo <= 10:
+                $groupTotal = 2;
+                $poolsWithComp = 1;
+                $groupType = 'KRG10';
+                $sortedGroups[] = $this->firstPoolKataRematch( $object, $groupType, $poolsWithComp, $groupTotal, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                break;
+            case $registrationNo <= 24:
+                $groupTotal = 2;
+                $poolsWithComp = 1;
+                $groupType = 'KRG24';
+                $sortedGroups[] = $this->firstPoolKataRematch( $object, $groupType, $poolsWithComp, $groupTotal, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                break;
+            case $registrationNo <= 48:
+                $groupTotal = 4;
+                $poolsWithComp = 2;
+                $groupType = 'KRG48';
+                $sortedGroups[] = $this->firstPoolKataRematch( $object, $groupType, $poolsWithComp, $groupTotal, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                break;
+            case $registrationNo <= 98:
+                $groupTotal = 8;
+                $poolsWithComp = 4;
+                $groupType = 'KRG98';
+                $sortedGroups[] = $this->firstPoolKataRematch( $object, $groupType, $poolsWithComp, $groupTotal, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                break;
+            case $registrationNo <= 128:
+                $groupTotal = 16;
+                $poolsWithComp = 8;
+                $groupType = 'KRG192';
+                $sortedGroups[] = $this->firstPoolKataRematch( $object, $groupType, $poolsWithComp, $groupTotal, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                break;
+        }        
+        return Arr::collapse($sortedGroups);
+    }
+    
+
     public function roundRobin($registrationsNo, $catMatchLenght, $catTimeStart, $object) 
     {
-        
         $combinations = 0;
         $timeTracking = $catTimeStart;
         $sortedGroups = [];
         $arrOfIndexes = [];
+
         switch($registrationsNo) {
             case 3:
                 $combinations = 5;
@@ -223,9 +394,9 @@ trait PoolsGroups {
         return $sortedGroups;
     }
     public function newSortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle, $registrationsNo) {
-        $competition = Compatition::where('id', Arr::get($object, '0.compatition_id'))->first();
-        $category = Category::where('id', Arr::get($object, '0.category_id'))->first();
-        if($competition->rematch == 0) {
+        $competition = $teamOrSingle == 'single' ? Compatition::where('id', Arr::get($object, '0.compatition_id'))->first() : Compatition::where('id', Arr::get($object, '0.0.compatition_id'))->first();
+        $category = $teamOrSingle == 'single' ? Category::where('id', Arr::get($object, '0.category_id'))->first() : Category::where('id', Arr::get($object, '0.0.category_id'))->first();
+        if($teamOrSingle == 'single' && $competition->rematch == 0) {
             return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
         } else {
             if($category->repesaz == 0) {
@@ -241,8 +412,17 @@ trait PoolsGroups {
                 }
             }
             if($category->repesaz == 1 && $category->kata_or_kumite == 1) {
-                return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                return $this->sortKataRepGroups($registrationsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                
             }
+        }
+        if($teamOrSingle == 'team' && $competition->rematch == 0) {
+            return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
+        } else {
+            if($category->repesaz == 1 && $category->kata_or_kumite == 1) {
+                return $this->sortKataRepGroups($registrationsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
+            }
+            return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
         }
     }
     public function rematchBuilding($finalMatch) {

@@ -16,7 +16,11 @@ class PoolTeam extends Model
         'pool',
         'group',
         'team_one',
+        'kata_one_id',
+        'points_team_one',
         'team_two',
+        'kata_two_id',
+        'points_team_two',
         'winner_id',
         'looser_id',
         'status',
@@ -36,5 +40,8 @@ class PoolTeam extends Model
     {
         return $this->hasMany(Team::class);
     }
-
+    public function kataPointPanel()
+    {
+        return $this->hasMany(KataPointPanel::class);
+    }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\V1\CompatitorsController;
 use App\Http\Controllers\V1\CompatitionsController;
 use App\Http\Controllers\V1\EventScheduleController;
 use App\Http\Controllers\V1\FileController;
+use App\Http\Controllers\V1\KataPointPanelsController;
 use App\Http\Controllers\V1\MembrshipController;
 use App\Http\Controllers\V1\OfficialKatasController;
 use App\Http\Controllers\V1\PagesController;
@@ -242,6 +243,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //kata list store
     // Route::post('/official-kata', [OfficialKatasController::class, 'store']);
     Route::get('/official-kata', [OfficialKatasController::class, 'index']);
+
+    //Points Kata
+    Route::post('/store-points/{timeTable}', [KataPointPanelsController::class, 'store']);
+    Route::post('/make-next-round/{timeTable}', [KataPointPanelsController::class, 'makeNextRound']);
 });
 //testing
 

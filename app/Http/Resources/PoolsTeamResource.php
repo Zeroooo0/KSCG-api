@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use App\Models\Category;
 use App\Models\Club;
+use App\Models\KataPointPanel;
+use App\Models\OfficialKata;
 use App\Models\PoolTeam;
 use App\Models\Registration;
 use App\Models\Team;
@@ -34,13 +36,21 @@ class PoolsTeamResource extends JsonResource
                 'id' => $teamOne != null ? $teamOne->id : null,
                 'name' => $teamOne != null ? $teamOne->name . " ($cloubOneShortName)" : null,
                 'isWinner' => $isWinnerOne,
-                'resultText' => $isWinnerOne != null ? ($isWinnerOne ? 'Pobjeda' : 'Poraz') : null
+                'resultText' => $isWinnerOne != null ? ($isWinnerOne ? 'Pobjeda' : 'Poraz') : null,
+                'kataName' => $this->kata_one_id ? OfficialKata::where('id', $this->kata_one_id)->first()->name : null,
+                'totalPoints' => $this->points_team_one,
+                'allPoints' => KataPointPanelResource::collection(KataPointPanel::where('pool_team_id', $this->id)->where('team_id', $this->team_one)->orderBy('judge', 'asc')->get())
+            
             ];
             $two = [
                 'id' => $teamTwo != null ? $teamTwo->id : null,
                 'name' => $teamTwo != null ? $teamTwo->name . " ($cloubTwoShortName)" : null,
                 'isWinner' => $isWinnerTwo,
-                'resultText' => $isWinnerTwo != null  ? ($isWinnerTwo ? 'Pobjeda' : 'Poraz') : null 
+                'resultText' => $isWinnerTwo != null  ? ($isWinnerTwo ? 'Pobjeda' : 'Poraz') : null,
+                'kataName' => $this->kata_two_id ? OfficialKata::where('id', $this->kata_two_id)->first()->name : null,
+                'totalPoints' => $this->points_team_one,
+                'allPoints' => KataPointPanelResource::collection(KataPointPanel::where('pool_team_id', $this->id)->where('team_id', $this->team_two)->orderBy('judge', 'asc')->get())
+            
             ];
 
         }
@@ -68,15 +78,89 @@ class PoolsTeamResource extends JsonResource
         else{
             $nextMatchGroup = ($group + 1) / 2;
         }
-        $nextMatchId = $this->pool_type != 'FM' ? $pools->where('pool', $nextPool)->where('group', $nextMatchGroup)->first()->id : null;
+        $nextMatchId = null;
+        switch($this->pool_type) {
+            case 'G':
+                $name = 'Grupa';
+                $nextMatchId = $pools->where('pool', $nextPool)->where('group', $nextMatchGroup)->first()->id;
+                break;
+            case 'SF':
+                $name = 'Polufinale';
+                $nextMatchId = $pools->where('pool', $nextPool)->where('group', $nextMatchGroup)->first()->id;
+                break;
+            case 'FM':
+                $name = "Finale";
+                $nextMatchId = null;
+                break;
+            case 'RE':
+                $name = "Repesaž";
+                $nextMatchId = $this->id + 1;
+                break;
+            case 'REFM':
+                $name = "Repesaž Finale";
+                $nextMatchId = null;
+                break;
+            case 'RR':
+                $name = "Round Robin";
+                $nextMatchId = $this->id + 1;
+                break;
+            case 'RRSF':
+                $name = "Round Robin Polufinali";
+                $nextMatchId = $this->id + 1;
+                break;
+            case 'RRFM':
+                $name = "Round Robin Finale";
+                $nextMatchId = null;
+                break;
+            case 'KRG3':
+                $name = 'Kate finale';
+                $nextMatchId = null;
+                break;
+            case 'KRG4':
+                $name = 'Kate grupa';
+                $nextMatchId = null;
+                break;
+            case 'KRG10':
+                $name = 'Kate grupa';
+                $nextMatchId = null;
+                break;
+            case 'KRG24':
+                $name = 'Kate grupa';
+                $nextMatchId = null;
+                break;
+            case 'KRG48':
+                $name = 'Kate grupa';
+                $nextMatchId = null;
+                break;
+            case 'KRG96':
+                $name = 'Kate grupa';
+                $nextMatchId = null;
+                break;
+            case 'KRG192':
+                $name = 'Kate grupa';
+                $nextMatchId = null;
+                break;
+            case 'KRGA':
+                $name = 'Kate grupa';
+                $nextMatchId = null;
+                break;
+            case 'KRSF':
+                $name = 'Kate bronza';
+                $nextMatchId = null;
+                break;
+            case 'KRFM':
+                $name = 'Kate zlato';
+                $nextMatchId = null;
+                break;
+        }
 
  
         return [
             'id' => (string)$this->id,
             'name' => $name,
-            'group' => $this->pool,
-            'match' => $this->group,
-            'nextMatchId' => $nextMatchId,
+            'group' => (string)$this->pool,
+            'match' => (string)$this->group,
+            'nextMatchId' => (string)$nextMatchId,
             'startTime' => $this->start_time,
             'competitorOne' => $one,
             'competitorTwo' => $two

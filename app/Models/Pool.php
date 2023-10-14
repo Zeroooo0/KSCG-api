@@ -15,7 +15,9 @@ class Pool extends Model
         'pool',
         'group',
         'registration_one',
+        'points_reg_one',
         'registration_two',
+        'points_reg_two',
         'winner_id',
         'looser_id',
         'start_time',
@@ -40,6 +42,10 @@ class Pool extends Model
     public function registrations()
     {
         return $this->hasMany(Registration::class);
+    }
+    public function kataPointPanel()
+    {
+        return $this->hasMany(KataPointPanel::class);
     }
 
 }

@@ -51,7 +51,7 @@ class PoolsController extends Controller
         foreach($timeTable as $timeTableCategory) {
             $timeTableCategories [] = $timeTableCategory->category_id;
         }
-
+        
         $registrations = $compatition->registrations;
         $reg_single = $registrations->where('team_or_single', 1)->whereIn('category_id', $timeTableCategories)->countBy('category_id');
         $reg_teams = $registrations->where('team_or_single', 0)->whereIn('category_id', $timeTableCategories)->countBy('category_id');
@@ -71,6 +71,9 @@ class PoolsController extends Controller
         }
         foreach($reg_teams as $key=>$count){
             $nn_team_cat[] = $registrations->where('category_id', $key)->groupBy('team_id')->values();
+        }
+        foreach($compatition->registrations as $reg) {
+            $reg->update(['position'=> null]);
         }
 
         if($compatition->registrations->where('position', '!=', NULL)->count() > 0) {
@@ -125,7 +128,7 @@ class PoolsController extends Controller
                     break;
             }
 
-            $teamArr[] = $this->sortGroups($groupsReal, $val, $timePerCategory, $catTimeStart, 'team');
+            $teamArr[] = $this->newSortGroups($groupsReal, $val, $timePerCategory, $catTimeStart, 'team', $registrationCount);
 
         }
 
@@ -165,10 +168,10 @@ class PoolsController extends Controller
                     $groupsReal = 64;
                     break;
             }
-            //return $this->roundRobin($registrationCount, $timePerCategory, $catTimeStart, $cleaned);
             $singleArr[] = $this->newSortGroups($groupsReal, $cleaned, $timePerCategory, $catTimeStart, 'single', $registrationCount );          
+                    
         }
-        
+        //return Arr::collapse($teamArr);
         PoolTeam::insert(Arr::collapse($teamArr));
         Pool::insert(Arr::collapse($singleArr));
         return $this->success(['single' => Arr::collapse($singleArr), 'teams' => Arr::collapse($teamArr)]);
