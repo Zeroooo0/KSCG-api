@@ -8,7 +8,9 @@ use App\Http\Controllers\V1\CompatitorsController;
 use App\Http\Controllers\V1\CompatitionsController;
 use App\Http\Controllers\V1\EventScheduleController;
 use App\Http\Controllers\V1\FileController;
+use App\Http\Controllers\V1\KataPointPanelsController;
 use App\Http\Controllers\V1\MembrshipController;
+use App\Http\Controllers\V1\OfficialKatasController;
 use App\Http\Controllers\V1\PagesController;
 use App\Http\Controllers\V1\PoolsController;
 use App\Http\Controllers\V1\PostsController;
@@ -157,8 +159,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/registered-clubs', [ReusableDataController::class, 'registeredClubs']);
     Route::post('/rebuild-pool', [PoolsController::class, 'rebuildCategoryPool']);
     Route::get('/certificate-print/{competition}', [CompatitionsController::class, 'piblicRegistrations']);
+    
     Route::patch('/printed/{registration}', [RegistrationsController::class, 'update']);
-
+    Route::post('/set-position', [RegistrationsController::class, 'updateMany']);
     //ClubsF
     Route::resource('/clubs', ClubsController::class);   
     //Compatitiors
@@ -236,6 +239,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Route::get('/seminars-applications/{seminar}', [SeminarApplicationController::class, 'index']);
     //
     Route::post('/compatition-results-calculate/{compatition}', [RegistrationsController::class, 'calculateResultsNow']);
+
+
+    //kata list store
+    // Route::post('/official-kata', [OfficialKatasController::class, 'store']);
+    Route::get('/official-kata', [OfficialKatasController::class, 'index']);
+
+    //Points Kata
+    Route::post('/store-points/{timeTable}', [KataPointPanelsController::class, 'store']);
+    Route::post('/make-next-round/{timeTable}', [KataPointPanelsController::class, 'makeNextRound']);
 });
 //testing
 
