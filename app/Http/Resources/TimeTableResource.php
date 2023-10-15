@@ -55,7 +55,13 @@ class TimeTableResource extends JsonResource
         if($competiton->rematch == 1 && $category->repesaz == 1 && $category->kata_or_kumite == 0) {
             $roundsTotal = 1;
             if($pool->where('pool_type', 'FM')->count() != 0) {
-                $roundsTotal =$pool->where('pool_type', 'FM')->first()->pool ;
+                $roundsTotal = $pool->where('pool_type', 'FM')->first()->pool;
+            }
+        }
+        if($competiton->rematch == 1 && $category->repesaz == 0 && $category->kata_or_kumite == 0) {
+            $roundsTotal = 1;
+            if($pool->where('pool_type', 'FM')->count() != 0) {
+                $roundsTotal = $pool->where('pool_type', 'FM')->first()->pool;
             }
         }
         if($competiton->rematch == 1 && $category->repesaz == 1 && $category->kata_or_kumite == 1) {
