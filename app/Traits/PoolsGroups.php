@@ -403,13 +403,13 @@ trait PoolsGroups {
                 return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
             } 
             if($category->repesaz == 1 && $category->kata_or_kumite == 0) {
-                $roundRobinCount = [3,4,5,6];
-                if(in_array($registrationsNo, $roundRobinCount)) {
-                    
-                    return $this->roundRobin($registrationsNo, $catMatchLenght, $catTimeStart, $object);
-                } else {
-                    return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
-                }
+                //$roundRobinCount = [3,4,5,6];
+                //if(in_array($registrationsNo, $roundRobinCount)) {
+                //    
+                //   return $this->roundRobin($registrationsNo, $catMatchLenght, $catTimeStart, $object);
+                //} else {
+                //    return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
+                //}
             }
             if($category->repesaz == 1 && $category->kata_or_kumite == 1) {
                 return $this->sortKataRepGroups($registrationsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
@@ -417,12 +417,12 @@ trait PoolsGroups {
             }
         }
         if($teamOrSingle == 'team' && $competition->rematch == 0) {
-            return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
+            //return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
         } else {
             if($category->repesaz == 1 && $category->kata_or_kumite == 1) {
                 return $this->sortKataRepGroups($registrationsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
             }
-            return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
+            //return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
         }
     }
     public function rematchBuilding($finalMatch) {
