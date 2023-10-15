@@ -28,7 +28,7 @@ class PoolResource extends JsonResource
             $isWinnerOne = $compatitorOne != null ? ($this->winner_id == null ? null : ($this->registration_one == $this->winner_id ? true : false )) : null;
             $isWinnerTwo = $compatitorTwo != null ? ($this->winner_id == null ? null : ($this->registration_two == $this->winner_id ? true : false )) : null;
             $one = [
-                'registrationId' => $this->registration_one,
+                'id' => $this->registration_one,
                 'name' => $compatitorOne != null ? "$compatitorOne->name $compatitorOne->last_name ($compatitorOneClub)" : null,
                 'isWinner' => $isWinnerOne,
                 'resultText' => $isWinnerOne !== null ? ($isWinnerOne ? 'Pobjeda' : 'Poraz') : null ,
@@ -37,6 +37,7 @@ class PoolResource extends JsonResource
                 'allPoints' => KataPointPanelResource::collection(KataPointPanel::where('pool_id', $this->id)->where('registration_id', $this->registration_one)->orderBy('judge', 'asc')->get())
             ];
             $two = [
+                'id' => $this->registration_two,
                 'registrationId' => $this->registration_two,
                 'name' => $compatitorTwo != null ? "$compatitorTwo->name $compatitorTwo->last_name ($compatitorTwoClub)" : null,
                 'isWinner' => $isWinnerTwo,
