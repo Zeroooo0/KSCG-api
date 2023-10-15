@@ -54,6 +54,9 @@ class TimeTableResource extends JsonResource
         }
         if($competiton->rematch == 1 && $category->repesaz == 1 && $category->kata_or_kumite == 0) {
             $roundsTotal = 1;
+            if($pool->where('pool_type', 'FM')->count() != 0) {
+                $roundsTotal =$pool->where('pool_type', 'FM')->first()->pool ;
+            }
         }
         if($competiton->rematch == 1 && $category->repesaz == 1 && $category->kata_or_kumite == 1) {
             $arrOfPoolType = ['KRG3','KRFM'];
@@ -68,7 +71,8 @@ class TimeTableResource extends JsonResource
                 'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $category->name . ' ' . $category->category_name  . $ekipno,
                 'isTeam' => (boolean)!$category->solo_or_team,
                 'haveRematch' => (boolean)$category->repesaz,
-            ],              
+            ],
+            'competitionId' => $this->compatition->id,
             'etoStart' => date('H:i', strtotime($this->eto_start)),
             'etoFinish' => date('H:i', strtotime($this->eto_finish)),
             'delay' => -(int)$delay,

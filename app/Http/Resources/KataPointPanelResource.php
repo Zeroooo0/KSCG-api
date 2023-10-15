@@ -15,20 +15,12 @@ class KataPointPanelResource extends JsonResource
      */
     public function toArray($request)
     {
-        $validationCount = false;
-        $allPoints = KataPointPanel::where('pool_id', $this->pool_id)->where('registration_id', $this->registration_id)->get();
+        
+        $allPoints = $this->registration_id !== null ? 
+            KataPointPanel::where('pool_id', $this->pool_id)->where('registration_id', $this->registration_id)->orderBy('points', 'desc')->get():
+            KataPointPanel::where('pool_id', $this->pool_id)->where('team_id', $this->team_id)->orderBy('points', 'desc')->get();
+        $validationCount = $allPoints->first()->id == $this->id || $allPoints->last()->id == $this->id ;
 
-        if($allPoints->where('points', '<', $this->points)->count() == 0) {
-
-            if($allPoints->where('points', '=', $this->points)->where('judge', '<', $this->judge)->count() == 0){
-                $validationCount = true;
-            }
-        }
-        if($allPoints->where('points', '>', $this->points)->count() == 0) {
-            if($allPoints->where('points', '=', $this->points)->where('judge', '>', $this->judge)->count() == 0){
-                $validationCount = true;
-            }
-        }
         return [
             'id' => (string)$this->id,
             'judge' => "Sudija $this->judge",

@@ -633,6 +633,46 @@ class RegistrationsController extends Controller
         }
         return $this->error('', 'Only status can be chaged', 403);
     }
+    public function updateMany(Request $request)
+    {
+            // public function store(Request $request)
+    // {
+    //     $data = [];
+    //     foreach($request->all() as $kata) {
+    //         $input['name'] = $kata['name'];
+    //         $input['created_at'] = now();
+    //         $input['updated_at'] = now();
+    //         $data[] = $input;
+    //     }
+    //     OfficialKata::insert($data );
+    //     return $this->success('', 'Done!');
+    // }
+        foreach($request->all() as $data) {
+            $registration = Registration::where('id', $data['registrationId'])->first();
+            if($registration != null) {
+                $allRegistrations = Registration::where('compatition_id', $registration->compatition_id)->where('category_id', $registration->category_id)->get();
+                foreach($allRegistrations as $reg) {
+                    $reg->update(['position' => NULL]);
+                }
+                $this->calculateResults($registration->compatition_id , [$registration->club_id], 'registrations');
+                $this->calculateResults($registration->compatition_id , [$registration->club_id], 'results');
+            }
+        }
+        foreach($request->all() as $data) {
+            
+            
+            $registration = Registration::where('id', $data['registrationId'])->first();
+            if($registration != null){
+                $positionConvert = $data['position'] == 1 ? 3 : ($data['position'] == 3 ? 1 : $data['position']);
+                $registration->update(['position' => $positionConvert]);
+                $this->calculateResults($registration->compatition_id , [$registration->club_id], 'registrations');
+                $this->calculateResults($registration->compatition_id , [$registration->club_id], 'results');
+            }
+
+        }
+        return $this->success('', 'Uspješno dodata pozicije.');
+        
+    }
 
 
     /**
