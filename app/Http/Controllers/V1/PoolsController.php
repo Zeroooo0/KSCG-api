@@ -234,11 +234,11 @@ class PoolsController extends Controller
         }
         if($request->has('nextMatchId') && $request->nextMatchId !== 'null') {
             $nextMetch = Pool::where('id', $request->nextMatchId)->first();
-            if(!str_contains($nextMetch->pool_type, 'R')){
+            if($nextMetch != '' && !str_contains($nextMetch->pool_type, 'R')){
                 $isOdd = $pool->group % 2 == 0 ? 1 : 0;
                 $isOdd == 0 ? $nextMetch->update(['registration_one' => $winnerId]) : $nextMetch->update(['registration_two' => $winnerId]);
             } else {
-                $request->nextMatchId != 'null' ? $nextMetch->update(['registration_one' => $winnerId]) : null;
+                $nextMetch != '' && $request->nextMatchId != 'null' ? $nextMetch->update(['registration_one' => $winnerId]) : null;
             }
         }
         //return response()->json(!in_array($pool->pool_type, ['FM', 'SF', 'RFM', 'RSF']));

@@ -110,7 +110,7 @@ class KataPointPanelsController extends Controller
                     $registeredAll->where('id', $pool->registration_one)->first()->update(['position' => $position]);
                 }
                 if(!$isSingle) {
-                    $teamsRegs = $registeredAll->where('team_id', $pool->team_one)->get();
+                    $teamsRegs = $registeredAll->where('team_id', $pool->team_one);
                     foreach($teamsRegs as $reg) {
                         $reg->update(['position' => $position]);
                     }
