@@ -652,7 +652,7 @@ class RegistrationsController extends Controller
             if($registration != null) {
                 $allRegistrations = Registration::where('compatition_id', $registration->compatition_id)->where('category_id', $registration->category_id)->get();
                 foreach($allRegistrations as $reg) {
-                    $reg->update(['position' => NULL, 'status'=> 0]);
+                    $reg->update(['position' => NULL]);
                 }
                 $this->calculateResults($registration->compatition_id , [$registration->club_id], 'registrations');
                 $this->calculateResults($registration->compatition_id , [$registration->club_id], 'results');

@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Compatition;
 use App\Models\Pool;
 use App\Models\PoolTeam;
+use App\Models\Registration;
 use App\Traits\LenghtOfCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,7 +31,7 @@ class TimeTableResource extends JsonResource
         $pools = PoolResource::collection($pool);
         $poolsTeam = PoolsTeamResource::collection($pool);
         $groupsTotal = $this->categoryDuration($competiton, $category);
-        
+        $registrationsPositions = RegistrationsResource::collection(Registration::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->where('position', '!=', null)->orderBy('position', 'desc')->get());
         $data = $ekipno == null  ? $pools->whereIn('pool_type', ['G', 'SF', 'FM', ]) : $poolsTeam->whereIn('pool_type', ['G', 'SF', 'FM']);
         $repesazOne = $ekipno == null  ? $pools->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']);
         $repesazTwo = $ekipno == null  ? $pools->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']);
@@ -86,6 +87,7 @@ class TimeTableResource extends JsonResource
             'finishedAt' => $this->finish_time != null ? date('H:i', strtotime($this->finish_time)) : null,
             'status' => $this->status,
             'roundsTotal' => (string)$roundsTotal,
+            'results' => $registrationsPositions,
             'groups' => $request->has('embed') && str_contains($request->embed, 'groups') ? $data->toArray() : 'embbedable',
             'rematchOne' => $request->has('embed') && str_contains($request->embed, 'rematch') ? $repesazOne->toArray() : 'embbedable',
             'rematchTwo' => $request->has('embed') && str_contains($request->embed, 'rematch') ? $repesazTwo->toArray() : 'embbedable',
