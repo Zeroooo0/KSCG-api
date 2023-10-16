@@ -303,7 +303,8 @@ class PoolsController extends Controller
             $request->nextMatchId != 'null' ? $nextMetch->update(['registration_one' => $winnerId]) : null;
         }
         if($pool->pool_type == 'REFM'){
-            $winnerId != 'null' ? $winnerRegistration->update(['position' => '1']) : $looserRegistration->update(['position' => null]);
+            $winnerId != 'null' ? $winnerRegistration->update(['position' => '1']) : null;
+            $looserId != 'null' ? $looserRegistration->update(['position' => null]) : null;
             $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
         }
         // if($pool->pool_type == 'FM' && $compatition->rematch == 1) {
