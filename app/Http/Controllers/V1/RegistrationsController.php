@@ -652,7 +652,7 @@ class RegistrationsController extends Controller
             if($registration != null) {
                 $allRegistrations = Registration::where('compatition_id', $registration->compatition_id)->where('category_id', $registration->category_id)->get();
                 foreach($allRegistrations as $reg) {
-                    $reg->update(['position' => NULL]);
+                    $reg->update(['position' => NULL, 'status'=> 0]);
                 }
                 $this->calculateResults($registration->compatition_id , [$registration->club_id], 'registrations');
                 $this->calculateResults($registration->compatition_id , [$registration->club_id], 'results');
@@ -664,7 +664,7 @@ class RegistrationsController extends Controller
             $registration = Registration::where('id', $data['registrationId'])->first();
             if($registration != null){
                 $positionConvert = $data['position'] == 1 ? 3 : ($data['position'] == 3 ? 1 : $data['position']);
-                $registration->update(['position' => $positionConvert]);
+                $registration->update(['position' => $positionConvert, 'status'=> 1]);
                 $this->calculateResults($registration->compatition_id , [$registration->club_id], 'registrations');
                 $this->calculateResults($registration->compatition_id , [$registration->club_id], 'results');
             }
