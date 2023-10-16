@@ -487,12 +487,12 @@ class PoolsController extends Controller
         if($request->has('nextMatchId') && $request->nextMatchId !== 'null') {
             $nextMetch = PoolTeam::where('id', $request->nextMatchId)->first();
             
-            if(!str_contains($nextMetch->pool_type, 'R')){
+            if($nextMetch != null && !str_contains($nextMetch->pool_type, 'R')){
                 $isOdd = $poolTeam->group % 2 == 0 ? 1 : 0;
                 
                 $isOdd == 0 ? $nextMetch->update(['team_one' => $winnerId]) : $nextMetch->update(['team_two' => $winnerId]);
             } else {
-                $request->nextMatchId != 'null' ? $nextMetch->update(['team_one' => $winnerId]) : null;
+                $request->nextMatchId != null ? $nextMetch->update(['team_one' => $winnerId]) : null;
             }
         }
         

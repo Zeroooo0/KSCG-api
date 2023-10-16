@@ -8,12 +8,15 @@ use App\Models\Pool;
 use App\Models\PoolTeam;
 use App\Models\Registration;
 use App\Models\TimeTable;
+use App\Traits\CompatitionClubsResultsTrait;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 
 class KataPointPanelsController extends Controller
 {
     use HttpResponses;
+    use CompatitionClubsResultsTrait;
+
     public function store(Request $request, TimeTable $timeTable)
     {
         $isSingle = $timeTable->category->solo_or_team;
@@ -84,7 +87,7 @@ class KataPointPanelsController extends Controller
         $firstPool =  $isSingle ? Pool::where('compatition_id', $compatition->id)->where('category_id', $category->id)->where('pool', 1)->orderBy('points_reg_one', 'desc')->first() : PoolTeam::where('compatition_id', $compatition->id)->where('category_id', $category->id)->where('pool', 1)->orderBy('points_team_one', 'desc')->first();
         $requestedPool = $isSingle ? Pool::where('compatition_id', $compatition->id)->where('category_id', $category->id)->where('pool', $request->pool)->orderBy('points_reg_one', 'desc')->get() : PoolTeam::where('compatition_id', $compatition->id)->where('category_id', $category->id)->where('pool', $request->pool)->orderBy('points_team_one', 'desc')->get();
         $registeredAll = Registration::where('compatition_id', $compatition->id)->where('category_id', $category->id)->get();
-        
+        $clubsArray = [];
         if($firstPool->pool_type == 'KRG3') {
 
             foreach($requestedPool as $key => $pool) {
@@ -107,12 +110,16 @@ class KataPointPanelsController extends Controller
 
                 
                 if($isSingle) {
-                    $registeredAll->where('id', $pool->registration_one)->first()->update(['position' => $position]);
+                    $regWin = $registeredAll->where('id', $pool->registration_one)->first();
+                    $regWin->update(['position' => $position, 'status' => 1]);
+                    $clubsArray[] = $regWin->club_id;
+
                 }
                 if(!$isSingle) {
                     $teamsRegs = $registeredAll->where('team_id', $pool->team_one);
                     foreach($teamsRegs as $reg) {
-                        $reg->update(['position' => $position]);
+                        $reg->update(['position' => $position, 'status' => 1]);
+                        $clubsArray[] = $reg->club_id;
                     }
                 }
             }
@@ -141,11 +148,13 @@ class KataPointPanelsController extends Controller
                         $position = 1;
                         break;
                 }
-                $isSingle ? $registeredAll->where('id', $pool->registration_one)->first()->update(['position' => $position]) : null;
+                $isSingle ? $registeredAll->where('id', $pool->registration_one)->first()->update(['position' => $position, 'status' => 1]) : null;
+                $isSingle ? $clubsArray[] = $registeredAll->where('id', $pool->registration_one)->first()->club_id : null;
                 if(!$isSingle) {
                     $teamsRegs = $registeredAll->where('team_id', $pool->team_one);
                     foreach($teamsRegs as $reg) {
-                        $reg->update(['position' => $position]);
+                        $reg->update(['position' => $position, 'status' => 1]);
+                        $clubsArray[] = $reg->club_id;
                     }
                 }
             }
@@ -302,23 +311,29 @@ class KataPointPanelsController extends Controller
                         $newPosition = $regFromPool['points'] != 0 ? 1 : null;
                         if($positon == 0 && $regFromPool['id'] != null) {
                             if($isSingle) {
-                                Registration::where('id', $regFromPool['id'])->first()->update(['position' => $newPosition]);
+                                $registrationWin = Registration::where('id', $regFromPool['id'])->first();
+                                $registrationWin->update(['position' => $newPosition, 'status' => 1]);
+                                $clubsArray[] = $registrationWin->club_id;
                             }
                             if(!$isSingle) {
                                 $registrationsToUpdate = Registration::where('team_id', $regFromPool['id'])->get();
                                 foreach($registrationsToUpdate as $reg) {
-                                    $reg->update(['position' => $newPosition]);
+                                    $reg->update(['position' => $newPosition, 'status' => 1]);
+                                    $clubsArray[] = $reg->club_id;
                                 }
                             }
                         }
                         if($positon == 1 && $regFromPool['id'] != null) {
                             if($isSingle) {
-                                Registration::where('id', $regFromPool['id'])->first()->update(['position' => null]);
+                                $registrationLose = Registration::where('id', $regFromPool['id'])->first();
+                                $registrationLose->update(['position' => null]);
+                                $clubsArray[] = $registrationLose->club_id;
                             }
                             if(!$isSingle) {
                                 $registrationsToUpdate = Registration::where('team_id', $regFromPool['id'])->get();
                                 foreach($registrationsToUpdate as $reg) {
                                     $reg->update(['position' => null]);
+                                    $clubsArray[] = $reg->club_id;
                                 }
                             }
                         }
@@ -337,24 +352,30 @@ class KataPointPanelsController extends Controller
                         $newPosition = $regFromPool['points'] != 0 ? 1 : null;
                         if($positon == 0 && $regFromPool['id'] != null) {
                             if($isSingle) {
-                                Registration::where('id', $regFromPool['id'])->first()->update(['position' => $newPosition]);
+                                $registrationWin = Registration::where('id', $regFromPool['id'])->first();
+                                $registrationWin->update(['position' => $newPosition, 'status' => 1]);
+                                $clubsArray[] = $registrationWin->club_id;
                             }
                             if(!$isSingle) {
                                 $registrationsToUpdate = Registration::where('team_id', $regFromPool['id'])->get();
                                 foreach($registrationsToUpdate as $reg) {
-                                    $reg->update(['position' => $newPosition]);
+                                    $reg->update(['position' => $newPosition, 'status' => 1]);
+                                    $clubsArray[] = $reg->club_id;
                                 }
                             }
                             
                         }
                         if($positon == 1 && $regFromPool['id'] != null) {
                             if($isSingle) {
-                                Registration::where('id', $regFromPool['id'])->first()->update(['position' => null]);
+                                $registrationLose = Registration::where('id', $regFromPool['id'])->first();
+                                $registrationLose->update(['position' => null]);
+                                $clubsArray[] = $registrationLose->club_id;
                             }
                             if(!$isSingle) {
                                 $registrationsToUpdate = Registration::where('team_id', $regFromPool['id'])->get();
                                 foreach($registrationsToUpdate as $reg) {
                                     $reg->update(['position' => null]);
+                                    $clubsArray[] = $reg->club_id;
                                 }
                             }
                             
@@ -377,24 +398,30 @@ class KataPointPanelsController extends Controller
                         $secondPosition = $regFromPool['points'] != 0 ? 2 : null;
                         if($positon == 0 && $regFromPool['id'] != null) {
                             if($isSingle) {
-                                Registration::where('id', $regFromPool['id'])->first()->update(['position' => $firstPosition]);
+                                $regFirst = Registration::where('id', $regFromPool['id'])->first();
+                                $regFirst->update(['position' => $firstPosition, 'status' => 1]);
+                                $clubsArray[] = $regFirst->club_id;
                             }
                             if(!$isSingle) {
                                 $registrationsToUpdate = Registration::where('team_id', $regFromPool['id'])->get();
                                 foreach($registrationsToUpdate as $reg) {
-                                    $reg->update(['position' => $firstPosition]);
+                                    $reg->update(['position' => $firstPosition, 'status' => 1]);
+                                    $clubsArray[] = $reg->club_id;
                                 }
                             }
                             
                         }
                         if($positon == 1 && $regFromPool['id'] != null) {
                             if($isSingle) {
-                                Registration::where('id', $regFromPool['id'])->first()->update(['position' => $secondPosition]);
+                                $regSecond = Registration::where('id', $regFromPool['id'])->first();
+                                $regSecond->update(['position' => $secondPosition, 'status' => 1]);
+                                $clubsArray[] = $regSecond->club_id;
                             }
                             if(!$isSingle) {
                                 $registrationsToUpdate = Registration::where('team_id', $regFromPool['id'])->get();
                                 foreach($registrationsToUpdate as $reg) {
-                                    $reg->update(['position' => $secondPosition]);
+                                    $reg->update(['position' => $secondPosition, 'status' => 1]);
+                                    $clubsArray[] = $reg->club_id;
                                 }
                             }
                             
@@ -403,7 +430,7 @@ class KataPointPanelsController extends Controller
                 }
             }
         }
-        
+        $this->calculateResults($timeTable->compatition_id ,array_unique($clubsArray), 'results');
         return $this->success('', 'Uspjesno');
     }
 }
