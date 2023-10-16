@@ -22,6 +22,9 @@ class PoolResource extends JsonResource
         $compatitorOne = $this->registration_one != null ? Registration::where('id', $this->registration_one)->first()->compatitor : null;
         $compatitorTwo = $this->registration_two != null ? Registration::where('id', $this->registration_two)->first()->compatitor : null;
     
+        $resultOne = $this->registration_one != null ? Registration::where('id', $this->registration_one)->first()->position : null;
+        $tesultTwo = $this->registration_two != null ? Registration::where('id', $this->registration_two)->first()->position : null;
+    
         $compatitorOneClub = $this->registration_one != null && Registration::where('id', $this->registration_one)->first()->club != null ? Registration::where('id', $this->registration_one)->first()->club->short_name : null;
         $compatitorTwoClub = $this->registration_two != null && Registration::where('id', $this->registration_two)->first()->club != null ? Registration::where('id', $this->registration_two)->first()->club->short_name : null;
         if($ekipno == null) {
@@ -34,6 +37,7 @@ class PoolResource extends JsonResource
                 'resultText' => $isWinnerOne !== null ? ($isWinnerOne ? 'Pobjeda' : 'Poraz') : null ,
                 'kataName' => $this->kata_one_id ? OfficialKata::where('id', $this->kata_one_id)->first()->name : null,
                 'totalPoints' => $this->points_reg_one,
+                'position' => (string)$resultOne,
                 'allPoints' => KataPointPanelResource::collection(KataPointPanel::where('pool_id', $this->id)->where('registration_id', $this->registration_one)->orderBy('judge', 'asc')->get())
             ];
             $two = [
@@ -44,6 +48,7 @@ class PoolResource extends JsonResource
                 'resultText' => $isWinnerTwo !== null  ? ($isWinnerTwo ? 'Pobjeda' : 'Poraz') : null ,
                 'kataName' => $this->kata_two_id ? OfficialKata::where('id', $this->kata_two_id)->first()->name : null,
                 'totalPoints' => $this->points_reg_two,
+                'position' => (string)$tesultTwo,
                 'allPoints' => KataPointPanelResource::collection(KataPointPanel::where('pool_id', $this->id)->where('registration_id', $this->registration_two)->orderBy('judge', 'asc')->get())
             ];
         } else{
