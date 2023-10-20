@@ -103,6 +103,9 @@ class KataPointPanelsController extends Controller
                     case 2:
                         $position = $poolFor != 0 ? 1 : null;
                         break;
+                    case 3:
+                        $position = $poolFor != 0 ? "0.9" : null;
+                        break;
                     default:
                         $position = null;
                         break;
@@ -173,7 +176,6 @@ class KataPointPanelsController extends Controller
             $groupUpdate = false;
             $bronzePosition = false;
             $goldPositions = false;
-            
             switch($requestedPool->first()->pool_type) {
                 case 'KRG4':
                     $goldPositions = true;
@@ -192,8 +194,9 @@ class KataPointPanelsController extends Controller
                     $bronzePosition = true;
                     break;
             }
-            if($requestedPool->where('pool_type', 'KRFM')->count() > 0) {
+            if($requestedPool->whereIn('pool_type', ['KRFM', 'KRSF'])->count() > 0) {
                 $goldPositions = true;
+                $bronzePosition = true;
             }
             
             if($finalesUpdate) {
@@ -324,15 +327,16 @@ class KataPointPanelsController extends Controller
                             }
                         }
                         if($positon == 1 && $regFromPool['id'] != null) {
+                            $newPositionForth = $regFromPool['points'] != 0 ? 0.9 : null;
                             if($isSingle) {
                                 $registrationLose = Registration::where('id', $regFromPool['id'])->first();
-                                $registrationLose->update(['position' => null]);
+                                $registrationLose->update(['position' => $newPositionForth]);
                                 $clubsArray[] = $registrationLose->club_id;
                             }
                             if(!$isSingle) {
                                 $registrationsToUpdate = Registration::where('team_id', $regFromPool['id'])->get();
                                 foreach($registrationsToUpdate as $reg) {
-                                    $reg->update(['position' => null]);
+                                    $reg->update(['position' => $newPositionForth]);
                                     $clubsArray[] = $reg->club_id;
                                 }
                             }
@@ -366,15 +370,16 @@ class KataPointPanelsController extends Controller
                             
                         }
                         if($positon == 1 && $regFromPool['id'] != null) {
+                            $newPositionForth = $regFromPool['points'] != 0 ? 0.9 : null;
                             if($isSingle) {
                                 $registrationLose = Registration::where('id', $regFromPool['id'])->first();
-                                $registrationLose->update(['position' => null]);
+                                $registrationLose->update(['position' => $newPositionForth]);
                                 $clubsArray[] = $registrationLose->club_id;
                             }
                             if(!$isSingle) {
                                 $registrationsToUpdate = Registration::where('team_id', $regFromPool['id'])->get();
                                 foreach($registrationsToUpdate as $reg) {
-                                    $reg->update(['position' => null]);
+                                    $reg->update(['position' => $newPositionForth]);
                                     $clubsArray[] = $reg->club_id;
                                 }
                             }
@@ -385,6 +390,7 @@ class KataPointPanelsController extends Controller
             }
             if($goldPositions) {
                 if($requestedPool->where('group', 3)->values()->count() != 0) {
+                   
                     $resultsGOne = [];
                     $inputOne['points'] = $isSingle ? $requestedPool->where('group', 3)->first()->points_reg_one : $requestedPool->where('group', 3)->first()->points_team_one;
                     $inputOne['id'] = $isSingle ? $requestedPool->where('group', 3)->first()->registration_one : $requestedPool->where('group', 3)->first()->team_one;

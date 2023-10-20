@@ -2,10 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Category;
-use App\Models\Club;
-use App\Models\Compatition;
-use App\Models\Compatitor;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RegistrationsResource extends JsonResource
@@ -64,7 +60,7 @@ class RegistrationsResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'status' => $this->status,
-            'position' => (string)$this->position,
+            'position' => (string)(int)$this->position,
             'isPrinted' => (boolean)$this->is_printed,
             'competition' => $compatitionData,
             'club' => $clubData,
