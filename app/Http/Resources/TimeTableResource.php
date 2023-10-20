@@ -36,7 +36,7 @@ class TimeTableResource extends JsonResource
         $repesazOne = $ekipno == null  ? $pools->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']);
         $repesazTwo = $ekipno == null  ? $pools->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']);
         $roundRobin = $ekipno == null ? $pools->whereIn('pool_type', ['RR', 'RRSF', 'RRFM']) : $poolsTeam->whereIn('pool_type', ['RR', 'RRFM']);
-        $kataRepesaz = $ekipno == null ? $pools->whereIn('pool_type', ['KRG3', 'KRG4', 'KRG10', 'KRG24', 'KRG48', 'KRG96', 'KRG192', 'KRGA', 'KRFM', 'KRSF']) : $poolsTeam->whereIn('pool_type', ['KRG3', 'KRG4', 'KRG10', 'KRG24', 'KRG48', 'KRG96', 'KRG192', 'KRGA', 'KRFM', 'KRSF']);
+        $kataRepesaz = $ekipno == null ? $pools->whereIn('pool_type', ['KRG3', 'KRG4', 'KRG10', 'KRG24', 'KRG48', 'KRG96', 'KRG192', 'KRGA', 'KRFM', 'KRSF'])->sortByDesc('points_reg_one')->sortBy('group')->sortBy('pool') : $poolsTeam->whereIn('pool_type', ['KRG3', 'KRG4', 'KRG10', 'KRG24', 'KRG48', 'KRG96', 'KRG192', 'KRGA', 'KRFM', 'KRSF'])->sortByDesc('points_team_one')->sortBy('group')->sortBy('pool');
         $delay = 0;
         $etoStart = 0;
         if($this->finish_time == null && $this->started_time != null) {

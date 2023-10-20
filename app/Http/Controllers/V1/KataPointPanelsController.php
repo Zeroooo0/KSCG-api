@@ -210,7 +210,6 @@ class KataPointPanelsController extends Controller
                     Pool::where('compatition_id', $compatition->id)->where('category_id', $category->id)->where('group', 2)->where('pool_type', 'KRSF')->first() :
                     PoolTeam::where('compatition_id', $compatition->id)->where('category_id', $category->id)->where('group', 2)->where('pool_type', 'KRSF')->first();
                 foreach($requestedPool->where('group', 1)->values() as $positon => $pool) {
-                    //return $pool;
                     switch($positon) {
                         case 0:
                             $isSingle ? 
@@ -224,28 +223,27 @@ class KataPointPanelsController extends Controller
                             break;
                         case 2:
                             $isSingle ? 
-                                $semiFinalGroupTwo->update(['registration_two' => $pool->registration_one]) : 
-                                $semiFinalGroupTwo->update(['team_two' => $pool->team_one]);
+                                $semiFinalGroupTwo->update(['registration_one' => $pool->registration_one]) : 
+                                $semiFinalGroupTwo->update(['team_one' => $pool->team_one]);
                             break;
                     }
                 }
                 foreach($requestedPool->where('group', 2)->values() as $positon => $pool) {
                     switch($positon) {
                         case 0:
-                            
                             $isSingle ? 
                                 $finalMatchToUpdate->update(['registration_two' => $pool->registration_one]) : 
                                 $finalMatchToUpdate->update(['team_two' => $pool->team_one]);
                             break;
                         case 1:
                             $isSingle ? 
-                                $semiFinalGroupOne->update(['registration_two' => $pool->registration_one]) : 
-                                $semiFinalGroupOne->update(['team_two' => $pool->team_one]);
+                                $semiFinalGroupTwo->update(['registration_two' => $pool->registration_one]) : 
+                                $semiFinalGroupTwo->update(['team_two' => $pool->team_one]);
                             break;
                         case 2:
                             $isSingle ? 
-                                $semiFinalGroupTwo->update(['registration_one' => $pool->registration_one]) : 
-                                $semiFinalGroupTwo->update(['team_one' => $pool->team_one]);
+                                $semiFinalGroupOne->update(['registration_two' => $pool->registration_one]) : 
+                                $semiFinalGroupOne->update(['team_two' => $pool->team_one]);
                             break;
                     }
                 }
