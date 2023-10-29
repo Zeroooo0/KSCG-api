@@ -282,7 +282,7 @@ class PoolsController extends Controller
             }
             if($totalRegistrations == 2 ) {
                 $winnerRegistration->update(['status' => 1]);
-                $looserRegistration->update(['status' => 0]);
+                $request->looserId != 'null' ? $looserRegistration->update(['status' => 0]) : null;
             }
             if($totalRegistrations == 3 ) {
                 $poolsWinningCount = Pool::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id)->where('winner_id', $request->looserId)->where('looser_id', '!=', null)->where('id', '!=', $pool->id)->count();
