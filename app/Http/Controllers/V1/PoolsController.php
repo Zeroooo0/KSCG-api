@@ -288,7 +288,7 @@ class PoolsController extends Controller
                 $poolsWinningCount = Pool::where('compatition_id', $pool->compatition_id)->where('category_id', $pool->category_id)->where('winner_id', $request->looserId)->where('looser_id', '!=', null)->where('id', '!=', $pool->id)->count();
                 $poolsWinningCount >= 1 ? $looserStatus = 1 : $looserStatus = 0;
                 $winnerRegistration->update(['status' => 1]);
-                $looserRegistration->update(['status' => $looserStatus]);
+                $request->looserId != 'null' ? $looserRegistration->update(['status' => $looserStatus]) : null;
             }
             if($compatition->rematch == 0) {
                 $timeTable->update(['status'=> 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
