@@ -98,7 +98,7 @@ class CompatitionsController extends Controller
         return CategoriesResource::collection($categories->paginate($per_page));
     }
 
-    public function piblicRegistrations(Request $request, Compatition $competition) {
+    public function publicRegistrations(Request $request, Compatition $competition) {
         $filterRegistrations = new RegistrationsFilter();
         $queryItemsRegistrations = $filterRegistrations->transform($request); //[['column', 'operator', 'value']]
         
@@ -114,11 +114,10 @@ class CompatitionsController extends Controller
         $search = '%'. $request->search . '%';
         $searchedCompetitors = [];
         if($request->has('teamOrSingle') && $request->teamOrSingle['eq'] == 0) {
-            
             return RegistrationsResource::collection((new Collection($regResults->get()->unique('team_id')))->paginate($per_page));
         }
         
-        if($request->has('search') && $request->search != null || $request->has('gender')) {
+        if(($request->has('search') && $request->search !== null) || $request->has('gender')) {
             $filter = new CompatitorsFilter();
             $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
             $competitiors = Compatitor::where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->where($queryItems)->get('id');
@@ -126,7 +125,7 @@ class CompatitionsController extends Controller
                 $searchedCompetitors[] = $competitor->id;
             }
         } else {
-            return RegistrationsResource::collection($competitionResoults->paginate($per_page));
+            return RegistrationsResource::collection((new Collection($competitionResoults->get()))->paginate($per_page));
         }
 
         return RegistrationsResource::collection($competitionResoults->whereIn('compatitor_id', $searchedCompetitors)->paginate($per_page));
