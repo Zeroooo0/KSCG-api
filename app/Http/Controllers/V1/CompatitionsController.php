@@ -108,7 +108,7 @@ class CompatitionsController extends Controller
             $sort = 'position';
             $sortDirection = 'desc';
         }
-        $regResults = Registration::orderBy($sort, $sortDirection)->orderBy('position', 'desc')->where('compatition_id', $competition->id)->where($queryItemsRegistrations);
+        $regResults = Registration::orderBy('position', 'desc')->orderBy($sort, $sortDirection)->where('compatition_id', $competition->id)->where($queryItemsRegistrations);
         $request->has('isPrinted') ? $competitionResoults = $regResults->where('position', '>=', 1)->where('is_printed', $request->isPrinted) : $competitionResoults = $regResults;
         $per_page = $request->perPage;
         $search = '%'. $request->search . '%';
@@ -125,7 +125,7 @@ class CompatitionsController extends Controller
                 $searchedCompetitors[] = $competitor->id;
             }
         } else {
-            return RegistrationsResource::collection((new Collection($competitionResoults->get()))->paginate($per_page));
+            return RegistrationsResource::collection($competitionResoults->paginate($per_page));
         }
 
         return RegistrationsResource::collection($competitionResoults->whereIn('compatitor_id', $searchedCompetitors)->paginate($per_page));
