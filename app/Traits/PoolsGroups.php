@@ -398,7 +398,8 @@ trait PoolsGroups {
         $category = $teamOrSingle == 'single' ? Category::where('id', Arr::get($object, '0.category_id'))->first() : Category::where('id', Arr::get($object, '0.0.category_id'))->first();
         if($teamOrSingle == 'single' && $competition->rematch == 0) {
             return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
-        } else {
+        } 
+        if($teamOrSingle == 'single' && $competition->rematch == 1)  {
             if($category->repesaz == 0) {
                 return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
             } 
@@ -418,7 +419,8 @@ trait PoolsGroups {
         }
         if($teamOrSingle == 'team' && $competition->rematch == 0) {
             return $this->sortGroups($groupsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
-        } else {
+        } 
+        if($teamOrSingle == 'team' && $competition->rematch == 1)  {
             if($category->repesaz == 1 && $category->kata_or_kumite == 1) {
                 return $this->sortKataRepGroups($registrationsNo, $object, $catMatchLenght, $catTimeStart, $teamOrSingle);
             }
