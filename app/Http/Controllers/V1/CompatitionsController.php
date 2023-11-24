@@ -102,7 +102,7 @@ class CompatitionsController extends Controller
         $filterRegistrations = new RegistrationsFilter();
         $queryItemsRegistrations = $filterRegistrations->transform($request); //[['column', 'operator', 'value']]
         
-        $sort = $request->sort == null ? 'category_id' : $request->sort;
+        $sort = $request->sort == null ? 'id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
         if($request->has('categoryId') && $request->categoryId['eq'] != ''){
             $sort = 'position';
