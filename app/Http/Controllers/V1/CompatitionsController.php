@@ -104,10 +104,10 @@ class CompatitionsController extends Controller
         
         $sort = $request->sort == null ? 'id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'asc' : $request->sortDirection;
-        if($request->has('categoryId') && $request->categoryId['eq'] != ''){
-            $sort = 'position';
-            $sortDirection = 'desc';
-        }
+        // if($request->has('categoryId') && $request->categoryId['eq'] != ''){
+        //     $sort = 'position';
+        //     $sortDirection = 'desc';
+        // }
         $regResults = Registration::orderBy('position', 'desc')->orderBy($sort, $sortDirection)->where('compatition_id', $competition->id)->where($queryItemsRegistrations);
         $request->has('isPrinted') ? $competitionResoults = $regResults->where('position', '>=', 1)->where('is_printed', $request->isPrinted) : $competitionResoults = $regResults;
         $per_page = $request->perPage;
