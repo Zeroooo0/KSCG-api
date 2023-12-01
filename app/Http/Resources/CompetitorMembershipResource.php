@@ -26,6 +26,7 @@ class CompetitorMembershipResource extends JsonResource
             'competitor' => [
                 'fullName' => "$name $lastName",
                 'firstMembership' => (boolean)$this->competitor->first_membership,
+                'beltNow' => new BeltResource($this->competitor->belt),
                 'kscgId' => $this->competitor->kscg_compatitor_id
             ]
         ];

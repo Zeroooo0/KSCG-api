@@ -138,6 +138,12 @@ class PagesController extends Controller
 
     public function pageComponents(Request $request, Page $page)
     {
+        if($request->has('title')) 
+        {
+            $titleArrey = explode(',', $request->title);
+
+            return ComponentResource::collection((new Collection($page->components->whereIn('title', $titleArrey)))->paginate($request->perPage));
+        }
         return ComponentResource::collection((new Collection($page->components))->paginate($request->perPage));
     }
 }

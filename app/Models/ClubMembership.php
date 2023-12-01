@@ -17,7 +17,9 @@ class ClubMembership extends Model
         'status',
         'is_submited',
         'membership_price',
-        'amount_to_pay'
+        'amount_to_pay',
+        'address', 
+        'start_date'
     ];
 
     public function club() 
@@ -31,5 +33,9 @@ class ClubMembership extends Model
     public function document()
     {
         return $this->morphMany(Document::class, 'documentable');
+    }
+    public function role()
+    {
+        return $this->morphMany(Roles::class, 'roleable');
     }
 }

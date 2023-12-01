@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\CompetitorMembership;
+use App\Models\Roles;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ClubMembershipResource extends JsonResource
@@ -31,6 +32,8 @@ class ClubMembershipResource extends JsonResource
             'type' => $this->type,
             'membershipPrice' => $this->membership_price,
             'competitorsCount' => (string)$this->competitorMemberships->count(),
+            'address' => $this->address,
+            'startDate' => $this->start_date,
             'amountToPay' => $this->amount_to_pay,
             'isPaid' => (boolean)$this->is_paid,
             'status' => (boolean)$this->status,
@@ -41,7 +44,9 @@ class ClubMembershipResource extends JsonResource
                 'pib' => $this->club->pib,
             ],
             'createdAt' => date($this->created_at),
-            'competitorsMemberships' => $competitorMemberships
+            'competitorsMemberships' => $competitorMemberships,
+            'documents' => DocumentsResource::collection($this->document),
+            'roles' => RolesResource::collection($this->role)
         ];
     }
 }
