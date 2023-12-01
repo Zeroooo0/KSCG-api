@@ -231,6 +231,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::resource('/membership', MembrshipController::class);
     Route::post('/membership-competitors/{membership}', [MembrshipController::class, 'competitorMembershipAdd']);
     Route::get('/membership-competitors/{membership}', [MembrshipController::class, 'compatitorsMembership']);
+    Route::post('/membership-document/{membership}', [MembrshipController::class, 'storeMembershipDocument']);
     Route::delete('/membership-competitors/{membershipCompetitors}', [MembrshipController::class, 'destroyCompetitorsMembership']);
 
 

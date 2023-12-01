@@ -43,7 +43,7 @@ class CompatitionsController extends Controller
         $sort = $request->sort == null ? 'start_time_date' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $search = '%'. $request->search . '%';
-        $compatition = Compatition::orderBy($sort, $sortDirection)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search);
+        $compatition = Compatition::orderBy($sort, $sortDirection)->orderBy('id', 'asc')->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, country, city, host_name)'), 'like', $search);
 
         if(Auth::user()->user_type == 0) {
             return CompatitionsResource::collection($compatition->where('is_abroad', '!=', '1')->paginate($per_page));
@@ -59,7 +59,7 @@ class CompatitionsController extends Controller
 
         $sort = $request->sort == null ? 'start_time_date' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
-        $compatition = Compatition::orderBy($sort, $sortDirection);
+        $compatition = Compatition::orderBy($sort, $sortDirection)->orderBy('id', 'asc');
         //return $request->sortDirection;
         $search = '%'. $request->search . '%';
         

@@ -42,7 +42,7 @@ class SpecPersonRoleResource extends JsonResource
             'id' => (string)$this->id,
             'specialPersonalId' => (string)$this->id,
             'combinedName' => $this->name . ' ' . $this->last_name,
-            'title' => 'Sudija',
+            'title' => $this->title,
             'role' => $role,
             'status' => (boolean)$this->status,
             'image' => $path,

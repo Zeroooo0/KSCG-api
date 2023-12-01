@@ -10,10 +10,12 @@ use App\Models\Club;
 use App\Models\ClubMembership;
 use App\Models\Compatitor;
 use App\Models\CompetitorMembership;
+use App\Models\SpecialPersonal;
 use App\Traits\HttpResponses;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use SebastianBergmann\Comparator\Comparator;
 
 class MembrshipController extends Controller
@@ -75,8 +77,13 @@ class MembrshipController extends Controller
             }
             if($request->type == 'beltsChange'){
                 $name = 'Promjena pojaseva';
+                $request->validate([
+                    'startDate' => ['required','date'],
+                    'address' => ['required','string'],
+                    'commision' => ['required','array', 'min:3'],
+                ]);
             }
-            ClubMembership::create([
+            $membershipCreated = ClubMembership::create([
                 'club_id' => $request->clubId,
                 'type' => $request->type,
                 'name' => $name,
@@ -84,12 +91,39 @@ class MembrshipController extends Controller
                 'status' => 0,
                 'is_submited' => 0,
                 'membership_price' => $clubMembershipPrice,
-                'amount_to_pay' => $clubMembershipPrice
+                'amount_to_pay' => $clubMembershipPrice,
+                'start_date' => $request->has('startDate') ? $request->startDate : null,
+                'address' => $request->has('address') ? $request->address : null
             ]);
+            if($request->has('commision')) {
+                foreach($request->commision as $commision) {
+                    $specPerson = SpecialPersonal::where('id', $commision)->first();
+                    $membershipCreated->role()->create([
+                        'special_personals_id' =>$commision,
+                        'title' => 'Član Komisije',
+                        'role' => $specPerson->role
+                    ]);
+                }
+            }
             return $this->success('', "Uspjesno kreiranje aplikacije za članstvo.");
         }
 
         return $this->error('', 'Tip koji ste odabrali ne posjeduje funkcionalnost', 404);
+    }
+
+    public function storeMembershipDocument(Request $request, ClubMembership $membership) {
+        $request->validate([
+            'document' => ['required', 'mimes:doc,docx,xml,xls,xlsx,jpg,jpeg,pdf,png', 'max:20480']
+        ]);
+
+        $path = Storage::putFile('membership-docs', $request->document);
+        
+        $membership->document()->create([
+            'name' => 'Lista sa polaganja',
+            'doc_link' => $path
+        ]);
+
+
     }
 
     /**
