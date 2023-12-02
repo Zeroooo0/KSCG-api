@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Filters\TimeTableFilter;
 use App\Http\Requests\StoreTimeTableMassRequest;
 use App\Http\Requests\UpdateTimeTableRequest;
+use App\Http\Resources\TimeTableExistingStateResource;
 use App\Http\Resources\TimeTableResource;
 use App\Models\Category;
 use App\Models\Compatition;
@@ -152,5 +153,9 @@ class TimeTablesController extends Controller
             }
             return $this->success('', 'Uspješno dopunjen Time Table.');
         }
+    }
+    public function timeTableInitial(Compatition $competition)
+    {
+        return new TimeTableExistingStateResource($competition);
     }
 }
