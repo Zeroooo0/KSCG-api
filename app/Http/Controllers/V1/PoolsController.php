@@ -72,9 +72,6 @@ class PoolsController extends Controller
         foreach($reg_teams as $key=>$count){
             $nn_team_cat[] = $registrations->where('category_id', $key)->groupBy('team_id')->values();
         }
-        foreach($compatition->registrations as $reg) {
-            $reg->update(['position'=> null]);
-        }
 
         if($compatition->registrations->where('position', '!=', NULL)->count() > 0) {
             return $this->error('', 'Takmicenje je vec pocelo', 422);
