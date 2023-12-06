@@ -302,7 +302,6 @@ class RegistrationsController extends Controller
         $kataCount = 0 + $registrations->where('team_or_single', 1)->where('kata_or_kumite', 1)->count();
         $kumiteCount = 0 + $registrations->where('team_or_single', 1)->where('kata_or_kumite', 0)->count();
         $dateKumiteFrom = date(now());
-
         foreach($categories as $category) {
             $isItSingle = $category->solo_or_team;
             $isItKata = $category->kata_or_kumite;
@@ -386,15 +385,26 @@ class RegistrationsController extends Controller
                     continue;
                 }
             }
+            
             if(!$isItKata){
                 $kumiteRealCount = $kumiteCount;
                 $kumiteCount = $kumiteCount + 1;
                 $katText = $kumiteRealCount == 1 ? 'kategoriji' : 'kategorije';
 
                 $registeredKumite = $registrations->where('kata_or_kumite', 0)->where('team_or_single', 1);
+                
+                if(!!$dateKumiteFrom && $dateKumiteFrom == $category->date_from && $category->category_name != 'OPEN'){
+                    $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu!";
+                    $error['category'] = (string)$category->id;
+                    $responseErrorMessage[] = $error;
+                    $noErrors = false;
+                    continue;
+                }
+                
                 if($registeredKumite->count() > 0) {
                     $registeredkumiteCat = Category::where('id', $registeredKumite->first()->category_id)->first();
-                    if($registeredkumiteCat->category_name != 'OPEN' && $category->category_name != 'OPEN' && $registeredkumiteCat->date_from == $category->date_from) {
+                    
+                    if($registeredkumiteCat->category_name != 'OPEN' && $category->category_name != 'OPEN' && $registeredkumiteCat->date_from == $category->date_from && $category->date_from == $dateKumiteFrom) {
                         $error['message'] = "Takmičar $competitor->name $competitor->last_name je već prijavljen u jednoj težinskoj kategoriji u ovom godištu!";
                         $error['category'] = (string)$category->id;
                         $responseErrorMessage[] = $error;
@@ -409,6 +419,7 @@ class RegistrationsController extends Controller
                     $noErrors = false;
                     continue;
                 }   
+                $dateKumiteFrom = $category->date_from;
             }
             if($noErrors) {
                 $input['compatition_id'] = $competition->id;
