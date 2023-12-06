@@ -49,7 +49,7 @@ class CategoriesController extends Controller
                 }
             }
             if($categoryWithBeltId != []) {
-                $category = Category::orderBy($sort, $sortDirection)->whereIn('id', $categoryWithBeltId);
+                $category = Category::orderBy('id', 'asc')->orderBy($sort, $sortDirection)->whereIn('id', $categoryWithBeltId);
             }
         }
 

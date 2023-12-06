@@ -129,7 +129,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::post('/competition-documents/{compatition}', [FileController::class, 'addDocumentCompatition']);
     Route::post('/page-documents/{page}', [FileController::class, 'addDocumentPage']);
 
-    
+    //test
+    Route::get('/tatami-state/{competition}', [TimeTablesController::class, 'timeTableInitial']);
     //get
     Route::get('/competitor-documents/{compatitor}', [FileController::class, 'compatitorDocuments']);
     //Delete

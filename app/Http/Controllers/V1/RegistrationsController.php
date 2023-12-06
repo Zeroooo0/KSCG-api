@@ -40,19 +40,19 @@ class RegistrationsController extends Controller
             }
             if(Auth::user()->user_type == 0) {
                 $clubId = Auth::user()->club->id;                
-                return RegistrationsResource::collection(Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
+                return RegistrationsResource::collection(Registration::orderBy('id', 'asc')->orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
                
             }
             if(Auth::user()->user_type != 0 && $request->has('clubId')) {   
                 $clubId = $request->clubId;
-                return RegistrationsResource::collection(Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
+                return RegistrationsResource::collection(Registration::orderBy('id', 'asc')->orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->where('club_id', $clubId)->paginate($per_page));
             }
             if(Auth::user()->user_type == 0 && Auth::user()->club == null){
                 return $this->error('', 'Molimo vas da prvo kreirate klub!',403);
             }
             if(Auth::user()->user_type != 0) {        
                 if($competition->is_abroad != 1) {           
-                    return RegistrationsResource::collection(Registration::orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->paginate($per_page));  
+                    return RegistrationsResource::collection(Registration::orderBy('id', 'asc')->orderBy($sort, $sortDirection)->where('compatition_id', $competitionId)->paginate($per_page));  
                 } else {
                     return RegistrationsResource::collection(Registration::orderBy('id', 'desc')->where('compatition_id', $competitionId)->paginate($per_page));  
                 }
