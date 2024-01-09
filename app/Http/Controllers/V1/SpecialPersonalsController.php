@@ -34,7 +34,7 @@ class SpecialPersonalsController extends Controller
         $per_page = $request->perPage;
         $sort = $request->sort == null ? 'id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
-        $specialPersonal = SpecialPersonal::orderBy($sort, $sortDirection);
+        $specialPersonal = SpecialPersonal::orderBy($sort, $sortDirection)->orderBy('id', 'desc');
 
         $search = '%' . $request->search . '%';
 
@@ -49,7 +49,7 @@ class SpecialPersonalsController extends Controller
             return SpecialPersonalsResource::collection($specialPersonal->whereNotIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search)->get());
         }
         if (Auth::user()->user_type == 0 && $request->has('displayAll')) {
-            return SpecialPersonalsResource::collection($specialPersonal->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search)->all());
+            return SpecialPersonalsResource::collection($specialPersonal->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search)->get());
         }
         if (Auth::user()->user_type == 0) {
             $club_personal = Club::where('id', Auth::user()->club->id)->first()->roles;
