@@ -35,36 +35,38 @@ class SpecialPersonalsController extends Controller
         $sort = $request->sort == null ? 'id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $specialPersonal = SpecialPersonal::orderBy($sort, $sortDirection);
-        
-        $search = '%'. $request->search . '%';
 
-        if($request->has('availableRoles') && $request->availableRoles == true) {
+        $search = '%' . $request->search . '%';
+
+        if ($request->has('availableRoles') && $request->availableRoles == true) {
             $club_personal_taken = Roles::where('roleable_type', 'App\Models\Club')->get();
             $spec_personal = [];
-            
-            foreach($club_personal_taken as $id) {
+
+            foreach ($club_personal_taken as $id) {
                 $spec_personal[] = $id->special_personals_id;
             }
 
             return SpecialPersonalsResource::collection($specialPersonal->whereNotIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search)->get());
         }
-        if(Auth::user()->user_type == 0){
+        if (Auth::user()->user_type == 0 && $request->has('displayAll')) {
+            return SpecialPersonalsResource::collection($specialPersonal->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search)->all());
+        }
+        if (Auth::user()->user_type == 0) {
             $club_personal = Club::where('id', Auth::user()->club->id)->first()->roles;
             $spec_personal = [];
-            foreach($club_personal as $id) {
+            foreach ($club_personal as $id) {
                 $spec_personal[] = $id->special_personals_id;
             }
 
             $specPerson = $specialPersonal->whereIn('id', $spec_personal)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search);
             return SpecialPersonalsResource::collection($per_page == 0 ? $specPerson->get() : $specPerson->paginate($per_page));
-    
         }
-        if(Auth::user()->user_type == 4){
+        if (Auth::user()->user_type == 4) {
             $specPerson = $specialPersonal->where('user_id', Auth::user()->id);
             return SpecialPersonalsResource::collection($specPerson->paginate($per_page));
-    
         }
         $specPerson = $specialPersonal->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, email, country)'), 'like', $search);
+
         return SpecialPersonalsResource::collection($per_page == 0 ? $specPerson->get() : $specPerson->paginate($per_page));
     }
 
@@ -77,19 +79,19 @@ class SpecialPersonalsController extends Controller
     public function store(StoreSpecialPersonalRequest $request)
     {
 
-        if(Auth::user()->user_type == 3) {
+        if (Auth::user()->user_type == 3) {
             return $this->error('', 'Nije Vam dozvoljeno kreirati strucna lica!', 404);
         }
-        if(Auth::user()->user_type == 4 && Auth::user()->specialPersonnel != null) {
+        if (Auth::user()->user_type == 4 && Auth::user()->specialPersonnel != null) {
 
             return $this->error('', 'Možete kreirati samo jedno stručno lice!', 404);
         }
         $request->validated($request->all());
-        
+
 
 
         $role = $request->role;
-        switch($role) {
+        switch ($role) {
             case 0:
                 $roleText = 'Uprava';
                 break;
@@ -110,8 +112,8 @@ class SpecialPersonalsController extends Controller
             'role' => $role,
             'gender' => $request->gender,
         ]);
-        
-        if($request->has(['clubId','title'])) {
+
+        if ($request->has(['clubId', 'title'])) {
             $club = Auth::user()->user_type == 0 && Auth::user()->club != null ? Auth::user()->club : Club::where('id', $request->clubId)->first();
             $title = $role == 0 || $role == 1 ? $request->title : $roleText;
             $club->roles()->create([
@@ -120,7 +122,7 @@ class SpecialPersonalsController extends Controller
                 'role' => $role
             ]);
         }
-        if($request->has(['componentId','title'])) {
+        if ($request->has(['componentId', 'title'])) {
             $component = Component::where('id', $request->clubId)->first();
             $title = $request->title;
             $component->roles()->create([
@@ -130,9 +132,9 @@ class SpecialPersonalsController extends Controller
             ]);
         }
 
-        if($request?->image != null){
+        if ($request?->image != null) {
             $tempImage = $request->image;
-            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $image_name = time() . '_' . $tempImage->getClientOriginalName();
             $storePath = storage_path('app/special-personal-image/') . $image_name;
             $path = 'special-personal-image/' . $image_name;
             ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
@@ -141,7 +143,6 @@ class SpecialPersonalsController extends Controller
             ]);
         }
         return new SpecialPersonalsResource($special_personal);
-
     }
 
     /**
@@ -165,32 +166,32 @@ class SpecialPersonalsController extends Controller
     public function update(UpdateSpecialPersonalRequest $request, SpecialPersonal $special_personnel)
     {
         $request->validated($request->all());
-        if($request->role != null && Auth::user()->user_type == 0) {
-            $role = $special_personnel->role; 
-        } else{
+        if ($request->role != null && Auth::user()->user_type == 0) {
+            $role = $special_personnel->role;
+        } else {
             $role = $request->role;
         }
 
         $special_personnel->update($request->except('lastName', 'role', 'status', 'phone'));
-        if($request->has('lastName')){ 
+        if ($request->has('lastName')) {
             $special_personnel->update([
                 'last_name' => $request->lastName
             ]);
         }
 
-        if($request->has('role')){ 
+        if ($request->has('role')) {
             $special_personnel->update([
                 'role' => $role
             ]);
         }
-        if($request->has('phone')){ 
+        if ($request->has('phone')) {
             $special_personnel->update([
                 'phone_number' => "+$request->phone"
             ]);
         }
 
-        if($request->has('status')){ 
-            if(Auth::user()->user_type != 0){
+        if ($request->has('status')) {
+            if (Auth::user()->user_type != 0) {
                 $special_personnel->update([
                     'status' => $request->status
                 ]);
@@ -208,18 +209,18 @@ class SpecialPersonalsController extends Controller
      */
     public function destroy(SpecialPersonal $special_personnel)
     {
-        if(Auth::user()->user_type != 2){
+        if (Auth::user()->user_type != 2) {
             return $this->restricted('', 'Not alowed!', 403);
         }
-        foreach($special_personnel->image()->get() as $image) {
+        foreach ($special_personnel->image()->get() as $image) {
             Storage::delete($image->url);
         }
-        foreach($special_personnel->document()->get() as $document) {
+        foreach ($special_personnel->document()->get() as $document) {
             Storage::delete($document->url);
         }
-        
+
         $roles = Roles::where('special_personals_id', $special_personnel->id)->get();
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $role->delete();
         }
 
