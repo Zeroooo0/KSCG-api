@@ -34,7 +34,7 @@ class UpdateComatitorRequest extends FormRequest
             'belt' => ['integer'],
             'dateOfBirth' => ['date'],
             'image' => ['image', 'mimes:jpg,jpeg,svg,gif,png', 'max:2048'],
-            'clubId' => ['integer'],
+            'clubId' => ['string', 'nullable'],
             'status' => ['boolean']
         ];
     }

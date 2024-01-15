@@ -172,6 +172,7 @@ class CompatitorsController extends Controller
      */
     public function update(UpdateComatitorRequest $request, Compatitor $competitor)
     {
+
         $request->validated($request->all());
         if (Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Suspendovani ste molimo vas da kontaktirate KSCG!', 403);
@@ -218,10 +219,10 @@ class CompatitorsController extends Controller
             ]);
         }
         if ($request->has('clubId')) {
-
             if (Auth::user()->user_type != 2 || Auth::user()->user_type == 0) {
                 return $this->error('', 'Takmičara mogu premjestiti samo aktivni administratori ove platforme!', 403);
             }
+
             $clubId = $request->clubId == 'null' ? null : $request->clubId;
             $competitor->update([
                 'club_id' => $clubId
