@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use ImagesResize;
+
 class CompatitorsController extends Controller
 {
     use HttpResponses;
@@ -23,7 +24,7 @@ class CompatitorsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    
+
     public function public(Request $request)
     {
         $filter = new CompatitorsFilter();
@@ -33,32 +34,31 @@ class CompatitorsController extends Controller
         $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $compatitior = Compatitor::orderBy($sort, $sortDirection);
 
-        $search = '%'. $request->search . '%';
-        if($per_page == 0) {
+        $search = '%' . $request->search . '%';
+        if ($per_page == 0) {
             return CompatitorsResource::collection($compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->get());
         }
         return CompatitorsResource::collection($compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name)'), 'like', $search)->paginate($per_page));
-       
     }
 
     public function index(Request $request)
     {
-        
-        $per_page = $request->perPage; 
+
+        $per_page = $request->perPage;
         $filter = new CompatitorsFilter();
         $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $sort = $request->sort == null ? 'id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $compatitior = Compatitor::orderBy($sort, $sortDirection);
 
-        $search = '%'. $request->search . '%';
-        if($request->has('belts')) {
+        $search = '%' . $request->search . '%';
+        if ($request->has('belts')) {
             $beltsArray = explode(',', $request->belts);
             $compatitior = Compatitor::orderBy($sort, $sortDirection)->whereIn('belt_id', $beltsArray);
         }
 
-        if(Auth::user()->user_type == 0) {
-            if($per_page == 0) {
+        if (Auth::user()->user_type == 0) {
+            if ($per_page == 0) {
                 return CompatitorsResource::collection(
                     $compatitior->where('club_id',  Auth::user()->club->id)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, kscg_compatitor_id)'), 'like', $search)->get()
                 );
@@ -67,7 +67,7 @@ class CompatitorsController extends Controller
                 $compatitior->where('club_id',  Auth::user()->club->id)->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, kscg_compatitor_id)'), 'like', $search)->paginate($per_page)
             );
         } else {
-            if($per_page == 0) {
+            if ($per_page == 0) {
                 return CompatitorsResource::collection(
                     $compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, kscg_compatitor_id)'), 'like', $search)->get()
                 );
@@ -76,8 +76,6 @@ class CompatitorsController extends Controller
                 $compatitior->where($queryItems)->where(DB::raw('CONCAT_WS(" ", name, last_name, kscg_compatitor_id)'), 'like', $search)->paginate($per_page)
             );
         }
-  
-
     }
 
     /**
@@ -92,8 +90,8 @@ class CompatitorsController extends Controller
         $kscgNo = "100000";
 
         $request->validated($request->all());
-        if(Auth::user()->user_type != 0 && $request->has('clubId') == 0) {
-            return $this->error('','Morate unijeti id kluba', 403);
+        if (Auth::user()->user_type != 0 && $request->has('clubId') == 0) {
+            return $this->error('', 'Morate unijeti id kluba', 403);
         }
         $compatitor = Compatitor::create([
             'club_id' => Auth::user()->user_type == 0 ? Auth::user()->club->id : $request->clubId,
@@ -108,31 +106,30 @@ class CompatitorsController extends Controller
             'status' => Auth::user()->user_type == 0 ? 0 : 1,
             'first_membership' => 1
         ]);
-        if($compatitor->country == 'Crna Gora') {
+        if ($compatitor->country == 'Crna Gora') {
             $country = 'MNE';
             $kscgNewNo = $compatitor->kscg_compatitor_id + $compatitor->id;
             $kscgId = $country . substr($kscgNewNo, 1);
-            $compatitor->update(['kscg_compatitor_id'=> $kscgId]);
+            $compatitor->update(['kscg_compatitor_id' => $kscgId]);
         }
-        if($compatitor->country != 'Crna Gora') {
+        if ($compatitor->country != 'Crna Gora') {
             $world = 'WKF';
             $kscgNewNo = $compatitor->kscg_compatitor_id + $compatitor->id;
             $kscgId = $world . substr($kscgNewNo, 1);
-            $compatitor->update(['kscg_compatitor_id'=> $kscgId]);
+            $compatitor->update(['kscg_compatitor_id' => $kscgId]);
         }
-        
-        if($request->has('document')) {
+
+        if ($request->has('document')) {
             $docPath = Storage::putFile('compatitors-docs', $request->document);
             $compatitor->document()->create([
                 'name' => 'Licni dokument',
                 'doc_link' => $docPath
             ]);
-    
         }
 
-        if($request->has('image')) {
+        if ($request->has('image')) {
             $tempImage = $request->image;
-            $image_name = time().'_'.$tempImage->getClientOriginalName();
+            $image_name = time() . '_' . $tempImage->getClientOriginalName();
             $storePath = storage_path('app/compatitor-image/') . $image_name;
             $path = 'compatitor-image/' . $image_name;
             ImagesResize::make($tempImage->getRealPath())->resize(500, 500)->save($storePath);
@@ -143,7 +140,6 @@ class CompatitorsController extends Controller
 
 
         return new CompatitorsResource($compatitor);
-       
     }
 
     /**
@@ -160,12 +156,11 @@ class CompatitorsController extends Controller
     public function show(Compatitor $competitor)
     {
 
-        if(Auth::user()->user_type == 0 && Auth::user()->club->id != $competitor->club_id) {
+        if (Auth::user()->user_type == 0 && Auth::user()->club->id != $competitor->club_id) {
             return $this->restricted('', 'You are not authorized to make the request!', 403);
         } else {
             return new CompatitorsResource($competitor);
         }
-
     }
 
     /**
@@ -178,16 +173,16 @@ class CompatitorsController extends Controller
     public function update(UpdateComatitorRequest $request, Compatitor $competitor)
     {
         $request->validated($request->all());
-        if(Auth::user()->user_type != 2 && Auth::user()->status == 0) {
+        if (Auth::user()->user_type != 2 && Auth::user()->status == 0) {
             return $this->restricted('', 'Suspendovani ste molimo vas da kontaktirate KSCG!', 403);
         }
-        if(Auth::user()->user_type == 0 && $competitor->club_id != Auth::user()->club->id) {
+        if (Auth::user()->user_type == 0 && $competitor->club_id != Auth::user()->club->id) {
             return $this->restricted('', 'Možete vršiti izmjene samo članova Vašeg kluba!', 403);
         }
-        if(Auth::user()->user_type == 0 && $competitor->registrations->count() > 0 && $request->hasAny(['dateOfBirth'])) {
+        if (Auth::user()->user_type == 0 && $competitor->registrations->count() > 0 && $request->hasAny(['dateOfBirth'])) {
             return $this->error('', 'Takmičar posjeduje prijave, zamolite administratora da promijeni podatak!', 403);
         }
-        
+
         $competitor->update($request->except(['lastName', 'dateOfBirth', 'clubId', 'status', 'belt', 'country']));
 
         if ($request->has('lastName')) {
@@ -199,17 +194,17 @@ class CompatitorsController extends Controller
             $competitor->update([
                 'country' => $request->country
             ]);
-            if($competitor->country == 'Crna Gora') {
+            if ($competitor->country == 'Crna Gora') {
                 $country = 'MNE';
                 $kscgNewNo = '100000' + $competitor->id;
                 $kscgId = $country . substr($kscgNewNo, 1);
-                $competitor->update(['kscg_compatitor_id'=> $kscgId]);
+                $competitor->update(['kscg_compatitor_id' => $kscgId]);
             }
-            if($competitor->country != 'Crna Gora') {
+            if ($competitor->country != 'Crna Gora') {
                 $world = 'WKF';
                 $kscgNewNo = '100000' + $competitor->id;
                 $kscgId = $world . substr($kscgNewNo, 1);
-                $competitor->update(['kscg_compatitor_id'=> $kscgId]);
+                $competitor->update(['kscg_compatitor_id' => $kscgId]);
             }
         }
         if ($request->has('dateOfBirth')) {
@@ -224,29 +219,28 @@ class CompatitorsController extends Controller
         }
         if ($request->has('clubId')) {
 
-            if(Auth::user()->user_type != 2 || Auth::user()->user_type == 0) {
+            if (Auth::user()->user_type != 2 || Auth::user()->user_type == 0) {
                 return $this->error('', 'Takmičara mogu premjestiti samo aktivni administratori ove platforme!', 403);
-            } 
-
+            }
+            $clubId = $request->clubId == 'null' ? null : $request->clubId;
             $competitor->update([
-                'club_id' => $request->clubId
+                'club_id' => $clubId
             ]);
         }
         if ($request->has('status')) {
 
-            if(Auth::user()->user_type != 2 && Auth::user()->status == 0 ) {
+            if (Auth::user()->user_type != 2 && Auth::user()->status == 0) {
                 return $this->error('', 'Status mogu promijeniti aktivni administratori ove platforme!', 403);
-            } 
+            }
 
             $competitor->update([
                 'status' => $request->status
             ]);
         }
-        if(Auth::user()->user_type == 0 && $request->hasAny(['dateOfBirth', 'belt'])) {
+        if (Auth::user()->user_type == 0 && $request->hasAny(['dateOfBirth', 'belt'])) {
             $competitor->update([
                 'status' => 0
             ]);
-
         }
         return new CompatitorsResource($competitor);
     }
@@ -259,23 +253,22 @@ class CompatitorsController extends Controller
      */
     public function destroy(Compatitor $competitor)
     {
-        if(Auth::user()->user_type != 2){
-            $competitor->update(['club_id' => null, 'status' => 0]);            
+        if (Auth::user()->user_type != 2) {
+            $competitor->update(['club_id' => null, 'status' => 0]);
             return $this->success('', 'Uspješno obrisan takmičar!');
         }
 
-        if($competitor->registrations->count() > 0) {
+        if ($competitor->registrations->count() > 0) {
             return $this->error('', 'Nije moguće brisati takmičara koji je već učestvovao na takmičenja.', 403);
         }
-        foreach($competitor->image()->get() as $image) {
+        foreach ($competitor->image()->get() as $image) {
             Storage::delete($image->url);
         }
 
-        foreach($competitor->document()->get() as $document) {
+        foreach ($competitor->document()->get() as $document) {
             Storage::delete($document->doc_link);
-            
         }
-        
+
         $competitor->image()->delete();
         $competitor->document()->delete();
         $competitor->delete();

@@ -32,8 +32,7 @@ class YearlyStatusCron extends Command
      */
     public function handle()
     {
-        User::where('user_type', '0')->update(['status' => 0]);
-        Club::where('status', 1)->update(['status' => 0]);
+        Club::where('status', 1)->where('country', 'Crna Gora')->update(['status' => 0]);
         Compatitor::where('status', 1)->update(['status' => 0]);
         SpecialPersonal::where('role', '!=', 0)->update(['status' => 0]);
     }
