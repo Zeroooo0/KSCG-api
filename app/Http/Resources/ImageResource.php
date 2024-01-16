@@ -14,7 +14,7 @@ class ImageResource extends JsonResource
      */
     public function toArray($request)
     {
-        $storage_url = env('APP_URL') . 'file/';
+        $storage_url = env('APP_URL') . 'app/file/';
         return [
             'id' => (string)$this->id,
             'orderNo' => $this->order_no,
