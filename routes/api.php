@@ -33,9 +33,9 @@ Route::get('file/{path}', [FileController::class, 'getFile'])->where('path', '.*
 Route::group(['prefix' => 'v1/public'], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
-    Route::get('/clubs', [ClubsController::class, 'public']);  
-    Route::get('/clubs/{club}', [ClubsController::class, 'show_public']);  
-    Route::get('/club-results/{club}', [ReusableDataController::class, 'clubsResults']); 
+    Route::get('/clubs', [ClubsController::class, 'public']);
+    Route::get('/clubs/{club}', [ClubsController::class, 'show_public']);
+    Route::get('/club-results/{club}', [ReusableDataController::class, 'clubsResults']);
     Route::get('/club-competitors/{club}', [ReusableDataController::class, 'clubCompatitors']);
     Route::get('/competitors', [CompatitorsController::class, 'public']);
     Route::get('/competitors/{competitor}', [CompatitorsController::class, 'show_public']);
@@ -45,7 +45,7 @@ Route::group(['prefix' => 'v1/public'], function () {
     Route::get('/competition-clubs-results', [ReusableDataController::class, 'registeredClubs']);
     Route::get('/time-table/{competition}', [TimeTablesController::class, 'index']);
     Route::get('/time-table-one/{time_table}', [TimeTablesController::class, 'show']);
-    
+
     Route::get('/news', [PostsController::class, 'public']);
     Route::get('/news/{news}', [PostsController::class, 'showPublic']);
     Route::get('/pages', [PagesController::class, 'public']);
@@ -58,18 +58,18 @@ Route::group(['prefix' => 'v1/public'], function () {
     //Route::post('/seminars-form-application/{seminar}', [SeminarApplicationController::class, 'store']);
     Route::get('/seminars', [SeminarController::class, 'index']);
     Route::get('/seminars/{seminars}', [SeminarController::class, 'show']);
-    
+
     //Route::resource('/seminars-application', SeminarApplicationController::class);
 });
 
 // Verify email
-Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,club,commission,editor,judge']], function () {    
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,club,commission,editor,judge']], function () {
     Route::resource('/users', UsersController::class);
     Route::post('/user-update/{user}', [UsersController::class, 'update']);
     Route::get('/belts', [ReusableDataController::class, 'index']);
 });
-Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,commission,editor']], function () {    
-    Route::get('/news', [PostsController::class, 'index']); 
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,commission,editor']], function () {
+    Route::get('/news', [PostsController::class, 'index']);
     Route::get('/news/{news}', [PostsController::class, 'show']);
     Route::post('/news', [PostsController::class, 'store']);
     Route::post('/news/{news}', [PostsController::class, 'update']);
@@ -77,14 +77,13 @@ Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,c
     Route::get('/news-components/{news}', [PostsController::class, 'postComponents']);
     Route::post('/add-news-images/{news}', [FileController::class, 'addPostImage']);
     Route::post('/news-documents/{news}', [FileController::class, 'addDocumentPost']);
-
 });
 
 /**
  * SEMINARS
  * 
  */
-Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,commission,judge,club']], function () {    
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,commission,judge,club']], function () {
     Route::get('/seminars', [SeminarController::class, 'index']);
     Route::get('/seminars/{seminar}', [SeminarController::class, 'show']);
 
@@ -93,7 +92,7 @@ Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,c
     Route::patch('/seminar-applications/{seminarMorphApplication}', [SeminarApplicationController::class, 'update']);
     Route::delete('/seminar-applications/{seminarMorphApplication}', [SeminarApplicationController::class, 'destroy']);
     Route::post('/form-personnel/{personnel}', [SpecialPersonnelFormsController::class, 'store']);
-    
+
     Route::resource('/seminars', SeminarController::class);
 
     Route::post('/special-personnel-image/{personal}', [FileController::class, 'setSpecPersonImage']);
@@ -104,14 +103,13 @@ Route::group(['prefix' => 'v1','middleware' => ['auth:sanctum', 'ability:admin,c
     Route::get('/special-personal-roles/{specPersonnels}', [ReusableDataController::class, 'specPersonnelRoles']);
     Route::resource('/special-personnel', SpecialPersonalsController::class);
     Route::get('/perosnnel-forms/{seminar}', [SpecialPersonnelFormsController::class, 'index']);
-
 });
 
 
-Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,club,commission']], function () {    
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,club,commission']], function () {
     //All auth users
-    Route::post('/logout', [AuthController::class, 'logout']); 
-    Route::post('/change-password/{user}',[AuthController::class, 'changePassword']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/change-password/{user}', [AuthController::class, 'changePassword']);
     //File managing
     //Images update
     Route::post('/competitor-image/{compatitor}', [FileController::class, 'setCompatitorImage']);
@@ -143,7 +141,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     //Categories
     Route::resource('/categories', CategoriesController::class);
     Route::post('/categories-update/{category}', [CategoriesController::class, 'update']);
-
+    Route::post('/update-u-categories', [CategoriesController::class, 'addYearToUCategories']);
     Route::get('/categories-for-time-table/{competition}', [CategoriesController::class, 'catForTimeTable']);
     //Belts
     Route::post('/belts-bulk-store', [ReusableDataController::class, 'bulkStoreBelts']);
@@ -160,18 +158,18 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/registered-clubs', [ReusableDataController::class, 'registeredClubs']);
     Route::post('/rebuild-pool', [PoolsController::class, 'rebuildCategoryPool']);
     Route::get('/certificate-print/{competition}', [CompatitionsController::class, 'piblicRegistrations']);
-    
+
     Route::patch('/printed/{registration}', [RegistrationsController::class, 'update']);
     Route::post('/set-position', [RegistrationsController::class, 'updateMany']);
     //ClubsF
-    Route::resource('/clubs', ClubsController::class);   
+    Route::resource('/clubs', ClubsController::class);
     //Compatitiors
-    Route::resource('/competitors', CompatitorsController::class);  
+    Route::resource('/competitors', CompatitorsController::class);
     Route::get('/competitor-results/{competitor}', [ReusableDataController::class, 'getCompatitorResults']);
 
     //Registration of compatitiors on compatition
     Route::resource('/teams', TeamsController::class);
-  
+
     Route::get('/competition-aplications/{competition}', [RegistrationsController::class, 'index']);
     Route::get('/competition-aplications-filtered-categories/{competition}', [RegistrationsController::class, 'categoriesFiltered']);
     Route::post('/competition-aplications/{competition}', [RegistrationsController::class, 'newStore']);
@@ -258,9 +256,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'abilities:reset']], function () {
     Route::get('/validate-token', [AuthController::class, 'checkToken']);
     Route::post('/reset-password', [AuthController::class, 'resetForgotenPassword']);
-    
 });
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'abilities:admin']], function () {
     Route::post('/create-user', [AuthController::class, 'create_user']);
-    
 });
