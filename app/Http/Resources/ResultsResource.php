@@ -32,7 +32,7 @@ class ResultsResource extends JsonResource
                 'genderStr' => $this->compatitor->gender == 1 ? 'M' : 'Ž',
             ],
             'category' => $kata_or_kumite . ' | ' . $gender . ' | ' . $this->category->name . ' ' . $this->category->category_name  . $ekipno,
-            'position' => $this->position,
+            'position' => (string)(int)$this->position,
             'date' => Date('Y-m-d', strtotime($this->compatition->start_time_date))
         ];
     }

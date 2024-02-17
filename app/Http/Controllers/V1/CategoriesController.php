@@ -159,7 +159,7 @@ class CategoriesController extends Controller
 
     public function catForTimeTable(Compatition $competition, Request $request)
     {
-        return CategoriesForTimeTableResource::collection($competition->categories->sortBy('solo_or_team')->sortByDesc('kata_or_kumite'));
+        return CategoriesForTimeTableResource::collection($competition->categories->sortBy('name')->sortBy('solo_or_team')->sortByDesc('kata_or_kumite'));
     }
     public function addYearToUCategories()
     {

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('club_memberships', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('club_id')->references('id')->on('clubs');
+            $table->foreignId('club_id')->references('id')->on('clubs')->onDelete('cascade');
             //name can be yearlyMembership, beltsChange, midYearMembership
             $table->string('type');
             $table->string('name');

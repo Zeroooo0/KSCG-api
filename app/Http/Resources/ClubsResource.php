@@ -18,59 +18,59 @@ class ClubsResource extends JsonResource
     {
         $pib = Auth::user() != null ? $this->pib : 'Protected';
         $storage_url = env('APP_URL') . 'api/file/';
-        
-        if($this->image != null) {
+
+        if ($this->image != null) {
             $path =  $storage_url . $this->image->url;
-        } else{
+        } else {
             $path = $storage_url . 'default/default-club.jpg';
         }
-        if($this->user == null) {
+        if ($this->user == null) {
             $user_info = 'Connect to user!';
-        } else{
+        } else {
             $user_info = [
                 'id' => (string)$this->user->id,
                 'name' => $this->user->name,
                 'lastName' => $this->user->last_name,
                 'email' => $this->user->email,
-                'status' => (boolean)$this->user->status,
+                'status' => (bool)$this->user->status,
             ];
-        }        
+        }
 
+        $thisYear = date('Y-m-d', strtotime('first day of january this year'));
+        $dataTeamGold = $this->registrations->where('updated_at', '>=', $thisYear)->where('team_or_single', 0)->where('position', 3)->countBy('team_id')->count();
+        $dataTeamSilver = $this->registrations->where('updated_at', '>=', $thisYear)->where('team_or_single', 0)->where('position', 2)->countBy('team_id')->count();
+        $dataTeamBronze = $this->registrations->where('updated_at', '>=', $thisYear)->where('team_or_single', 0)->where('position', 1)->countBy('team_id')->count();
 
-        $dataTeamGold = $this->registrations->where('team_or_single', 0)->where('position', 3)->countBy('team_id')->count();
-        $dataTeamSilver = $this->registrations->where('team_or_single', 0)->where('position', 2)->countBy('team_id')->count();
-        $dataTeamBronze = $this->registrations->where('team_or_single', 0)->where('position', 1)->countBy('team_id')->count();
-
-        $dataSingleGold = $this->registrations->where('team_or_single', 1)->where('position', 3)->count();
-        $dataSingleSilver = $this->registrations->where('team_or_single', 1)->where('position', 2)->count();
-        $dataSingleBronze = $this->registrations->where('team_or_single', 1)->where('position', 1)->count();
+        $dataSingleGold = $this->registrations->where('updated_at', '>=', $thisYear)->where('team_or_single', 1)->where('position', 3)->count();
+        $dataSingleSilver = $this->registrations->where('updated_at', '>=', $thisYear)->where('team_or_single', 1)->where('position', 2)->count();
+        $dataSingleBronze = $this->registrations->where('updated_at', '>=', $thisYear)->where('team_or_single', 1)->where('position', 1)->count();
         $haseComponents = str_contains($request->embed, 'components');
 
         $rolesAdministration = RolesResource::collection($this->roles->where('role', 0));
         $rolesCoach = RolesResource::collection($this->roles->where('role', 2));
-        $competitors = ClubsCompatiorsResource::collection(Compatitor::where('club_id', $this->id)->get());
+        $competitors = ClubsCompatiorsResource::collection(Compatitor::where('club_id', $this->id)->where('status', 1)->get());
 
         $rolesArray = [];
-        if(!$rolesAdministration->isEmpty()) {
-            $rolesArray[] =[
+        if (!$rolesAdministration->isEmpty()) {
+            $rolesArray[] = [
                 'title' => 'Uprava kluba',
                 'roles' => $rolesAdministration
             ];
         }
-        if(!$rolesCoach->isEmpty()) {
-            $rolesArray[] =[
+        if (!$rolesCoach->isEmpty()) {
+            $rolesArray[] = [
                 'title' => 'Treneri',
                 'roles' => $rolesCoach
             ];
         }
-        if(!$competitors->isEmpty()) {
-            $rolesArray[] =[
+        if (!$competitors->isEmpty()) {
+            $rolesArray[] = [
                 'title' => 'Takmičari',
-                'roles' => $competitors             
+                'roles' => $competitors
             ];
         }
         $resultsType = 'ebeddable';
-        if(str_contains($request->embed, 'resultsType')) {   
+        if (str_contains($request->embed, 'resultsType')) {
             $wkf = $this->compatitionClubsResults->where('compatition_type', 'WKF');
             $ekf = $this->compatitionClubsResults->where('compatition_type', 'EKF');
             $bkf = $this->compatitionClubsResults->where('compatition_type', 'BKF');
@@ -79,7 +79,7 @@ class ClubsResource extends JsonResource
             $kscg = $this->compatitionClubsResults->where('compatition_type', 'KSCG');
             $turnaments = $this->compatitionClubsResults->where('compatition_type', 'Turniri');
             $resultsType = [
-                 [
+                [
                     'type' => 'gold',
                     'wkf' => (string)$wkf->sum('gold_medals'),
                     'ekf' => (string)$ekf->sum('gold_medals'),
@@ -88,7 +88,7 @@ class ClubsResource extends JsonResource
                     'ssekf' => (string)$ssekf->sum('gold_medals'),
                     'kscg' => (string)$kscg->sum('gold_medals'),
                     'turnaments' => (string)$turnaments->sum('gold_medals'),
-                    
+
                 ],
                 [
                     'type' => 'silver',
@@ -100,7 +100,7 @@ class ClubsResource extends JsonResource
                     'kscg' => (string)$kscg->sum('silver_medals'),
                     'turnaments' => (string)$turnaments->sum('silver_medals'),
 
-                    
+
                 ],
                 [
                     'type' => 'bronze',
@@ -115,13 +115,13 @@ class ClubsResource extends JsonResource
 
             ];
         }
-      
+
 
         return [
             'id' => (string)$this->id,
             'name' => $this->name,
             'shortName' => $this->short_name,
-            'status' => (boolean)$this->status,
+            'status' => (bool)$this->status,
             'pib' => $pib,
             'email' => $this->email,
             'phone' => $this->phone_number,
@@ -131,7 +131,7 @@ class ClubsResource extends JsonResource
             'address' => $this->address,
             'user' => $user_info,
             'administrationCount' => count($this->roles),
-            'competitorsCount' => count($this->compatitors),
+            'competitorsCount' => count($this->compatitors->where('status', 1)),
             'gold' => $dataTeamGold + $dataSingleGold,
             'silver' => $dataTeamSilver + $dataSingleSilver,
             'bronze' => $dataTeamBronze + $dataSingleBronze,
