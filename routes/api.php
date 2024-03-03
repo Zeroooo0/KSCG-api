@@ -157,7 +157,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:sanctum', 'ability:admin,
     Route::get('/competition-roles/{competition}', [ReusableDataController::class, 'competitionRoles']);
     Route::get('/registered-clubs', [ReusableDataController::class, 'registeredClubs']);
     Route::post('/rebuild-pool', [PoolsController::class, 'rebuildCategoryPool']);
-    Route::get('/certificate-print/{competition}', [CompatitionsController::class, 'piblicRegistrations']);
+    Route::get('/certificate-print/{competition}', [CompatitionsController::class, 'publicRegistrations']);
 
     Route::patch('/printed/{registration}', [RegistrationsController::class, 'update']);
     Route::post('/set-position', [RegistrationsController::class, 'updateMany']);
