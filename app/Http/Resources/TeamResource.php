@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Club;
+use App\Models\Compatitor;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TeamResource extends JsonResource
@@ -19,10 +20,15 @@ class TeamResource extends JsonResource
         $club = $clubId != null ? Club::where('id', $clubId)->first() : null;
         $shortName = $club != null ? $club->short_name : null;
         $teamsReg = str_contains($request->embed, 'teamsReg') ? RegistrationsResource::collection($this->registrations) : 'emeddable';
+        $compatitorsIds = [];
+        foreach ($this->registrations as $registration) {
+            $compatitorsIds[] = $registration->compatitor_id;
+        }
         return [
             'id' => $this->id,
             'name' => $this->name . " ($shortName)",
-            'teamsReg' => $teamsReg
+            'teamsReg' => $teamsReg,
+            'contestants' => CompatitorsResource::collection(Compatitor::whereIn('id', $compatitorsIds)->get())
         ];
     }
 }

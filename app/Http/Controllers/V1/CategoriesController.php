@@ -32,7 +32,7 @@ class CategoriesController extends Controller
         $sort = $request->sort == null ? 'id' : $request->sort;
         $sortDirection = $request->sortDirection == null ? 'desc' : $request->sortDirection;
         $paginate = $request->perPage;
-        $category = Category::orderBy($sort, $sortDirection);
+        $category = Category::orderBy('id', 'asc')->orderBy($sort, $sortDirection);
         $search = '%' . $request->search . '%';
 
         if ($request->has('belts')) {

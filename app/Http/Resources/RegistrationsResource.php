@@ -18,7 +18,7 @@ class RegistrationsResource extends JsonResource
         $compatitorData = null;
         $compatitionData = null;
         $clubData = null;
-        if($this->category != null) {
+        if ($this->category != null) {
             $kata_or_kumite = $this->category->kata_or_kumite ? 'Kate' : 'Kumite';
             $gender = $this->category->gender == 1 ? 'M' : ($this->category->gender == 2 ? 'Ž' : 'M + Ž');
             $ekipno = $this->category->solo_or_team == 0 ? 'Ekipno' : null;
@@ -29,7 +29,7 @@ class RegistrationsResource extends JsonResource
                 'certificateName' => "$kata_or_kumite $ekipno | " . $this->category->name,
             ];
         }
-        if($this->compatitor != null) {
+        if ($this->compatitor != null) {
             $compatitorData = [
                 'id' => (string)$this->compatitor->id,
                 'kscgId' => $this->compatitor->kscg_compatitor_id,
@@ -40,7 +40,7 @@ class RegistrationsResource extends JsonResource
                 'belt' => new BeltResource($this->compatitor->belt),
             ];
         }
-        if($this->compatition != null) {
+        if ($this->compatition != null) {
             $compatitionData = [
                 'id' => (string)$this->compatition->id,
                 'name' => $this->compatition->name,
@@ -48,7 +48,7 @@ class RegistrationsResource extends JsonResource
                 'price' => $price
             ];
         }
-        if($this->club != null) {
+        if ($this->club != null) {
             $clubData = [
                 'id' => (string)$this->club->id,
                 'name' => $this->club->name,
@@ -61,7 +61,7 @@ class RegistrationsResource extends JsonResource
             'id' => (string)$this->id,
             'status' => $this->status,
             'position' => (string)(int)$this->position,
-            'isPrinted' => (boolean)$this->is_printed,
+            'isPrinted' => (bool)$this->is_printed,
             'competition' => $compatitionData,
             'club' => $clubData,
             'category' => $categoryData,
