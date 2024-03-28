@@ -13,7 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class TimeTableResource extends JsonResource
 {
     use LenghtOfCategory;
-  
+
     /**
      * Transform the resource into an array.
      *
@@ -32,51 +32,51 @@ class TimeTableResource extends JsonResource
         $poolsTeam = PoolsTeamResource::collection($pool);
         $groupsTotal = $this->categoryDuration($competiton, $category);
         $registrationsPositions = RegistrationsResource::collection(Registration::where('compatition_id', $this->compatition_id)->where('category_id', $this->category_id)->where('position', '!=', null)->orderBy('position', 'desc')->get());
-        $data = $ekipno == null  ? $pools->whereIn('pool_type', ['G', 'SF', 'FM', ]) : $poolsTeam->whereIn('pool_type', ['G', 'SF', 'FM']);
+        $data = $ekipno == null  ? $pools->whereIn('pool_type', ['G', 'SF', 'FM',]) : $poolsTeam->whereIn('pool_type', ['G', 'SF', 'FM']);
         $repesazOne = $ekipno == null  ? $pools->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '1')->whereIn('pool_type', ['RE', 'REFM']);
         $repesazTwo = $ekipno == null  ? $pools->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']) : $poolsTeam->where('group', '2')->whereIn('pool_type', ['RE', 'REFM']);
         $roundRobin = $ekipno == null ? $pools->whereIn('pool_type', ['RR', 'RRSF', 'RRFM']) : $poolsTeam->whereIn('pool_type', ['RR', 'RRFM']);
         $kataRepesaz = $ekipno == null ? $pools->whereIn('pool_type', ['KRG3', 'KRG4', 'KRG10', 'KRG24', 'KRG48', 'KRG96', 'KRG192', 'KRGA', 'KRFM', 'KRSF'])->sortByDesc('points_reg_one')->sortBy('group')->sortBy('pool') : $poolsTeam->whereIn('pool_type', ['KRG3', 'KRG4', 'KRG10', 'KRG24', 'KRG48', 'KRG96', 'KRG192', 'KRGA', 'KRFM', 'KRSF'])->sortByDesc('points_team_one')->sortBy('group')->sortBy('pool');
         $delay = 0;
         $etoStart = 0;
-        if($this->finish_time == null && $this->started_time != null) {
+        if ($this->finish_time == null && $this->started_time != null) {
             $etoStart = strtotime($this->eto_start);
             $startedAt = strtotime($this->started_time);
-            $delay = ($startedAt - $etoStart)/60;
+            $delay = ($startedAt - $etoStart) / 60;
         }
-        if($this->finish_time != null) {
+        if ($this->finish_time != null) {
             $etoFinish = strtotime($this->eto_finish);
             $finishTime = strtotime($this->finish_time);
-            $delay = ($finishTime - $etoFinish)/60;
+            $delay = ($finishTime - $etoFinish) / 60;
         }
         $roundsTotal = 0;
-        if($competiton->rematch == 0) {
+        if ($competiton->rematch == 0) {
             $roundsTotal = $pool->where('pool_type', 'FM')->count() != 0 ? $pool->where('pool_type', 'FM')->first()->pool : 0;
         }
-        if($competiton->rematch == 1 && $category->repesaz == 1 && $category->kata_or_kumite == 0) {
+        if ($competiton->rematch == 1 && $category->repesaz == 1 && $category->kata_or_kumite == 0) {
             $roundsTotal = 1;
-            if($pool->where('pool_type', 'FM')->count() != 0) {
+            if ($pool->where('pool_type', 'FM')->count() != 0) {
                 $roundsTotal = $pool->where('pool_type', 'FM')->first()->pool;
             }
         }
-        if($competiton->rematch == 1 && $category->repesaz == 0 && $category->kata_or_kumite == 0) {
+        if ($competiton->rematch == 1 && $category->repesaz == 0 && $category->kata_or_kumite == 0) {
             $roundsTotal = 1;
-            if($pool->where('pool_type', 'FM')->count() != 0) {
+            if ($pool->where('pool_type', 'FM')->count() != 0) {
                 $roundsTotal = $pool->where('pool_type', 'FM')->first()->pool;
             }
         }
-        if($competiton->rematch == 1 && $category->repesaz == 0 && $category->kata_or_kumite == 1) {
+        if ($competiton->rematch == 1 && $category->kata_or_kumite == 1) {
             $roundsTotal = 1;
-            if($pool->where('pool_type', 'FM')->count() != 0) {
+            if ($pool->where('pool_type', 'FM')->count() != 0) {
                 $roundsTotal = $pool->where('pool_type', 'FM')->first()->pool;
             }
         }
-        if($competiton->rematch == 1  && $category->kata_or_kumite == 1) {
-            $arrOfPoolType = ['KRG3','KRFM'];
-            if($pool->whereIn('pool_type', $arrOfPoolType)->count() != 0 && $category->repesaz == 1) {
-                $roundsTotal = $pool->whereIn('pool_type', $arrOfPoolType)->count() != 0 ? $pool->whereIn('pool_type', $arrOfPoolType)->first()->pool : 0;
-            }
-        }
+        // if($competiton->rematch == 1  && $category->kata_or_kumite == 1) {
+        //     $arrOfPoolType = ['KRG3','KRFM'];
+        //     if($pool->whereIn('pool_type', $arrOfPoolType)->count() != 0 && $category->repesaz == 1) {
+        //         $roundsTotal = $pool->whereIn('pool_type', $arrOfPoolType)->count() != 0 ? $pool->whereIn('pool_type', $arrOfPoolType)->first()->pool : 0;
+        //     }
+        // }
         return [
             'id' => $this->id,
             'tatami' => 'Tatami ' . $this->tatami_no,
@@ -84,8 +84,8 @@ class TimeTableResource extends JsonResource
             'category' => [
                 'id' => $category->id,
                 'name' => $kata_or_kumite . ' | ' . $gender . ' | ' . $category->name . ' ' . $category->category_name  . $ekipno,
-                'isTeam' => (boolean)!$category->solo_or_team,
-                'haveRematch' => (boolean)$category->repesaz,
+                'isTeam' => (bool)!$category->solo_or_team,
+                'haveRematch' => (bool)$category->repesaz,
             ],
             'competitionId' => $this->compatition->id,
             'etoStart' => date('H:i', strtotime($this->eto_start)),
@@ -95,6 +95,7 @@ class TimeTableResource extends JsonResource
             'finishedAt' => $this->finish_time != null ? date('H:i', strtotime($this->finish_time)) : null,
             'status' => $this->status,
             'roundsTotal' => (string)$roundsTotal,
+            'isKata' => (bool)$category->kata_or_kumite,
             'results' => $registrationsPositions,
             'groups' => $request->has('embed') && str_contains($request->embed, 'groups') ? $data->toArray() : 'embbedable',
             'rematchOne' => $request->has('embed') && str_contains($request->embed, 'rematch') ? $repesazOne->toArray() : 'embbedable',

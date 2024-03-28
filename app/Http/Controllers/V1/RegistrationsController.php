@@ -11,6 +11,7 @@ use App\Models\Compatitor;
 use App\Models\PoolTeam;
 use App\Models\Registration;
 use App\Models\Team;
+use App\Models\TimeTable;
 use App\Support\Collection;
 use App\Traits\CompatitionClubsResultsTrait;
 use App\Traits\HttpResponses;
@@ -642,9 +643,11 @@ class RegistrationsController extends Controller
         //     OfficialKata::insert($data );
         //     return $this->success('', 'Done!');
         // }
+        $registrationNew = null;
         foreach ($request->all() as $data) {
             $registration = Registration::where('id', $data['registrationId'])->first();
             if ($registration != null) {
+                $registrationNew = $registration;
                 $allRegistrations = Registration::where('compatition_id', $registration->compatition_id)->where('category_id', $registration->category_id)->get();
                 foreach ($allRegistrations as $reg) {
                     $reg->update(['position' => NULL]);
@@ -662,8 +665,11 @@ class RegistrationsController extends Controller
                 $registration->update(['position' => $positionConvert, 'status' => 1]);
                 $this->calculateResults($registration->compatition_id, [$registration->club_id], 'registrations');
                 $this->calculateResults($registration->compatition_id, [$registration->club_id], 'results');
+                $registrationNew = $registration;
             }
         }
+        // return $this->success('', $registrationNew);
+        TimeTable::where('compatition_id', $registrationNew->compatition_id)->where('category_id', $registrationNew->category_id)->update(['status' => 2, 'finish_time' => Date("H:i:s", strtotime(now()))]);
         return $this->success('', 'Uspješno dodata pozicije.');
     }
 
